@@ -1,21 +1,34 @@
 /**
  * JSaw - JavaScript Audio Workstation
  * @author Nicholas Kircher
+ 
+ Everything in JSaw is split up into its component parts, and then connected together.
+ Each pattern has a collection of tracks, each track is basically a synth which is attached
+ to a piano roll.  Piano rolls are collections of step grids which are collections of notes.
+ 
  */
 
 // Array Remove - By John Resig (MIT Licensed)
-Array.prototype.remove = function(from, to) {
-	var rest = this.slice((to || from) + 1 || this.length);
-	this.length = from < 0 ? this.length + from : from;
-	return this.push.apply(this, rest);
-};
+// Array.prototype.remove = function(from, to) {
+	// var rest = this.slice((to || from) + 1 || this.length);
+	// this.length = from < 0 ? this.length + from : from;
+	// return this.push.apply(this, rest);
+// };
 
 /**
  * JSaw global static object
  */
 var JSaw = {
 	version: '0.01',
-	_is_ready: false
+	_is_ready: false,
+	bpm: 130
+}
+
+/**
+ * The awesome JSaw pattern object!
+ */
+var JSawPattern = function (params) {
+	
 }
 
 /**
@@ -24,9 +37,11 @@ var JSaw = {
 var PianoRoll = function(params){
 	this.options = {
 		beats: 4,			// Number of beats (length of the piano roll sequence)
-		steps_per_beat: 4	// Number of steps in a beat (step resolution)
+		steps_per_beat: 4,	// Number of steps in a beat (step resolution)
+		bars: 1
 	};
 	
+	// The Step Grid; a horizontally-mapped list of step objects.
 	this.stepGrid = new Array(this.options.steps_per_beat*this.options.beats);
 	
 	$.each(this.stepGrid, function(key, value){
