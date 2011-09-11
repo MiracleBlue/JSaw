@@ -1,6 +1,7 @@
 /**
  * JSaw - JavaScript Audio Workstation
  * @author Nicholas Kircher
+ * Copyright 2011
  
  Everything in JSaw is split up into its component parts, and then connected together.
  Each pattern has a collection of tracks, each track is basically a synth which is attached
@@ -8,12 +9,147 @@
  
  */
 
-// Array Remove - By John Resig (MIT Licensed)
-// Array.prototype.remove = function(from, to) {
-	// var rest = this.slice((to || from) + 1 || this.length);
-	// this.length = from < 0 ? this.length + from : from;
-	// return this.push.apply(this, rest);
-// };
+// Hackery!  Witchery!  Nonsense and bullshit!
+function construct(constructor, args) {
+	function F() {
+		return constructor.apply(this, args);
+	}
+	F.prototype = constructor.prototype;
+	return new F();
+}
+
+
+/**
+ * JSAW core
+ */
+
+var JSAW = {};
+
+// Static stuff and class definitions
+JSAW.Project = Backbone.Model.extend({
+	
+});
+
+/**
+ * JSAW Model Definitions
+ */
+JSAW.Model = {};
+	
+	// Sheduling models
+	JSAW.Model.Schedule = {};
+		// Shedule step model
+		JSAW.Model.Shedule.Step = Backbone.Model.extend({
+			open: true
+		})
+	
+	// Instrument model
+	JSAW.Model.Instrument = {};
+		
+		// Instrument playlist scheduling collection
+		
+		// Instrument wrapper model
+		JSAW.Model.Instrument.Wrapper = Backbone.Model.extend({
+			defaults: {
+				type: "synth",		// Can be either "synth" or "sampler"
+				name: "Instrument",
+				muted: false,
+				volume: 1.0,
+				panning: 0.5
+			},
+			
+			// Voice handling
+			// ** Real voices only.  Support for imaginary voices requires copious amounts of medication.js **
+			voices: {
+				list: [],
+				// Create synth instance, passing an attribute hash from the related note object to the synth constructor
+				create: function(noteData) {
+					list.push(construct(this.generatorClass, [noteData]));
+				}
+			},
+			
+			// Initialize stuff
+			initialize: function(options) {
+				this.generatorClass = options.generator;
+			}
+		});
+	
+	// Track model
+	JSAW.Model.Track = {};
+		// Instrument collection
+		JSAW.Model.Track.Instruments = Backbone.Collection.extend({
+			model: JSAW.Model.Instrument
+		});
+		
+		//JSAW.Model.Track.Schedule
+		
+	
+	/**
+	 * JSaw Piano Roll models
+	 */
+	JSAW.Model.PianoRoll = {};
+		// Note model
+		JSAW.Model.PianoRoll.Note = Backbone.Model.extend({
+			defaults: {
+				"name": "C",
+				"octave": 1,
+				"velocity": 1.0,
+				"num_of_steps": 1,
+			},
+			getFullName: function() {
+				return this.get("name") + this.get("octave");
+			},
+			getFrequency: function() {
+				return Note.fromLatin(this.getFullName()).frequency();
+			},
+			hashify: function() {
+				var outhash = this.toJSON();
+				outhash.frequency = this.getFrequency();
+				outhash.fullName = this.getFullName();
+				return outhash;
+			}
+		});
+		
+		// StepRow collection
+		JSAW.Model.PianoRoll.StepRow = Backbone.Collection.extend({
+			model: JSAW.Model.PianoRoll.Note,
+			isBlank: function() {
+				return (this.length < 1);
+			}
+		});
+		
+		// Step model
+		JSAW.Model.PianoRoll.Step = Backbone.Model.extend({
+			initialize: function() {
+				this.stepRow = new JSAW.Model.PianoRoll.StepRow;
+			},
+			isBlank: function() {
+				return this.stepRow.isBlank();
+			}
+		});
+		
+		// Sequence!
+		JSAW.Model.PianoRoll.Sequence = Backbone.Collection.extend({
+			model: JSAW.Model.PianoRoll.Step,
+		});
+		
+		JSAW.Model.PianoRoll.Wrapper = Backbone.Model.extend({
+			defaults: {
+				name: "Sequence",
+				num_of_bars: 1,
+				start_position: 0,
+				end_position: 3
+			}
+		});
+		
+	// End JSaw Piano Roll models
+	
+	/**
+	 * JSaw Playlist models
+	 */
+	JSAW.Model.Playlist = {
+		
+	};
+	
 
 /**
  * JSaw global static object
@@ -21,7 +157,33 @@
 var JSaw = {
 	version: '0.01',
 	_is_ready: false,
-	bpm: 130
+	bpm: 130,
+	
+	Class: {
+		// Note class
+		Note: Backbone.Model.extend({
+			defaults: {
+				"name": "C",
+				"octave": 1,
+				"velocity": 1.0,
+				"length": 1,
+			},
+			getFullName: function() {
+				return this.get("name") + this.get("octave");
+			}
+		}),
+		
+		// Step class
+		Step: Backbone.Collection.extend({
+			model: JSaw.Class.Note,
+			isBlank: function(){
+				return (this.length < 1);
+			}
+		}),
+		
+		
+	},
+	
 }
 
 /**
@@ -45,13 +207,26 @@ var PianoRoll = function(params){
 	this.stepGrid = new Array(this.options.steps_per_beat*this.options.beats);
 	
 	$.each(this.stepGrid, function(key, value){
-		value = new Step();
+		//value = new Step();
+		value = new PRStep;
 	});
 	//this.stepGrid = (params.stepGrid ? params.stepGrid : new Array(this.options.steps_per_beat*this.options.beats));
 };
 
+var PRNote = Backbone.Model.extend({
+	defaults: {
+		"name": "C",
+		"octave": 1,
+		"velocity": 1.0,
+		"length": 1,
+	},
+	getFullName: function() {
+		return this.get("name") + this.get("octave");
+	}
+});
+
 // Extensive, descriptive, Note information storage class.
-var ExtNote = function(params) {
+/*var ExtNote = function(params) {
 	// Setting defaults
 	this.name = 'C';	// Latin name of note
 	this.octave = 0;	// The note octave relative to the base octave
@@ -67,7 +242,15 @@ var ExtNote = function(params) {
 	};
 	
 	return this;
-};
+};*/
+
+var PRStep = Backbone.Collection.extend({
+	model: PRNote,
+	isBlank: function(){
+		return (this.length < 1);
+	}
+});
+
 
 // Step class, for an individual step in a sequence
 var Step = function(options) {
@@ -206,10 +389,13 @@ window.onload = function() {
 		// Hooray for overcomplication!
 		for (i=0;i<stepSequence.length;i++) {
 			var noteArr = [];
+			//stepSequence[i] = new Step({notes: noteArr, position: i});
+			
 			for (j=0;j<stepSequence[i].length;j++) {
-				noteArr.push(new ExtNote({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]}));
+				//noteArr.push(new ExtNote({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]}));
+				noteArr.push(new PRNote({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]}));
 			}
-			stepSequence[i] = new Step({notes: noteArr, position: i});
+			stepSequence[i] = new PRStep(noteArr);
 		}
 		
 		var frequencyPattern = new PSequence(stepSequence, numOfRepeats);
