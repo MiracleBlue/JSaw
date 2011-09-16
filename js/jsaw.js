@@ -9,6 +9,11 @@
  
  */
 
+function debug(msg) {
+	var dbg_on = true;
+	if (dbg_on) console.log(msg);
+}
+
 // Hackery!  Witchery!  Nonsense and bullshit!
 function construct(derpyfunc, args) {
 	//console.log(derpyfunc);
@@ -64,18 +69,20 @@ JSAW.Model = {};
 				list: [],
 				// Create synth instance, passing an attribute hash from the related note object to the synth constructor
 				create: function(noteData) {
-					console.log("derp");
 					noteData.audiolet = this.self.al;
 					//console.log(this.self);
 					var voiceObj = construct(this.self.generatorClass, [noteData]);
 					voiceObj.connect(this.self.al.output);
 					this.list.push(voiceObj);
+					debug("Voice created");
+					debug(noteData);
 				}
 			},
 			
 			// Initialize stuff
 			initialize: function(options) {
-				console.log(options);
+				debug("Instrument wrapper init");
+				debug(options);
 				this.al = options.al;
 				this.generatorClass = options.generator;
 				//console.log(this.generatorClass);
@@ -172,6 +179,7 @@ JSAW.Model = {};
  */
 window.onload = function() {
 	var Synth = function(params) {
+		//debug("Creating synth instance");
 		var audiolet = params.audiolet;
 		var frequency = params.frequency;
 		
@@ -232,6 +240,18 @@ window.onload = function() {
 			[['G#',1]]
 		];
 		
+		var playlistSequence = [
+			[stepSequence],
+			[],
+			[],
+			[],
+			
+			[stepSequence],
+			[],
+			[],
+			[]
+		];
+		
 		var myInstrument = new JSAW.Model.Instrument.Wrapper({name: "Derpsynth", type: "synth", generator: Synth, al: self.audiolet});
 		
 		// Hooray for overcomplication!
@@ -242,20 +262,45 @@ window.onload = function() {
 			for (j=0;j<stepSequence[i].length;j++) {
 				//noteArr.push(new ExtNote({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]}));
 				//noteArr.push(new PRNote({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]}));
-				noteArr.push({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]});
+				noteArr.push({name: stepSequence[i][j][0], octave: stepSequence[i][j][1]+2});
 			}
 			//stepSequence[i] = new PRStep(noteArr);
 			stepSequence[i] = new JSAW.Model.PianoRoll.Step();
 			stepSequence[i].stepRow.add(noteArr);
 		}
 		
+		var playlistPattern = new PSequence(playlistSequence, 1);
 		var frequencyPattern = new PSequence(stepSequence, numOfRepeats);
 		
 		// Set global tempo
 		this.audiolet.scheduler.setTempo(130);
 		
-		// Initialise sheduler and begin processing
 		this.audiolet.scheduler.play(
+			[playlistPattern],
+			1,
+			function(beat) {
+				if (beat.length > 0) {
+					_(beat).forEach(function(theSeq) {
+						theSeq = new PSequence(theSeq, 1);
+						self.audiolet.scheduler.play(
+							[theSeq],
+							0.25,
+							function(step) {
+								if (!step.isBlank()) {
+									step.stepRow.each(function(note) {
+										var nf = note.getFrequency();
+										myInstrument.voices.create({frequency: nf});
+									})
+								}
+							}.bind(this)
+						);
+					});
+				}
+			}.bind(this)
+		);
+		
+		// Initialise sheduler and begin processing
+		/*this.audiolet.scheduler.play(
 			[frequencyPattern], // Value arrays to iterate over in callback
 			0.25, // Quarter of a beat, 4 steps per beat (0.25)
 			function(step) {
@@ -268,14 +313,14 @@ window.onload = function() {
 						synth1.connect(this.audiolet.output);
 						synth2.connect(this.audiolet.output);
 						//synth3.connect(this.audiolet.output);
-					}*/
+					}*//*
 					step.stepRow.each(function(note) {
 						var nf = note.getFrequency();
 						myInstrument.voices.create({frequency: nf});
 					})
 				}
 			}.bind(this)
-		);
+		);*/
 	};
 	var myaudio = new AudioletApp();
 };
