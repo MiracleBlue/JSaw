@@ -60,6 +60,27 @@ JSAW.Model = {};
 	JSAW.Model.Instrument = {};
 		
 		// Instrument playlist scheduling collection
+		JSAW.Model.Instrument.Voices = function(itself) {
+			this.self = itself;
+			this.list = [];
+			this.create = function(noteData) {
+				debug("Type: "+this.self.get("type"));
+				if (this.self.get("type") == "synth") {
+					noteData.audiolet = this.self.al;
+					//console.log(this.self);
+					var voiceObj = construct(this.self.generatorClass, [noteData]);
+					voiceObj.connect(this.self.al.output);
+					this.list.push(voiceObj);
+					debug("Voice created");
+					debug(noteData);
+				}
+				else if (this.self.get("type") == "sampler") {
+					//this.self.generator.connect(this.self.al.output);
+					this.self.generator.triggerSample.trigger.setValue(1);
+					debug("Sample triggered");
+				}
+			};
+		};
 		
 		// Instrument wrapper model
 		JSAW.Model.Instrument.Wrapper = Backbone.Model.extend({
@@ -73,10 +94,12 @@ JSAW.Model = {};
 			
 			// Voice handling
 			// ** Real voices only.  Support for imaginary voices requires copious amounts of medication.js **
-			voices: {
+			/*voices: {
+				self: null,
 				list: [],
 				// Create synth instance, passing an attribute hash from the related note object to the synth constructor
 				create: function(noteData) {
+					debug("Type: "+this.self.get("type"));
 					if (this.self.get("type") == "synth") {
 						noteData.audiolet = this.self.al;
 						//console.log(this.self);
@@ -92,7 +115,7 @@ JSAW.Model = {};
 						debug("Sample triggered");
 					}
 				}
-			},
+			},*/
 			
 			// Initialize stuff
 			initialize: function(options) {
@@ -109,8 +132,9 @@ JSAW.Model = {};
 					this.generator = construct(this.generatorClass, [this.samplerParams]);
 					this.generator.connect(this.al.output);
 				}
-				
-				this.voices.self = this;
+				debug(this);
+				this.voices = new JSAW.Model.Instrument.Voices(this);
+				//this.voices.self = this;
 			}
 		});
 	
@@ -379,7 +403,7 @@ window.onload = function() {
 					if (beat.length > 0) {
 						_(beat).forEach(function(theSeq) {
 							debug("theSeq: ");
-							debug(theSeq.instrument);
+							debug(theSeq.instrument.get("type"));
 							theSeq.sequence = new PSequence(theSeq.sequence, 1);
 							// Internal pattern scheduler
 							self.audiolet.scheduler.play(
@@ -390,6 +414,8 @@ window.onload = function() {
 										step.stepRow.each(function(note) {
 											var nf = note.getFrequency();
 											theSeq.instrument.voices.create({frequency: nf});
+											//debug("Instrument")
+											//debug("instrument: "+theSeq.instrument.generatorClass);
 											//debug("Step trigger");
 										})
 									}
