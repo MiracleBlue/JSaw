@@ -1,6 +1,8 @@
 body {
 	margin: 0;
 	background-color: #000;
+	color: #63C1FB;
+	font-size: 62.5%;
 }
 
 #wrapper {
@@ -13,7 +15,40 @@ body {
 ul {
 	padding: 0;
 	margin: 0;
+	list-style: none;
 }
+ul.flat-list > li {
+	float: left;
+}
+
+#jsaw-debug-bar {
+	background-color: #162039;
+	border-bottom: 3px solid #275FAB;
+	margin: 0;
+}
+#jsaw-debug-bar .controls {
+	display: table;
+	width: 900px;
+	margin: auto;
+	font-size: 1.3em;
+	/*padding: 10px 0;*/
+}
+#jsaw-debug-bar .controls button {
+	font-size: 1.2em;
+}
+#jsaw-debug-bar .controls > ul {
+	float: left;
+	padding: 10px;
+}
+#jsaw-debug-bar .controls > ul > li {
+	padding: 3px;
+}
+
+#jsaw-debug-bar .controls ul.status > li {
+	margin: 10px;
+	border-left: 1px solid #c8c8c8;
+}
+
 .pianogrid {
 	display: table;
 	border-left: 1px solid #eee;

@@ -12,20 +12,43 @@
 		<meta name="author" content="Nicholas Kircher" />
 		
 		<link href="css/jsaw-default.css" type="text/css" rel="stylesheet" />
+		<link href="css/mb-neon/jquery-ui-1.8.16.custom.css" type="text/css" rel="stylesheet" />
+		
+		<!-- Templates -->
+			<script id="template_debugbar_status_item" type="text/x-jquery-tmpl">
+				<li>${name}: <span class="status-value">${value}</span></li>
+			</script>
+		<!-- End Templates -->
 		
 		<!--<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>-->
-		<script src="js/jquery-1.6.min.js"></script>
-		<script src="js/MusicJS/music.js"></script>
-		<script src="js/Audiolet/src/audiolet/Audiolet.js"></script>
-		<script src="js/underscore/underscore.js"></script>
-		<script src="js/json2.js"></script>
-		<script src="js/backbone.js"></script>
+		<script src="js/libs/jquery-1.6.2.min.js"></script>
+		<script src="js/libs/jquery.tmpl.js"></script>
+		<script src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+		<script src="js/libs/music.js"></script>
+		<script src="js/libs/Audiolet.js"></script>
+		<script src="js/libs/audiofile.js"></script>
+		<script src="js/libs/underscore.js"></script>
+		<script src="js/libs/json2.js"></script>
+		<script src="js/libs/backbone.js"></script>
 		
 		<script src="js/jsaw.js"></script>
 		<script src="js/jsaw-ui.js"></script>
 	</head>
 	<body>
 		<div id="wrapper">
+			<div id="jsaw-debug-bar">
+				<div class="controls">
+					<ul class="playback flat-list">
+						<li><button id="jsaw-playback-play">Play</button></li>
+						<li><button id="jsaw-playback-stop">Stop</button></li>
+					</ul>
+					<ul class="status flat-list">
+						<!-- <li><span id="jsaw-status-playing">Stopped</span></li>
+						<li>Step: <span id="jsaw-status-step">0</span></li>
+						<li>Voices: <span id="jsaw-status-voices">0</span></li> -->
+					</ul>
+				</div>
+			</div>
 			<div id="pianoroll">
 				<!--<div class="pianogrid">
 					<ul class="keyList">

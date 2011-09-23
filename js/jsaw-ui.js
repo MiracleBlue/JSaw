@@ -36,6 +36,33 @@ var NoteLookup = {
 };
 
 jQuery(function($){
+	// Template rendering test
+	var statusList = [
+		{name: "status", value: "Stopped"},
+		{name: "step", value: 0},
+		{name: "voices", value: 0}
+	];
+	
+	$("#template_debugbar_status_item").tmpl(statusList).appendTo("#jsaw-debug-bar .controls ul.status");
+	
+	$("#jsaw-playback-play").button({
+		text: false,
+		icons: {
+			primary: 'ui-icon-play'
+		}
+	}).click(function(){
+		myaudio.startPlayback(); // awwwyeaeeaaaaaaa
+	});
+	
+	$("#jsaw-playback-stop").button({
+		text:false,
+		icons: {
+			primary: 'ui-icon-stop'
+		}
+	});
+});
+
+jQuery(function($){
 	// Total number of steps in this piano roll instance
 	var numOfSteps = 16;
 	
