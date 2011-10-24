@@ -1,2 +1,0 @@
-#! /bin/bash
-juicer merge core/*.js dsp/*.js operators/*.js pattern/*.js scale/*.js tuning/*.js sink.js/*.js -f -s -m none -o audiolet/Audiolet.js
