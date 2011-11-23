@@ -4,11 +4,13 @@
 
 // Really basic sawtooth synth
 var Synth = function(params) {
-	//debug("Creating synth instance");
-	var audiolet = params.audiolet;
+	console.group("Synth constructor");
+	console.info("Constructing Synth object...");
+	
+	this.audiolet = params.audiolet;
 	var frequency = params.frequency;
 	
-	AudioletGroup.apply(this, [audiolet, 0, 1]);
+	AudioletGroup.apply(this, [this.audiolet, 0, 1]);
 	
 	this.saw = new Saw(this.audiolet, frequency);
 	this.modulator = new Sine(this.audiolet, 2 * frequency);
@@ -36,6 +38,9 @@ var Synth = function(params) {
 	this.gain.connect(this.vel);
 	this.vel.connect(this.outputs[0]);
 	//this.saw.connect(this.outputs[0]);
+	
+	console.log(this.audiolet);
+	console.groupEnd();
 };
 extend(Synth, AudioletGroup);
 
@@ -47,10 +52,12 @@ extend(Synth, AudioletGroup);
 
 // Really basic sampler (in this case, a kick drum)
 var Sampler = function(params) {
-	var audiolet = params.audiolet;
+	console.group("Sampler constructor");
+	
+	this.audiolet = params.audiolet;
 	var sampleFile = params.sample;
 	
-	AudioletGroup.apply(this, [audiolet, 0, 1]);
+	AudioletGroup.apply(this, [this.audiolet, 0, 1]);
 	
 	this.sample = new AudioletBuffer(1, 0);
 	this.sample.load(sampleFile, false);
@@ -62,6 +69,9 @@ var Sampler = function(params) {
 	this.triggerSample.connect(this.player, 0, 1);
 	this.player.connect(this.gain);
 	this.gain.connect(this.outputs[0]);
+	
+	console.log(this.audiolet);
+	console.groupEnd();
 };
 extend(Sampler, AudioletGroup);
 
@@ -73,9 +83,11 @@ extend(Sampler, AudioletGroup);
 
 // Delay
 var FXDelay = function(params) {
-	var audiolet = params.audiolet;
+	console.group("FXDelay constructor");
 	
-	AudioletGroup.apply(this, [audiolet, 1, 1]);
+	this.audiolet = params.audiolet;
+	
+	AudioletGroup.apply(this, [this.audiolet, 1, 1]);
 	
 	this.delay = new FeedbackDelay(this.audiolet, 0.5, ((60/this.audiolet.scheduler.bpm)*0.8), 0.3, 0.2);
 	this.feedback = new Gain(this.audiolet, 0.4);
@@ -83,5 +95,8 @@ var FXDelay = function(params) {
 	this.inputs[0].connect(this.delay);
 	this.delay.connect(this.feedback);
 	this.feedback.connect(this.outputs[0]);
+	
+	console.log(this.audiolet);
+	console.groupEnd();
 };
 extend(FXDelay, AudioletGroup);

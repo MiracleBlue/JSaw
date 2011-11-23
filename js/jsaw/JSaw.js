@@ -41,115 +41,288 @@ var JSAW_Class = function(){
 	};
 }
 	
-JSAW_Class.prototype = {
-	/**
-	 * Note object: represents a note in a pattern.
-	 */
-	Note: function(options, parent) {
-		/**** CONSTRUCTOR ****/
-		this.self = self;
-		this.parent = parent || false;
-		
-		if (!this.parent) {
-			debug("Must pass a parent pattern object to this constructor!");
-			return false; // Must pass a parent pattern object to this constructor!
-		}
-		
-		this.options = {
-			id: false,
-			key: "C",
-			octave: 3,
-			velocity: 1.0,
-			duration: 1, // Number of steps
-			position: 0 // Step position
-		}
-		_(this.options).extend(options);
-		
-		this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
-		
-		/**** METHODS ****/
-		
-		this.getKey = function(){return this.options.key;};
-		this.getOctave = function(){return this.options.octave;};
-		this.getVelocity = function(){return this.options.velocity;};
-		this.getDuration = function(){return this.options.duration;};
-		this.getPosition = function(){return this.options.position;};
-		this.getFullName = function(){return this.options.key+this.options.octave;};
-		this.getFrequency = function(){return Note.fromLatin(this.getFullName()).frequency();};
-		
-		this.set = function(params){
-			params.id = this.id;	// Prevent changes to ID parameter
-			_(this.options).extend(params);
-		};
-	},
+/**
+ * Note object: represents a note in a pattern.
+ * 
+ * @constructor
+ * @param {Object} options Configuration options for the constructor.
+ */
+JSAW.Note = function(options) {
+	this.instance = true; // This is the instance of Note!
 	
-	/**
-	 * Pattern object: represents a sequence of notes to be played.
-	 * 
-	 * @constructor
-	 * @param {Object} options Configuration options for the constructor.
-	 */
-	Pattern: function(options) {
-		/**** CONSTRUCTOR ****/
-		this.self = self;
-		this._notes = {}; // Associative array of all note objects in this pattern.
-		this._steps = []; // Step array.
-		this._noteIncrement = 1; // Counter.
-		
-		this.options = {
-			id: false,
-			name: "New Pattern",
-			beats: 4,
-			stepsPerBeat: 4
-		}
-		_(this.options).extend(options);
-		
-		this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
-		
-		/**** END CONSTRUCTOR ****/
-		
-		/**** METHODS ****/
-		
-		/**
-		 * Generate a unique numeric ID and increment the internal counter + 1.
-		 *
-		 * @return {Number} The generated numeric ID.
-		 */
-		this.generateID = function() {
-			this.self._increment.pattern += 1;
-			return this.self._increment.pattern;
-		};
-		
-		/**
-		 * Get a note object by ID.
-		 */
-		this.getNote = function(id) {
-			return _(_.keys(this._notes)).contains(id) ? this._notes[id] : false;
-		};
-		
-		/**
-		 * Create a new note and add it to the collection.
-		 */
-		this.addNote = function(options) {
-			
-		}
-	},
-	
-	/**
-	 * Track objects
-	 */
-	Track: function(options) {
-		this.self = self;
-		this._patterns = [];
-		
-		this.generateID = function() {
-			self._increment.track += 1;
-			return self._increment.track;
-		};
+	this.options = {
+		id: false,
+		key: "C",
+		octave: 3,
+		velocity: 1.0,
+		duration: 1, // Number of steps
+		position: 0 // Step position
 	}
+	_(this.options).extend(options);
+	
+	this.id = this.options.id;
+};
+/**** METHODS ****/
+
+JSAW.Note.prototype.getKey = function(){return this.options.key;};
+JSAW.Note.prototype.getOctave = function(){return this.options.octave;};
+JSAW.Note.prototype.getVelocity = function(){return this.options.velocity;};
+JSAW.Note.prototype.getDuration = function(){return this.options.duration;};
+JSAW.Note.prototype.getPosition = function(){return this.options.position;};
+JSAW.Note.prototype.getFullName = function(){return this.options.key+this.options.octave;};
+JSAW.Note.prototype.getFrequency = function(){return Note.fromLatin(this.getFullName()).frequency();};
+JSAW.Note.prototype.hashify = function(){
+	var outhash = {}
+	_(outhash).extend(this.options);
+	outhash.frequency = this.getFrequency();
+	outhash.fullName = this.getFullName();
+	outhash.velocity = this.getVelocity();
+	outhash.instance = false;
+	return outhash;
+};
+
+JSAW.Note.prototype.set = function(params){
+	params.id = this.id;	// Prevent changes to ID parameter
+	_(this.options).extend(params);
+};
+
+/**
+ * Pattern object: represents a sequence of notes to be played.
+ * 
+ * @constructor
+ * @param {Object} options Configuration options for the constructor.
+ */
+JSAW.Pattern = function(options) {
+	this._notes = {}; // Associative array of all note objects in this pattern.
+	this._steps = []; // Step array.
+	this._noteIncrement = 1; // Counter.
+	
+	this.options = {
+		id: false,
+		name: "New Pattern",
+		beats: 4,
+		stepsPerBeat: 4,
+		pattern: [],
+		track: false
+	}
+	_(this.options).extend(options);
+	
+	this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
+	this.track = this.options.track;
+	
+	if (!this.track) {
+		console.warn("Uh oh, pattern is not assigned to a track object!");
+	}
+	
+	if (this.options.pattern.length > 0) {
+		this.renderPattern(this.options.pattern);
+	}
+	else {
+		for (var x = 0; x < this.options.beats; x++) {
+			for (var i = 0; i < this.options.stepsPerBeat; i++) {
+				this._steps.push([]);
+			}
+		}
+	}
+	
+	
+};
+
+/**** METHODS ****/
+
+
+
+/**
+ * Generate a unique numeric ID and increment the internal counter + 1.
+ *
+ * @return {Number} The generated numeric ID.
+ */
+JSAW.Pattern.prototype.generateID = function() {
+	//this.self._increment.pattern += 1;
+	//return ++this.self._increment.pattern;
+};
+
+/**
+ * Get a note object by ID.
+ */
+JSAW.Pattern.prototype.getNote = function(id) {
+	return _(_.keys(this._notes)).contains(id) ? this._notes[id] : false;
+};
+
+/**
+ * Create a new note and add it to the collection.
+ */
+JSAW.Pattern.prototype.addNote = function(options) {
+	options.id = options.id || ++this._noteIncrement;
+	this._notes[options.id] = new JSAW.Note(options);
+	this._steps[options.position].push(this._notes[options.id]);
+	
+	return this._notes[options.id];
+};
+
+JSAW.Pattern.prototype.renderPattern = function(newPattern) {
+	var outPattern = [];
+	_(newPattern).forEach(function(step){
+		var newStep = [];
+		if (step.length > 0) {
+			_(step).forEach(function(noteData){
+				newStep.push(this.addNote(noteData));
+			}, this)
+		}
+		outPattern.push(newStep);
+	}, this);
+	return outPattern;
+};
+
+JSAW.Pattern.prototype.startPlayback = function() {
+	var self = this;
+	var sequence = new PSequence([this._steps], 1);
+	this.track.instrument.al.scheduler.play(
+		[sequence],
+		1,
+		function(step) {
+			if (step.length > 0) {
+				_(step).forEach(function(note){
+					self.track.instrument.voices.create(note);
+				});
+			}
+		}
+	);
 }
 
-JSAW_Class.Pattern.prototype = {
+/**
+ * Track objects
+ */
+JSAW.Track = function(options) {
+	//this.self = self;
+	this._patterns = [];
+	
+	// What instrument am I?
+	this.instrument = {};
+};
+
+JSAW.Track.prototype.generateID = function() {
+	//this.self._increment.track += 1;
+	//return ++this.self._increment.track;
+};
+
+
+/**
+ * Instrument objects
+ */
+JSAW.Instrument = function(options) {
+	// Derp
+	this.options = {
+		id: false,
+		name: "New Instrument",
+		type: "synth",
+		generator: Synth,
+		muted: false,
+		volume: 0.8,
+		pan: 0.5,
+		effects: []
+	}
+	_(this.options).extend(options);
+	
+	console.group("Instrument  ("+this.options.type+"): '"+this.options.name+"'");
+	
+	this.al = this.options.al;
+	this.generatorClass = this.options.generator;
+	this.effects = this.options.effects;
+	
+	if (this.options.type === "sampler") {
+		this.samplerParams = options.samplerParams;
+		this.samplerParams.audiolet = this.al;
+		this.generator = construct(this.generatorClass, [this.samplerParams]);
+		this.generator.connect(this.al.output);
+	}
+	
+	var _self = this;
+	
+	console.debug("this.options:");
+	console.dir(this.options);
+	
+	this.voices = {
+		self: _self,
+		list: [],
+		
+		// Create method
+		create: function(data) {
+			console.group("Voice create");
+			console.info("Type: "+this.self.options.type);
+			
+			if (_.isUndefined(data) || _.isNull(data)) {
+				console.error("Cannot create voice: data argument is null or undefined.");
+				console.groupEnd();
+				return false;
+			}
+			
+			if (_.isArray(data)) {
+				_(data).forEach(function(value){
+					this.voices.create(value);
+				}, this.self);
+				
+				console.groupEnd();
+				return;
+			}
+			
+			var noteData = (data.instance) ? data.hashify() : data;
+			
+			// Synth type
+			if (this.self.options.type == "synth") {
+				noteData.audiolet = this.self.al;
+				noteData.velocity = noteData.velocity * this.self.options.volume;
+				
+				console.debug(noteData);
+				
+				var voiceObj = construct(this.self.generatorClass, [noteData]);
+				var voiceFX = [];
+				
+				voiceObj.vel.gain.setValue(noteData.velocity);
+				
+				if (this.self.effects.length > 0) {
+					for (var i = 0; i < this.self.effects.length; i++) {
+						voiceFX.push(construct(this.self.effects[i], [{audiolet: this.self.al}]));
+					}
+					for (var i = 0; i < voiceFX.length; i++) {
+						if (i < 1) {
+							voiceObj.connect(voiceFX[i]);
+							if (voiceFX.length === 1) voiceFX[i].connect(this.self.al.output);
+						}
+						else if (i < voiceFX.length-1) {
+							voiceFX[i].connect(voiceFX[i+1]);
+						}
+						else {
+							voiceFX[i].connect(this.self.al.output);
+						}
+					}
+				}
+				else {
+					voiceObj.connect(this.self.al.output);
+				}
+				
+				this.list.push(voiceObj);
+				
+				console.debug("Voice created");
+			}
+			
+			// Sampler type
+			else if (this.self.options.type == "sampler") {
+				this.self.generator.gain.gain.setValue(noteData.velocity);
+				this.self.generator.triggerSample.trigger.setValue(1);
+				
+				console.debug("Sample triggered");
+			}
+			
+			console.groupEnd();
+		} // end Create method
+		
+	}; // end Voices
+	
+	console.groupEnd();
+}; // end Instrument
+
+/*JSAW_Class.Pattern.prototype = {
 	generateID: function(){
 		self._increment.pattern += 1;
 		return self._increment.pattern;
@@ -167,7 +340,7 @@ JSAW_Class.prototype.Track = function() {
 
 JSAW_Class.Track.prototype.Create = function() {
 	
-}
+}*/
 
 JSAW.Global = function() {
 	this._sequenceCount = 1;
@@ -191,9 +364,9 @@ JSAW.Project = function(config) {
 	
 }
 
-JSAW_Class.prototype.Track = function(config) {
+/*JSAW_Class.prototype.Track = function(config) {
 	//this.id = config.id || 
-}
+}*/
 
 JSAW.Sequence = function(config) {
 	this.id = config.id || JSAW.Global.sequenceCount+1
@@ -412,7 +585,7 @@ JSAW.Model = {};
 /**
  * JSaw global static object
  */
-var jsaw = {};
+//var jsaw = new JSAW_Class();
 var myaudio;
 
 var frequencyPattern = function(noteSeq, instr) {
@@ -425,7 +598,7 @@ var frequencyPattern = function(noteSeq, instr) {
  * Begin initialising application logic here!
  */
 window.onload = function() {
-	jsaw.status = new JSAW.Model.Status();
+	//jsaw.status = new JSAW.Model.Status();
 	
 	var AudioletApp = function(){
 		this.audiolet = new Audiolet();
@@ -439,51 +612,51 @@ window.onload = function() {
 		
 		var stepSequence = [
 			// Beat 1
-			[{name: 'G', octave: 0, velocity: 0.10}, {name: 'G', octave: 1, velocity: 0.10}],
-			[{name: 'G', octave: 0, velocity: 0.20}, {name: 'G', octave: 2, velocity: 0.20}],
+			[{key: 'G', octave: 0, velocity: 0.10}, {key: 'G', octave: 1, velocity: 0.10}],
+			[{key: 'G', octave: 0, velocity: 0.20}, {key: 'G', octave: 2, velocity: 0.20}],
 			[],
-			[{name: 'G', octave: 0, velocity: 0.6}],
+			[{key: 'G', octave: 0, velocity: 0.6}],
 			// Beat 2
-			[{name: 'G', octave: 0, velocity: 0.2}],
+			[{key: 'G', octave: 0, velocity: 0.2}],
 			[],
-			[{name: 'G#', octave: 0, velocity: 0.6}],
-			[{name: 'G#', octave: 0, velocity: 0.6}, {name: 'G#', octave: 2, velocity: 0.6}],
+			[{key: 'G#', octave: 0, velocity: 0.6}],
+			[{key: 'G#', octave: 0, velocity: 0.6}, {key: 'G#', octave: 2, velocity: 0.6}],
 			// Beat 3
-			[{name: 'G', octave: 0, velocity: 0.2}],
-			[{name: 'G', octave: 0, velocity: 0.4}],
+			[{key: 'G', octave: 0, velocity: 0.2}],
+			[{key: 'G', octave: 0, velocity: 0.4}],
 			[],
-			[{name: 'G', octave: 0, velocity: 0.6}],
+			[{key: 'G', octave: 0, velocity: 0.6}],
 			// Beat 4
-			[{name: 'G', octave: 0, velocity: 0.2}],
+			[{key: 'G', octave: 0, velocity: 0.2}],
 			[],
-			[{name: 'F', octave: 1, velocity: 0.6}],
-			[{name: 'G#', octave: 1, velocity: 0.6}]
+			[{key: 'F', octave: 1, velocity: 0.6}],
+			[{key: 'G#', octave: 1, velocity: 0.6}]
 		];
 		
 		var kickSequence = [
 			// Beat 1
-			[{name: 'C', octave: 0, velocity: 0.3}],
+			[{key: 'C', octave: 0, velocity: 0.3}],
 			[],
 			[],
 			[],
 			// Beat 2
-			[{name: 'C', octave: 0, velocity: 0.3}],
+			[{key: 'C', octave: 0, velocity: 0.3}],
 			[],
 			[],
 			[],
 			// Beat 3
-			[{name: 'C', octave: 0, velocity: 0.3}],
+			[{key: 'C', octave: 0, velocity: 0.3}],
 			[],
 			[],
 			[],
 			// Beat 4
-			[{name: 'C', octave: 0, velocity: 0.3}],
+			[{key: 'C', octave: 0, velocity: 0.3}],
 			[],
 			[],
 			[]
 		];
 		
-		var myInstrument = new JSAW.Model.Instrument.Wrapper({
+		var myInstrument = new JSAW.Instrument({
 			name: "Derpsynth", 
 			type: "synth", 
 			generator: Synth, 
@@ -491,7 +664,7 @@ window.onload = function() {
 			effects: [FXDelay]
 		});
 		
-		var myKickDrum = new JSAW.Model.Instrument.Wrapper({
+		var myKickDrum = new JSAW.Instrument({
 			name: "Kickdrum", 
 			type: "sampler", 
 			generator: Sampler, 

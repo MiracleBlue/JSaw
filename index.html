@@ -20,10 +20,23 @@
 			</script>
 		<!-- End Templates -->
 		
+		<script>
+			if (!window.console || !console.firebug)
+			{
+			    var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
+			    "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+			
+			    window.console = {};
+			    for (var i = 0; i < names.length; ++i)
+			    	window.console[names[i]] = function() {}
+			}
+		</script>
+		
 		<!--<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>-->
 		<script src="js/libs/jquery-1.6.2.min.js"></script>
 		<script src="js/libs/jquery.tmpl.js"></script>
 		<script src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+		<script src="js/libs/mootools-core-1.4.1.js"></script>
 		<script src="js/libs/music.js"></script>
 		<script src="js/libs/Audiolet.js"></script>
 		<script src="js/libs/audiofile.js"></script>
@@ -35,6 +48,10 @@
 		<script src="js/jsaw/JSaw.js"></script>
 		<script src="js/jsaw/UI.js"></script>
 		<script src="js/jsaw/Generators.js"></script>
+		
+		<!-- TEST SCRIPTS -->
+		<script src="js/tests/core/GeneralTests.js"></script>
+		
 	</head>
 	<body>
 		<div id="wrapper">
