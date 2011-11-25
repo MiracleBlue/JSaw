@@ -14,7 +14,8 @@ JSAW.Test.Instrument = {
 		var basicSynth = new JSAW.Instrument({
 			id: 1,
 			name: "Basic Synth Test",
-			al: JSAW.audiolet
+			al: JSAW.audiolet,
+			effects: [FXDelay]	// With delay effects!
 		});
 		
 		console.debug("Testing voice creation");
