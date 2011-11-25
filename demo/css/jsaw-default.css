@@ -1,0 +1,152 @@
+body {
+	margin: 0;
+	background-color: #000;
+	color: #63C1FB;
+	font-size: 62.5%;
+}
+
+#wrapper {
+	margin: auto;
+}
+#pianoroll {
+	padding: 10px;
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+ul.flat-list > li {
+	float: left;
+}
+
+#jsaw-debug-bar {
+	background-color: #162039;
+	border-bottom: 3px solid #275FAB;
+	margin: 0;
+}
+#jsaw-debug-bar .controls {
+	display: table;
+	width: 900px;
+	margin: auto;
+	font-size: 1.3em;
+	/*padding: 10px 0;*/
+}
+#jsaw-debug-bar .controls button {
+	font-size: 1.2em;
+}
+#jsaw-debug-bar .controls > ul {
+	float: left;
+	padding: 10px;
+}
+#jsaw-debug-bar .controls > ul > li {
+	padding: 3px;
+}
+
+#jsaw-debug-bar .controls ul.status > li {
+	margin: 10px;
+	border-left: 1px solid #c8c8c8;
+}
+
+.pianogrid {
+	display: table;
+	border-left: 1px solid #eee;
+	border-top: 1px solid #eee;
+}
+.pianogrid > ul, .pianogrid > ul > li {
+	/*float: left;*/
+	list-style-type: none;
+}
+.pianogrid ul {
+	float: left;
+}
+
+ul.step {
+	font-weight: normal;
+	list-style-type: none;
+	padding: 0;
+}
+ul.stepGrid > li {
+	float: left;
+}
+
+li.note {
+	background-color: #3a3a3a;
+	border-bottom: 1px solid #716F6F;
+	border-right: 1px solid #707070;
+	/*display: block;*/
+	font-weight: normal;
+	height: 22px;
+	width: 41px;
+	position: relative;
+}
+li.note.accidental {
+	background-color: #2f2f2f;
+}
+
+li.note .note-hint {
+	display: none;
+	font-family: helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: lighter;
+	color: #5C5B5B;
+	position: absolute;
+	top: 3px;
+	left: 4px;
+	cursor: default;
+}
+li.note:hover .note-hint {
+	display: block;
+}
+
+li.note.highlight {
+	background-color: #35402F;
+}
+li.note.accidental.highlight {
+	background-color: #283323;
+}
+
+li.note.highlight:hover {
+	background-color: #1B4665;
+}
+ul.keyList > li.note.highlight:hover {
+	background-color: #679ED0;
+}
+
+li.note.accidental.highlight:hover {
+	background-color: #1E3945;
+}
+ul.keyList > li.note.accidental.highlight:hover {
+	background-color: #143058;
+}
+
+ul.keyList {
+	border-left: 1px solid #737373;
+	border-top: 1px solid #626161;
+	border-bottom: 1px solid #797979;
+}
+li.stepList {
+	border-top: 1px solid #626161;
+}
+li.stepList.beatMarker {
+	border-left: 1px solid #63C1FB;
+}
+
+ul.keyList > li.note {
+	background-color: #B8B8B8;
+	color: #333333;
+	border-bottom: 1px solid #8493E7;
+	font-family: helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	height: 17px;
+	width: 50px;
+	padding-left: 8px;
+	padding-top: 5px;
+}
+ul.keyList > li.note.accidental {
+	background-color: #2F2F2F;
+	color: #B1B1B1;
+	font-weight: lighter;
+}
