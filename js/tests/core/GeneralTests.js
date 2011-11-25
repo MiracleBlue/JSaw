@@ -14,7 +14,7 @@ JSAW.Test.Instrument = {
 		var basicSynth = new JSAW.Instrument({
 			id: 1,
 			name: "Basic Synth Test",
-			al: new Audiolet()
+			al: JSAW.audiolet
 		});
 		
 		console.debug("Testing voice creation");
@@ -64,7 +64,7 @@ JSAW.Test.Instrument = {
 			name: "Kick Drum Test", 
 			type: "sampler", 
 			generator: Sampler, 
-			al: new Audiolet(), 
+			al: JSAW.audiolet,
 			volume: 0.3,
 			samplerParams: {sample: 'audio/wayfinder_kick_49_round.wav'}
 		});

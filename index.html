@@ -41,7 +41,6 @@
 		<script src="js/libs/audiofile.js"></script>
 		<script src="js/libs/underscore.js"></script>
 		<script src="js/libs/json2.js"></script>
-		<script src="js/libs/backbone.js"></script>
 		
 		<script src="js/jsaw/JSaw.js"></script>
 		<script src="js/jsaw/UI.js"></script>
@@ -56,8 +55,10 @@
 			<div id="jsaw-debug-bar">
 				<div class="controls">
 					<ul class="playback flat-list">
-						<li><button id="jsaw-playback-play">Play</button></li>
-						<li><button id="jsaw-playback-stop">Stop</button></li>
+						<!--<li><button id="jsaw-playback-play">Play</button></li>
+						<li><button id="jsaw-playback-stop">Stop</button></li>-->
+						<li><button id="test-synth" onclick="JSAW.Test.Instrument.synth();">Test Synth</button></li>
+						<li><button id="test-sampler" onclick="JSAW.Test.Instrument.sampler();">Test Sampler</button></li>
 					</ul>
 					<ul class="status flat-list">
 						<!-- <li><span id="jsaw-status-playing">Stopped</span></li>

@@ -45,7 +45,7 @@ jQuery(function($){
 	
 	$("#template_debugbar_status_item").tmpl(statusList).appendTo("#jsaw-debug-bar .controls ul.status");
 	
-	$("#jsaw-playback-play").button({
+	/*$("#jsaw-playback-play").button({
 		text: false,
 		icons: {
 			primary: 'ui-icon-play'
@@ -59,7 +59,7 @@ jQuery(function($){
 		icons: {
 			primary: 'ui-icon-stop'
 		}
-	});
+	});*/
 });
 
 jQuery(function($){
