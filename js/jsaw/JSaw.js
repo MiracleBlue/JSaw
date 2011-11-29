@@ -1,6 +1,6 @@
 /**
  * JSaw - JavaScript Audio Workstation
- * Copyright (c) 2011 Nicholas Kircher
+ * Copyright (c) 2011 Nicholas Kircher, Aaron 'Spanky Tanks' Danks
  * JSaw may be freely distributed under the MIT license.
  
  Everything in JSaw is split up into its component parts, and then connected together.
