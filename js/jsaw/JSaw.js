@@ -94,7 +94,7 @@ JSAW.Pattern = function(options) {
 	}
 	_(this.options).extend(options);
 	
-	this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
+	//this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
 	this.track = this.options.track;
 	
 	if (!this.track) {
@@ -149,10 +149,11 @@ JSAW.Pattern.prototype.addNote = function(options) {
 
 JSAW.Pattern.prototype.renderPattern = function(newPattern) {
 	var outPattern = [];
-	_(newPattern).forEach(function(step){
+	_(newPattern).forEach(function(index, step){
 		var newStep = [];
 		if (step.length > 0) {
 			_(step).forEach(function(noteData){
+				noteData.position = index;
 				newStep.push(this.addNote(noteData));
 			}, this)
 		}
@@ -182,16 +183,34 @@ JSAW.Pattern.prototype.startPlayback = function() {
  */
 JSAW.Track = function(options) {
 	//this.self = self;
-	this._patterns = [];
+	this.pattern = options.pattern || [];
 	
 	// What instrument am I?
-	this.instrument = {};
+	this.instrument = options.instrument || {};
 };
 
 JSAW.Track.prototype.generateID = function() {
 	//this.self._increment.track += 1;
 	//return ++this.self._increment.track;
 };
+
+JSAW.Track.prototype.startPlayback = function() {
+	var self = this;
+	var sequence = new PSequence([this.pattern._steps], 1);
+	this.instrument.al.scheduler.play(
+		[sequence],
+		1,
+		function(step) {
+			if (step.length > 0) {
+				_(step).forEach(function(note){
+					self.instrument.voices.create(note);
+				});
+			}
+		}
+	);
+	
+	// Does it work?  Let's find out!
+}
 
 
 /**
@@ -312,6 +331,26 @@ JSAW.Instrument = function(options) {
 	console.groupEnd();
 }; // end Instrument
 
+JSAW.Instrument.prototype.playNote = function(notes) {
+	if (_(notes).isArray()) {
+		_(notes).forEach(function(item){
+			this.voices.create(new JSAW.Note(item));
+		}, this);
+	}
+	else {
+		this.voices.create(new JSAW.Note(notes)); // Awwwyea!
+	}
+};
+
+/**
+ * Playlist thing
+ */
+JSAW.Playlist = function() {
+	// code goes here
+	
+	//this.
+}
+
 
 JSAW.Global = function() {
 	this._sequenceCount = 1;
@@ -333,11 +372,12 @@ JSAW.Project = function(config) {
 	this.artist = config.artist || "Someone";
 	this.bpm = config.bpm || 120.0;
 	
-}
+	
+};
 
 JSAW.Sequence = function(config) {
-	this.id = config.id || JSAW.Global.sequenceCount+1
-	this.name = config.name || "Sequence #"+this.id;
+	//this.id = config.id || JSAW.Global.sequenceCount+1
+	//this.name = config.name || "Sequence #"+this.id;
 }
 
 

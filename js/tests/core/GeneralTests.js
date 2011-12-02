@@ -11,7 +11,7 @@ JSAW.Test.Instrument = {
 		console.group("JSaw Synth Instrument Test");
 		
 		console.debug("Constructing new instrument");
-		var basicSynth = new JSAW.Instrument({
+		this.basicSynth = new JSAW.Instrument({
 			id: 1,
 			name: "Basic Synth Test",
 			al: JSAW.audiolet,
@@ -19,13 +19,13 @@ JSAW.Test.Instrument = {
 		});
 		
 		console.debug("Testing voice creation");
-		basicSynth.voices.create([
+		this.basicSynth.voices.create([
 			new JSAW.Note({key: "A", octave: 3}),
 			new JSAW.Note({key: "C", octave: 4}),
 			new JSAW.Note({key: "E", octave: 4}),
 		]);
 		
-		var stepSequence = [
+		/*var stepSequence = [
 			// Beat 1
 			[{key: 'G', octave: 0, velocity: 0.10}, {key: 'G', octave: 1, velocity: 0.10}],
 			[{key: 'G', octave: 0, velocity: 0.20}, {key: 'G', octave: 2, velocity: 0.20}],
@@ -48,10 +48,13 @@ JSAW.Test.Instrument = {
 			[{key: 'G#', octave: 1, velocity: 0.6}]
 		];
 		
+		this.myPattern = new JSAW.Pattern({pattern: stepSequence});
+		this.myTrack = new JSAW.Track({instrument: this.basicSynth, pattern: this.myPattern });
 		
+		this.myTrack.startPlayback();*/
 		
 		console.info("Instrument object contents:");
-		console.dir(basicSynth);
+		console.dir(this.basicSynth);
 		
 		console.groupEnd();
 	},
@@ -60,7 +63,7 @@ JSAW.Test.Instrument = {
 		console.group("JSaw Sampler Instrument Test");
 		
 		console.debug("Constructing new instrument");
-		var kickDrumSampler = new JSAW.Instrument({
+		this.kickDrumSampler = new JSAW.Instrument({
 			id: 2,
 			name: "Kick Drum Test", 
 			type: "sampler", 
@@ -71,10 +74,10 @@ JSAW.Test.Instrument = {
 		});
 		
 		console.debug("Testing sample triggering");
-		kickDrumSampler.voices.create(new JSAW.Note({key: "A"}));
+		this.kickDrumSampler.voices.create(new JSAW.Note({key: "A"}));
 		
 		console.info("Instrument object contents:");
-		console.dir(kickDrumSampler);
+		console.dir(this.kickDrumSampler);
 		
 		console.groupEnd();
 	}
