@@ -102,6 +102,8 @@ JSAW.Pattern = function(options) {
 	}
 	
 	if (this.options.pattern.length > 0) {
+		console.debug("pattern contents");
+		console.dir(this.options.pattern);
 		this.renderPattern(this.options.pattern);
 	}
 	else {
@@ -140,8 +142,16 @@ JSAW.Pattern.prototype.getNote = function(id) {
  * Create a new note and add it to the collection.
  */
 JSAW.Pattern.prototype.addNote = function(options) {
+	//console.debug(options.position + " add note called!");
+	if (!this._steps[options.position]) this._steps.push([]);
+	
+	if (options.blank) {
+		return [];
+	}
+	
 	options.id = options.id || ++this._noteIncrement;
 	this._notes[options.id] = new JSAW.Note(options);
+	
 	this._steps[options.position].push(this._notes[options.id]);
 	
 	return this._notes[options.id];
@@ -149,13 +159,18 @@ JSAW.Pattern.prototype.addNote = function(options) {
 
 JSAW.Pattern.prototype.renderPattern = function(newPattern) {
 	var outPattern = [];
-	_(newPattern).forEach(function(index, step){
+	_(newPattern).forEach(function(step, index){
 		var newStep = [];
+		//console.debug(index);
 		if (step.length > 0) {
 			_(step).forEach(function(noteData){
 				noteData.position = index;
 				newStep.push(this.addNote(noteData));
-			}, this)
+			}, this);
+		}
+		else {
+			var noteData = {position: index, blank: true};
+			this.addNote(noteData);
 		}
 		outPattern.push(newStep);
 	}, this);
@@ -167,7 +182,7 @@ JSAW.Pattern.prototype.startPlayback = function() {
 	var sequence = new PSequence([this._steps], 1);
 	this.track.instrument.al.scheduler.play(
 		[sequence],
-		1,
+		0.25,
 		function(step) {
 			if (step.length > 0) {
 				_(step).forEach(function(note){
@@ -196,10 +211,10 @@ JSAW.Track.prototype.generateID = function() {
 
 JSAW.Track.prototype.startPlayback = function() {
 	var self = this;
-	var sequence = new PSequence([this.pattern._steps], 1);
+	var sequence = new PSequence(this.pattern._steps, 1);
 	this.instrument.al.scheduler.play(
 		[sequence],
-		1,
+		0.25,
 		function(step) {
 			if (step.length > 0) {
 				_(step).forEach(function(note){
@@ -389,5 +404,6 @@ window.onload = function() {
 	//jsaw.status = new JSAW.Model.Status();
 	
 	JSAW.audiolet = new Audiolet();
+	JSAW.audiolet.scheduler.setTempo(130);
 	
 };

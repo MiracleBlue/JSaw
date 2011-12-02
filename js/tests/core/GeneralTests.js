@@ -19,39 +19,41 @@ JSAW.Test.Instrument = {
 		});
 		
 		console.debug("Testing voice creation");
-		this.basicSynth.voices.create([
+		/*this.basicSynth.voices.create([
 			new JSAW.Note({key: "A", octave: 3}),
 			new JSAW.Note({key: "C", octave: 4}),
 			new JSAW.Note({key: "E", octave: 4}),
-		]);
+		]);*/
 		
-		/*var stepSequence = [
+		var stepSequence = [
 			// Beat 1
-			[{key: 'G', octave: 0, velocity: 0.10}, {key: 'G', octave: 1, velocity: 0.10}],
-			[{key: 'G', octave: 0, velocity: 0.20}, {key: 'G', octave: 2, velocity: 0.20}],
+			[{key: 'G', octave: 3, velocity: 0.10}, {key: 'G', octave: 4, velocity: 0.10}],
+			[{key: 'G', octave: 3, velocity: 0.20}, {key: 'G', octave: 5, velocity: 0.20}],
 			[],
-			[{key: 'G', octave: 0, velocity: 0.6}],
+			[{key: 'G', octave: 3, velocity: 0.6}],
 			// Beat 2
-			[{key: 'G', octave: 0, velocity: 0.2}],
+			[{key: 'G', octave: 3, velocity: 0.2}],
 			[],
-			[{key: 'G#', octave: 0, velocity: 0.6}],
-			[{key: 'G#', octave: 0, velocity: 0.6}, {key: 'G#', octave: 2, velocity: 0.6}],
+			[{key: 'G#', octave: 3, velocity: 0.6}],
+			[{key: 'G#', octave: 3, velocity: 0.6}, {key: 'G#', octave: 5, velocity: 0.6}],
 			// Beat 3
-			[{key: 'G', octave: 0, velocity: 0.2}],
-			[{key: 'G', octave: 0, velocity: 0.4}],
+			[{key: 'G', octave: 3, velocity: 0.2}],
+			[{key: 'G', octave: 3, velocity: 0.4}],
 			[],
-			[{key: 'G', octave: 0, velocity: 0.6}],
+			[{key: 'G', octave: 3, velocity: 0.6}],
 			// Beat 4
-			[{key: 'G', octave: 0, velocity: 0.2}],
+			[{key: 'G', octave: 3, velocity: 0.2}],
 			[],
-			[{key: 'F', octave: 1, velocity: 0.6}],
-			[{key: 'G#', octave: 1, velocity: 0.6}]
+			[{key: 'F', octave: 4, velocity: 0.6}],
+			[{key: 'G#', octave: 4, velocity: 0.6}]
 		];
 		
 		this.myPattern = new JSAW.Pattern({pattern: stepSequence});
 		this.myTrack = new JSAW.Track({instrument: this.basicSynth, pattern: this.myPattern });
 		
-		this.myTrack.startPlayback();*/
+		this.myTrack.startPlayback();
+		
+		//console.dir(this.myTrack);
 		
 		console.info("Instrument object contents:");
 		console.dir(this.basicSynth);
