@@ -37,6 +37,8 @@ var JSAW = {
 JSAW.Note = function(options) {
 	this.instance = true; // This is the instance of Note!
 	
+	options = (_(options).isString()) ? {key: options} : options;
+	
 	this.options = {
 		id: false,
 		key: "C",
@@ -142,7 +144,7 @@ JSAW.Pattern.prototype.getNote = function(id) {
  * Create a new note and add it to the collection.
  */
 JSAW.Pattern.prototype.addNote = function(options) {
-	//console.debug(options.position + " add note called!");
+	console.debug(options.position + " add note called!");
 	if (!this._steps[options.position]) this._steps.push([]);
 	
 	if (options.blank) {
@@ -210,12 +212,16 @@ JSAW.Track.prototype.generateID = function() {
 };
 
 JSAW.Track.prototype.startPlayback = function() {
+	console.debug("startPlayback has been called");
 	var self = this;
 	var sequence = new PSequence(this.pattern._steps, 1);
+	console.debug(this.instrument);
+	
 	this.instrument.al.scheduler.play(
 		[sequence],
-		0.25,
+		1/4,
 		function(step) {
+			console.debug("stepping through sequence");
 			if (step.length > 0) {
 				_(step).forEach(function(note){
 					self.instrument.voices.create(note);
@@ -224,8 +230,7 @@ JSAW.Track.prototype.startPlayback = function() {
 		}
 	);
 	
-	// Does it work?  Let's find out!
-}
+};
 
 
 /**
@@ -254,11 +259,14 @@ JSAW.Instrument = function(options) {
 	this.generatorClass = this.options.generator;
 	this.effects = this.options.effects;
 	
+	this.mixer = new MixerNode({audiolet: this.al, effects: this.effects});
+	this.mixer.connect(this.al.output);
+	
 	if (this.options.type === "sampler") {
 		this.samplerParams = options.samplerParams;
 		this.samplerParams.audiolet = this.al;
 		this.generator = construct(this.generatorClass, [this.samplerParams]);
-		this.generator.connect(this.al.output);
+		this.generator.connect(this.mixer);
 	}
 	
 	var _self = this;
@@ -304,7 +312,7 @@ JSAW.Instrument = function(options) {
 				
 				voiceObj.vel.gain.setValue(noteData.velocity);
 				
-				if (this.self.effects.length > 0) {
+				/*if (this.self.effects.length > 0) {
 					for (var i = 0; i < this.self.effects.length; i++) {
 						voiceFX.push(construct(this.self.effects[i], [{audiolet: this.self.al}]));
 					}
@@ -323,7 +331,9 @@ JSAW.Instrument = function(options) {
 				}
 				else {
 					voiceObj.connect(this.self.al.output);
-				}
+				}*/
+				
+				voiceObj.connect(this.self.mixer);
 				
 				this.list.push(voiceObj);
 				
@@ -356,6 +366,7 @@ JSAW.Instrument.prototype.playNote = function(notes) {
 		this.voices.create(new JSAW.Note(notes)); // Awwwyea!
 	}
 };
+
 
 /**
  * Playlist thing
@@ -404,6 +415,18 @@ window.onload = function() {
 	//jsaw.status = new JSAW.Model.Status();
 	
 	JSAW.audiolet = new Audiolet();
-	JSAW.audiolet.scheduler.setTempo(130);
+	//JSAW.audiolet.scheduler.setTempo(130);
+	JSAW.audiolet.scheduler.stop();
+	
+	window.derpSynth = new JSAW.Instrument({
+		id: 1,
+		name: "Basic Synth Test",
+		al: JSAW.audiolet,
+		generator: Synth,
+		effects: [FXDelay]	// With delay effects!
+	});
 	
 };
+
+
+

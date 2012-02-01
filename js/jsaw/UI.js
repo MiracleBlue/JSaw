@@ -71,14 +71,14 @@ jQuery(function($){
 	
 	// Generate HTML for piano roll gui elements
 	// Set up dom elements
-	var pianoGridElem = $("<div class='pianogrid'></div>").appendTo($pianoRollWrap);
+	var pianoGridElem = $("<div class='pianogrid' rel='3'></div>").appendTo($pianoRollWrap);
 	
 		// Generate key list
 		var pianoGridKeyList = $("<ul class='keyList'></ul>").appendTo(pianoGridElem);
 		$((function(){
 			var markup = "";
 			$.each(NoteLookup.all, function(key, value){
-				markup += '<li class="note" rel="' + key + '"><span>' + value + '</span></li>';
+				markup += '<li class="note" rel="' + key + '"><span class="note-hint" rel="'+value+'">' + value + '</span></li>';
 			});
 			return $(markup);
 		}())).appendTo(pianoGridKeyList);
@@ -124,5 +124,13 @@ jQuery(function($){
 		elem.removeClass("highlight");
 		$("ul.step > li.note[rel=" + elem.attr("rel") + "]").removeClass("highlight");
 	});
+	
+	$("ul.keyList > li.note").mousedown(function(e) {
+		var elem = $(e.target);
+		if (elem.hasClass("note-hint")) elem = elem.parent();
+		
+		var newkey = elem.find('span.note-hint').attr("rel");
+		derpSynth.playNote({key: newkey, octave: 3});
+	})
 	
 });

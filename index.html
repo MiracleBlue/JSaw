@@ -21,7 +21,7 @@
 		<!-- End Templates -->
 		
 		<script>
-			if (!window.console || !console.firebug)
+			/*if (!window.console || !console.firebug)
 			{
 			    var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
 			    "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
@@ -29,7 +29,7 @@
 			    window.console = {};
 			    for (var i = 0; i < names.length; ++i)
 			    	window.console[names[i]] = function() {}
-			}
+			}*/
 		</script>
 		
 		<!--<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>-->
@@ -37,12 +37,14 @@
 		<script src="js/libs/jquery.tmpl.js"></script>
 		<script src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
 		<script src="js/libs/music.js"></script>
-		<script src="js/libs/Audiolet.js"></script>
+		<script src="js/libs/Audiolet.min.js"></script>
 		<script src="js/libs/audiofile.js"></script>
 		<script src="js/libs/underscore.js"></script>
 		<script src="js/libs/json2.js"></script>
+		<!--<script src="js/libs/audiolib.js"></script>-->
 		
 		<script src="js/jsaw/JSaw.js"></script>
+		<script src="js/jsaw/Utils.js"></script>
 		<script src="js/jsaw/UI.js"></script>
 		<script src="js/jsaw/Generators.js"></script>
 		
@@ -50,8 +52,28 @@
 		<script src="js/tests/core/GeneralTests.js"></script>
 		
 	</head>
+	
 	<body>
-		<div id="wrapper">
+		<!-- WRAPPER -->
+		<div id="jsaw">
+			
+			<div id="top-wrapper" class="wrapper">
+				<div id="toolbar" class="toolbar"></div>
+				<div id="panels" class="panelbox">
+					
+				</div>
+			</div>
+			
+			<div id="middle-wrapper" class="wrapper">
+				<div class="sidebar"></div>
+				<div class="main-view"></div>
+			</div>
+			
+			<div id="bottom-wrapper" class="wrapper">
+				
+			</div>
+			
+			<!-- DEBUG BAR -->
 			<div id="jsaw-debug-bar">
 				<div class="controls">
 					<ul class="playback flat-list">
@@ -67,282 +89,14 @@
 					</ul>
 				</div>
 			</div>
+			<!-- /DEBUG BAR -->
+			
 			<div id="pianoroll">
-				<!--<div class="pianogrid">
-					<ul class="keyList">
-						<li class="note" rel="1">B</li>
-						<li class="note" rel="2">A#</li>
-						<li class="note" rel="3">A</li>
-						<li class="note" rel="4">G#</li>
-						<li class="note" rel="5">G</li>
-						<li class="note" rel="6">F#</li>
-						<li class="note" rel="7">F</li>
-						<li class="note" rel="8">E</li>
-						<li class="note" rel="9">D#</li>
-						<li class="note" rel="10">D</li>
-						<li class="note" rel="11">C#</li>
-						<li class="note" rel="12">C</li>
-					</ul>
-					<ul class="stepGrid" data-octave="0">
-						<li class="stepList">
-							<ul class="step" rel="1">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="2">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="3">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="4">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="5">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="6">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="7">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="8">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="9">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="10">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="11">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="12">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="13">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="14">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="15">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-						<li class="stepList">
-							<ul class="step" rel="16">
-								<li class="note" rel="1"></li>
-								<li class="note" rel="2"></li>
-								<li class="note" rel="3"></li>
-								<li class="note" rel="4"></li>
-								<li class="note" rel="5"></li>
-								<li class="note" rel="6"></li>
-								<li class="note" rel="7"></li>
-								<li class="note" rel="8"></li>
-								<li class="note" rel="9"></li>
-								<li class="note" rel="10"></li>
-								<li class="note" rel="11"></li>
-								<li class="note" rel="12"></li>
-							</ul>
-						</li>
-					</ul>
-				</div>-->
+				
 			</div>
+			
 		</div>
+		<!-- /WRAPPER -->
+		
 	</body>
 </html>

@@ -85,7 +85,7 @@ li.note.accidental {
 	background-color: #2f2f2f;
 }
 
-li.note .note-hint {
+ul.stepGrid li.note .note-hint {
 	display: none;
 	font-family: helvetica, sans-serif;
 	font-size: 10px;
@@ -96,7 +96,7 @@ li.note .note-hint {
 	left: 4px;
 	cursor: default;
 }
-li.note:hover .note-hint {
+ul.stepGrid li.note:hover .note-hint {
 	display: block;
 }
 
@@ -144,6 +144,7 @@ ul.keyList > li.note {
 	width: 50px;
 	padding-left: 8px;
 	padding-top: 5px;
+	cursor: pointer;
 }
 ul.keyList > li.note.accidental {
 	background-color: #2F2F2F;
