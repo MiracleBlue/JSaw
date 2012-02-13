@@ -7,6 +7,7 @@
  Each pattern has a collection of tracks, each track is basically a synth which is attached
  to a piano roll.  Piano rolls are collections of step grids which are collections of notes.
  
+ TODO: set all float values to proper midi values, 0 - 127
  */
 
 // Hackery!  Witchery!  Nonsense and bullshit!
@@ -99,6 +100,7 @@ JSAW.Pattern = function(options) {
 	//this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
 	this.track = this.options.track;
 	
+	// Track association is not forced, only recommended
 	if (!this.track) {
 		console.warn("Uh oh, pattern is not assigned to a track object!");
 	}
@@ -163,7 +165,6 @@ JSAW.Pattern.prototype.renderPattern = function(newPattern) {
 	var outPattern = [];
 	_(newPattern).forEach(function(step, index){
 		var newStep = [];
-		//console.debug(index);
 		if (step.length > 0) {
 			_(step).forEach(function(noteData){
 				noteData.position = index;
@@ -200,6 +201,7 @@ JSAW.Pattern.prototype.startPlayback = function() {
  */
 JSAW.Track = function(options) {
 	//this.self = self;
+	// This should hold an array store of all pattern objects associated with this track
 	this.pattern = options.pattern || [];
 	
 	// What instrument am I?
@@ -211,6 +213,9 @@ JSAW.Track.prototype.generateID = function() {
 	//return ++this.self._increment.track;
 };
 
+/**
+ * Playback of a pattern attached to a track through the tracks instrument
+ */
 JSAW.Track.prototype.startPlayback = function() {
 	console.debug("startPlayback has been called");
 	var self = this;
@@ -240,7 +245,7 @@ JSAW.Track.prototype.startPlayback = function() {
  * @param {Object} options Configuration parameters for the instrument instance
  */
 JSAW.Instrument = function(options) {
-	// Derp
+	// Default instrument options
 	this.options = {
 		id: false,
 		name: "New Instrument",
@@ -253,28 +258,35 @@ JSAW.Instrument = function(options) {
 	}
 	_(this.options).extend(options);
 	
-	console.group("Instrument  ("+this.options.type+"): '"+this.options.name+"'");
+	console.group("Instrument ("+this.options.type+"): '"+this.options.name+"'");
 	
+	// this.al is the primary AudioLet object
 	this.al = this.options.al;
 	this.generatorClass = this.options.generator;
 	this.effects = this.options.effects;
 	
+	// Create mixer node
 	this.mixer = new MixerNode({audiolet: this.al, effects: this.effects});
+	// Connect mixer directly to the output!  Yay!
 	this.mixer.connect(this.al.output);
 	
+	// Set options for sampler type instrument
 	if (this.options.type === "sampler") {
 		this.samplerParams = options.samplerParams;
 		this.samplerParams.audiolet = this.al;
 		this.generator = construct(this.generatorClass, [this.samplerParams]);
+		// Connect the sampler to the mixer node
 		this.generator.connect(this.mixer);
 	}
 	
+	// self referencing, used in nested child objects
 	var _self = this;
 	
 	console.debug("this.options:");
 	console.dir(this.options);
 	
 	this.voices = {
+		// Reference to the parent object
 		self: _self,
 		list: [],
 		
@@ -283,12 +295,14 @@ JSAW.Instrument = function(options) {
 			console.group("Voice create");
 			console.info("Type: "+this.self.options.type);
 			
+			// If the data has no actual data, something is obviously wrong
 			if (_.isUndefined(data) || _.isNull(data)) {
 				console.error("Cannot create voice: data argument is null or undefined.");
 				console.groupEnd();
 				return false;
 			}
 			
+			// If the note data is an array, iterate through it and treat each item as a separate note data packet
 			if (_.isArray(data)) {
 				_(data).forEach(function(value){
 					this.voices.create(value);
@@ -298,6 +312,7 @@ JSAW.Instrument = function(options) {
 				return;
 			}
 			
+			// If the note data passed is actually an instance of a Note object, just grab a hash of its properties
 			var noteData = (data.instance) ? data.hashify() : data;
 			
 			// Synth type
@@ -305,11 +320,13 @@ JSAW.Instrument = function(options) {
 				noteData.audiolet = this.self.al;
 				noteData.velocity = noteData.velocity * this.self.options.volume;
 				
+				// Pass info about the note to the console.
 				console.debug(noteData);
 				
 				var voiceObj = construct(this.self.generatorClass, [noteData]);
 				var voiceFX = [];
 				
+				// Set voice gain to note velocity
 				voiceObj.vel.gain.setValue(noteData.velocity);
 				
 				/*if (this.self.effects.length > 0) {
@@ -356,6 +373,9 @@ JSAW.Instrument = function(options) {
 	console.groupEnd();
 }; // end Instrument
 
+// Plays a single note or multiple notes immediately.  Useful for testing!
+// Example use of Single Note: myInstrument.playNote({key: "A", octave: 3})
+// Example use of Multi Note: myInstrument.playNote([{key: "A", octave: 3}, {key: "G", octave: 4}])
 JSAW.Instrument.prototype.playNote = function(notes) {
 	if (_(notes).isArray()) {
 		_(notes).forEach(function(item){

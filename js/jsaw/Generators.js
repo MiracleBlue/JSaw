@@ -141,11 +141,9 @@ var Synth = function(params) {
 	this.modulatorMulAdd.connect(this.saw);
 	this.envelope.connect(this.gain, 0, 1);
 	this.saw.connect(this.gain);
-	//this.gain.connect(this.saw);
-	//this.gain.connect(this.outputs[0]);
+	
 	this.gain.connect(this.vel);
 	this.vel.connect(this.outputs[0]);
-	//this.saw.connect(this.outputs[0]);
 	
 	console.log(this.audiolet);
 	console.groupEnd();
@@ -209,6 +207,11 @@ var FXDelay = function(params) {
 };
 extend(FXDelay, AudioletGroup);
 
+/**
+ * MixerNode
+ * 
+ * Acts as a mixer channel, through which all effects chains are routed together and through which all synth audio data gets passed
+ */
 var MixerNode = function(params) {
 	console.group("MixerNode constructor");
 	
@@ -220,6 +223,7 @@ var MixerNode = function(params) {
 	AudioletGroup.apply(this, [this.audiolet, 1, 1]);
 	
 	this.createRoutes = function() {
+		console.debug("Creating routes for audionodes");
 		this.gain = new Gain(this.audiolet, 0.8);
 		
 		if (effectsList.length > 0) {
@@ -243,6 +247,7 @@ var MixerNode = function(params) {
 			this.inputs[0].connect(this.gain);
 		}
 		
+		console.debug("Pushing to outputs");
 		this.gain.connect(this.outputs[0]);
 	}.bind(this);
 	

@@ -25,6 +25,7 @@ JSAW.Test.Instrument = {
 			new JSAW.Note({key: "E", octave: 4}),
 		]);*/
 		
+		// A simple note sequence, written out in JSaw Notation Format
 		var stepSequence = [
 			// Beat 1
 			[{key: 'G', octave: 3, velocity: 0.10}, {key: 'G', octave: 4, velocity: 0.10}],
