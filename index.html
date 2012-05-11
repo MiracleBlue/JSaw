@@ -32,17 +32,21 @@
 			}*/
 		</script>
 		
-		<!--<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>-->
-		<script src="js/libs/jquery-1.6.2.min.js"></script>
+		<!--<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>-->
+		<!--<script src="http://code.jquery.com/jquery.min.js"></script>-->
+		<!--<script src="http://cdn.rightjs.org/right.js"></script>-->
+		<script src="js/libs/jquery-1.7.1.min.js"></script>
 		<script src="js/libs/jquery.tmpl.js"></script>
 		<script src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+		<script src="js/libs/knockout-2.0.0.js"></script>
 		<script src="js/libs/music.js"></script>
-		<script src="js/libs/Audiolet.min.js"></script>
+		<script src="js/libs/Audiolet.js"></script>
 		<script src="js/libs/audiofile.js"></script>
 		<script src="js/libs/underscore.js"></script>
 		<script src="js/libs/json2.js"></script>
-		<!--<script src="js/libs/audiolib.js"></script>-->
+		<script src="js/libs/dockme.js"></script>
 		
+		<script src="js/jsaw/SmartParameter.js"></script>
 		<script src="js/jsaw/JSaw.js"></script>
 		<script src="js/jsaw/Utils.js"></script>
 		<script src="js/jsaw/UI.js"></script>
@@ -55,47 +59,69 @@
 	
 	<body>
 		<!-- WRAPPER -->
-		<div id="jsaw">
-			
-			<div id="top-wrapper" class="wrapper">
-				<div id="toolbar" class="toolbar"></div>
-				<div id="panels" class="panelbox">
-					
+		
+				<div id="jsaw-debug-bar">
+					<div class="controls">
+						<ul class="playback flat-list">
+							<!--<li><button id="jsaw-playback-play">Play</button></li>
+							<li><button id="jsaw-playback-stop">Stop</button></li>-->
+							<li><button id="test-synth" onclick="JSAW.Test.Instrument.synth();">Test Synth</button></li>
+							<li><button id="test-sampler" onclick="JSAW.Test.Instrument.sampler();">Test Sampler</button></li>
+						</ul>
+						<ul class="status flat-list">
+							<!-- <li><span id="jsaw-status-playing">Stopped</span></li>
+							<li>Step: <span id="jsaw-status-step">0</span></li>
+							<li>Voices: <span id="jsaw-status-voices">0</span></li> -->
+						</ul>
+					</div>
 				</div>
-			</div>
-			
-			<div id="middle-wrapper" class="wrapper">
-				<div class="sidebar"></div>
-				<div class="main-view"></div>
-			</div>
-			
-			<div id="bottom-wrapper" class="wrapper">
-				
-			</div>
-			
-			<!-- DEBUG BAR -->
-			<div id="jsaw-debug-bar">
-				<div class="controls">
-					<ul class="playback flat-list">
-						<!--<li><button id="jsaw-playback-play">Play</button></li>
-						<li><button id="jsaw-playback-stop">Stop</button></li>-->
-						<li><button id="test-synth" onclick="JSAW.Test.Instrument.synth();">Test Synth</button></li>
-						<li><button id="test-sampler" onclick="JSAW.Test.Instrument.sampler();">Test Sampler</button></li>
-					</ul>
-					<ul class="status flat-list">
-						<!-- <li><span id="jsaw-status-playing">Stopped</span></li>
-						<li>Step: <span id="jsaw-status-step">0</span></li>
-						<li>Voices: <span id="jsaw-status-voices">0</span></li> -->
-					</ul>
-				</div>
-			</div>
 			<!-- /DEBUG BAR -->
 			
-			<div id="pianoroll">
+				<div id="pianoroll">
+					
+				</div>
 				
-			</div>
-			
-		</div>
+				<div class="instrumentList">
+					<ul data-bind="foreach: Instruments.instrumentArray">
+						<li class="instrumentBox">
+							<h3 data-bind="text: options.name"></h3>
+							<input type="radio" name="selectedInstrument" data-bind="checked: $parent.Instruments.selectedInstrumentIndex, value: $index" />
+							<ul class="effectsList" data-bind="foreach: mixer.FX">
+								<li class="effectBox">
+									<h3 data-bind="text: name"></h3>
+									<ul class="params" data-bind="foreach: parameters.array">
+										<li>
+											<label data-bind="text: name"></label>
+											<input type="text" data-bind="value: value" />
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				
+				<!--<div class="mixerList">
+					<h3>Mixer channels</h3>
+					<ul data-bind="foreach: Mixer.channelArray">
+						<li class="instrumentBox">
+							<h3>Channel #<span data-bind="text: $index"></span></h3>
+							<ul class="effectsList" data-bind="foreach: FX">
+								<li class="effectBox">
+									<h3 data-bind="text: name"></h3>
+									<ul class="params" data-bind="foreach: parameters.array">
+										<li>
+											<label data-bind="text: name"></label>
+											<input type="text" data-bind="value: value" />
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					
+				</div>-->
+		
 		<!-- /WRAPPER -->
 		
 	</body>

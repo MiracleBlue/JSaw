@@ -14,8 +14,8 @@ JSAW.Test.Instrument = {
 		this.basicSynth = new JSAW.Instrument({
 			id: 1,
 			name: "Basic Synth Test",
-			al: JSAW.audiolet,
-			effects: [FXDelay]	// With delay effects!
+			audiolet: JSAW.audiolet,
+			effects: [FXDelay, FXReverb]	// With delay effects!
 		});
 		
 		console.debug("Testing voice creation");
@@ -71,7 +71,7 @@ JSAW.Test.Instrument = {
 			name: "Kick Drum Test", 
 			type: "sampler", 
 			generator: Sampler, 
-			al: JSAW.audiolet,
+			audiolet: JSAW.audiolet,
 			volume: 0.3,
 			samplerParams: {sample: 'audio/wayfinder_kick_49_round.wav'}
 		});

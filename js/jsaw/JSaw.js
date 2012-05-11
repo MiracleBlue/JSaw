@@ -26,7 +26,12 @@ function construct(constructor, args) {
 
 // Static Class
 var JSAW = {
-	audiolet: false
+	audiolet: false,
+	count: {
+		instrument: 0,
+		pattern: 0,
+		track: 0
+	}
 };
 	
 /**
@@ -247,7 +252,7 @@ JSAW.Track.prototype.startPlayback = function() {
 JSAW.Instrument = function(options) {
 	// Default instrument options
 	this.options = {
-		id: false,
+		id: JSAW.count.instrument++,
 		name: "New Instrument",
 		type: "synth",
 		generator: Synth,
@@ -258,10 +263,12 @@ JSAW.Instrument = function(options) {
 	}
 	_(this.options).extend(options);
 	
-	console.group("Instrument ("+this.options.type+"): '"+this.options.name+"'");
+	this.options.name = ko.observable(this.options.name);
+	
+	console.group("Instrument ("+this.options.type+"): '"+this.options.name()+"'");
 	
 	// this.al is the primary AudioLet object
-	this.al = this.options.al;
+	this.al = this.options.audiolet;
 	this.generatorClass = this.options.generator;
 	this.effects = this.options.effects;
 	
@@ -329,27 +336,6 @@ JSAW.Instrument = function(options) {
 				// Set voice gain to note velocity
 				voiceObj.vel.gain.setValue(noteData.velocity);
 				
-				/*if (this.self.effects.length > 0) {
-					for (var i = 0; i < this.self.effects.length; i++) {
-						voiceFX.push(construct(this.self.effects[i], [{audiolet: this.self.al}]));
-					}
-					for (var i = 0; i < voiceFX.length; i++) {
-						if (i < 1) {
-							voiceObj.connect(voiceFX[i]);
-							if (voiceFX.length === 1) voiceFX[i].connect(this.self.al.output);
-						}
-						else if (i < voiceFX.length-1) {
-							voiceFX[i].connect(voiceFX[i+1]);
-						}
-						else {
-							voiceFX[i].connect(this.self.al.output);
-						}
-					}
-				}
-				else {
-					voiceObj.connect(this.self.al.output);
-				}*/
-				
 				voiceObj.connect(this.self.mixer);
 				
 				this.list.push(voiceObj);
@@ -369,6 +355,9 @@ JSAW.Instrument = function(options) {
 		} // end Create method
 		
 	}; // end Voices
+	
+	console.debug("Mixer object:");
+	console.dir(this.mixer);
 	
 	console.groupEnd();
 }; // end Instrument
@@ -424,9 +413,73 @@ JSAW.Project = function(config) {
 JSAW.Sequence = function(config) {
 	//this.id = config.id || JSAW.Global.sequenceCount+1
 	//this.name = config.name || "Sequence #"+this.id;
+};
+
+/**
+ * Core application model
+ */
+JSAW.Model = function() {
+	var self = this;
+	
+	this.Instruments = new (function(){
+		// Currently with two instruments already defined, for testing purposes
+		var self = this;
+		this.instrumentArray = ko.observableArray([
+			new JSAW.Instrument({
+				name: "Observed Instrument",
+				audiolet: JSAW.audiolet,
+				generator: Synth,
+				effects: [FXDelay, FXReverb]
+			}),
+			new JSAW.Instrument({
+				name: "Second instrument!",
+				audiolet: JSAW.audiolet,
+				generator: Synth,
+				effects: [FXDelay, FXReverb]
+			})
+		]).indexed(); // Gives the array items their index position in the array, accessible via $index in bindings
+		
+		this.selectedInstrumentIndex = ko.observable();
+		
+		this.selectedInstrumentObject = ko.observable();
+		
+		this.selectedInstrumentIndex.subscribe(function(newIndex) {
+			self.selectedInstrumentObject(self.instrumentArray()[newIndex]);
+			console.log("Selected Instrument changed!  Index: "+self.selectedInstrumentIndex()+", instrument: "+self.selectedInstrumentObject().options.name());
+			// Hard coded dependency, to be totally changed laters
+			pianoroll.options.instrument = self.selectedInstrumentObject;
+		});
+		
+		this.add = function(configObject) {
+			self.instrumentArray.push(new JSAW.Instrument(configObject));
+		}
+		
+	})();
+	
+	this.Mixer = {
+		masterChannel: new MixerNode({
+			audiolet: JSAW.audiolet,
+			output: JSAW.audiolet.output
+		}),
+		
+		channelArray: ko.observableArray([
+			new MixerNode({
+				audiolet: JSAW.audiolet,
+				effects: [FXReverb],
+				output: this.masterChannel
+			}),
+			new MixerNode({
+				audiolet: JSAW.audiolet,
+				effects: [FXDelay, FXReverb],
+				output: this.masterChannel
+			})
+		]).indexed()
+	};
+};
+
+JSAW.Mixer = function() {
+	
 }
-
-
 
 /**
  * Begin initialising application logic here!
@@ -438,14 +491,19 @@ window.onload = function() {
 	//JSAW.audiolet.scheduler.setTempo(130);
 	JSAW.audiolet.scheduler.stop();
 	
-	window.derpSynth = new JSAW.Instrument({
-		id: 1,
+	/*window.derpSynth = new JSAW.Instrument({
 		name: "Basic Synth Test",
 		al: JSAW.audiolet,
 		generator: Synth,
-		effects: [FXDelay]	// With delay effects!
-	});
+		effects: [FXDelay, FXReverb]	// With delay effects!
+	});*/
 	
+	JSAW.new_model = new JSAW.Model();
+	
+	ko.applyBindings(JSAW.new_model);
+	
+	// Set the initial selected instrument
+	JSAW.new_model.Instruments.selectedInstrumentIndex(0);
 };
 
 
