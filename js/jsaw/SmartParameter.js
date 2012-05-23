@@ -61,6 +61,16 @@ ko.extenders.validator = function(target, config) {
 				result = true;
 			}
 			return result;
+		},
+		'knob': function(value) {
+			var result = false;
+			value = parseInt(value);
+			if (_(value).isNumber() && !_(value).isNaN()) {
+				if (value >= config.min && value <= config.max) {
+					result = true;
+				}
+			}
+			return result;
 		}
 	};
 	var output = ko.computed({
@@ -78,6 +88,36 @@ ko.extenders.validator = function(target, config) {
 	});
 	output(target());
 	return output;
+}
+
+// Can't believe I had to make one of these.  Oh well.
+function ValueProxy(proxy) {
+	var myValue = proxy;
+	return {
+		getValue: function() {
+			return myValue;
+		},
+		setValue: function(newValue) {
+			myValue = newValue;
+		}
+	};
+}
+
+function ValueCollection(values) {
+	var superValues = {};
+	_(values).forEach(function(val, key){
+		superValues[key] = new ValueProxy(val.value/100);
+	});
+	console.dir(superValues);
+	superValues.hashify = function(){
+		var hashValues = {};
+		_(superValues).forEach(function(val, key){
+			if (key == 'hashify' || key == 'array') return;
+			hashValues[key] = val.getValue();
+		});
+		return hashValues;
+	};
+	return superValues;
 }
 
 /**
@@ -108,15 +148,32 @@ function SmartParameter(parameterNode, config) {
 				'no'
 			],
 			value: 'yes'
+		},
+		'knob': {
+			value: 50,
+			min: 0,
+			max: 100
 		}
 	};
 	_(defaults[config.type]).extend(config);
 	this.parameterNode = parameterNode;
-	this.value = ko.observable(config.value || this.parameterNode.getValue()).extend({validator: defaults[config.type]});
+	
+	var initValue = this.parameterNode.getValue();
+	// IF this is a knob, we want to eliminate the decimal point due to jQuery knob not supporting stepping at the decimal level (yet)
+	if (config.type === 'knob') {
+		initValue = initValue * 100;
+	}
+	this.value = ko.observable(config.value || initValue).extend({validator: defaults[config.type]});
 	this.value.subscribe(function(newValue) {
+		// IF this is a knob, divide the value to add that decimal point we removed.  This is required for our parameters actual values.
+		if (config.type === 'knob') {
+			newValue = newValue / 100;
+		}
 		this.parameterNode.setValue(newValue);
 		console.log("write value: "+this.parameterNode.getValue());
 	}.bind(this));
+	
+	//this.value(this.parameterNode.getValue());
 	
 	this.elements = [];
 }
@@ -162,6 +219,23 @@ function ParameterList (targetNode, parameters) {
 		output.array.push({name: key, value: output[key].value});
 	}, this);
 	return output;
+}
+
+function ParameterListProxy (targetNodeId, parameters) {
+	var output = {
+		array: ko.observableArray([])
+	};
+	var targetNode = {};
+	/*_(parameters).forEach(function(value, key){
+		targetNode[key] = new ValueProxy(value);
+	});*/
+	targetNode = new ValueCollection(parameters);
+	_(parameters).forEach(function(value, key){
+		output[key] = new SmartParameter(targetNode[key], value);
+		output.array.push({name: key, value: output[key].value});
+	}, this);
+	targetNode.array = output.array;
+	return targetNode;
 }
 
 function ParameterGroup (groups) {

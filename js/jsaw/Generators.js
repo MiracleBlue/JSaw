@@ -237,45 +237,70 @@ JSAW.Generator = {
 }
 
 // Really basic sawtooth synth
-var Synth = function(params) {
-	console.group("Synth constructor");
-	console.info("Constructing Synth object...");
-	
-	this.audiolet = params.audiolet;
-	var frequency = params.frequency;
-	
-	AudioletGroup.apply(this, [this.audiolet, 0, 1]);
-	
-	this.saw = new Saw(this.audiolet, frequency);
-	this.modulator = new Sine(this.audiolet, 2 * frequency);
-	this.modulatorMulAdd = new MulAdd(this.audiolet, frequency / 2, frequency);
-	
-	this.gain = new Gain(this.audiolet);
-	this.vel = new Gain(this.audiolet, 0.10);
-	
-	this.envelope = new PercussiveEnvelope(
-		this.audiolet,
-		1,// gate control
-		0.01,// attack
-		0.15,// release
-		function() {
-			this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
-			console.log("Removing synth from processing group");
-		}.bind(this)
-	);
-	
-	this.modulator.connect(this.modulatorMulAdd);
-	this.modulatorMulAdd.connect(this.saw);
-	this.envelope.connect(this.gain, 0, 1);
-	this.saw.connect(this.gain);
-	
-	this.gain.connect(this.vel);
-	this.vel.connect(this.outputs[0]);
-	
-	console.log(this.audiolet);
-	console.groupEnd();
+
+var Synth2 = function() {
+	this.parameters = new ParameterListProxy("reverb", {
+		attack: {value: 01, type: 'knob'},
+		decay: {value: 15, type: 'knob'},
+		release: {value: 05, type: 'knob'}
+	});
+	this.createGenerator = function(params) {
+		params.parameters = this.parameters.hashify();
+		return construct(generatorNode, [params]);
+	};
+	var generatorNode = function(params) {
+		console.group("Synth constructor");
+		console.info("Constructing Synth object...");
+		console.dir(params);
+		
+		this.audiolet = params.audiolet;
+		var frequency = params.frequency;
+		
+		AudioletGroup.apply(this, [this.audiolet, 0, 1]);
+		
+		this.saw = new Saw(this.audiolet, frequency);
+		this.modulator = new Sine(this.audiolet, 2 * frequency);
+		this.modulatorMulAdd = new MulAdd(this.audiolet, frequency / 2, frequency);
+		
+		this.gain = new Gain(this.audiolet);
+		this.vel = new Gain(this.audiolet, 0.10);
+		
+		// Shooting self in the foot.  Freaking damn it!!!  ARGH!
+		this.envelope = new SuperEnvelope(
+			this.audiolet,
+			{
+				attack: params.parameters.attack || 0.01,
+				decay: params.parameters.decay || 0.15,
+				release: params.parameters.release || 0.01
+			},
+			function() {
+				this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
+				console.log("Removing synth from processing group");
+			}.bind(this)
+		);
+		
+		// Create some parameters for this thing in the UI
+		/*this.parameters = new ParameterList(this.envelope, {
+			attack: {value: 01, type: 'knob'},
+			decay: {value: 15, type: 'knob'},
+			release: {value: 05, type: 'knob'}
+		});*/
+		// How verbose!
+		
+		this.modulator.connect(this.modulatorMulAdd);
+		this.modulatorMulAdd.connect(this.saw);
+		this.envelope.connect(this.gain, 0, 1);
+		this.saw.connect(this.gain);
+		
+		this.gain.connect(this.vel);
+		this.vel.connect(this.outputs[0]);
+		
+		console.log(this.audiolet);
+		console.groupEnd();
+	};
+	extend(generatorNode, AudioletGroup);
 };
-extend(Synth, AudioletGroup);
+
 
 // Really basic sawtooth synth
 var Synth = function(params) {
@@ -294,7 +319,7 @@ var Synth = function(params) {
 	this.gain = new Gain(this.audiolet);
 	this.vel = new Gain(this.audiolet, 0.10);
 	
-	this.envelope = new PercussiveEnvelope(
+	/*this.envelope = new PercussiveEnvelope(
 		this.audiolet,
 		1,// gate control
 		0.01,// attack
@@ -303,7 +328,29 @@ var Synth = function(params) {
 			this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
 			console.log("Removing synth from processing group");
 		}.bind(this)
+	);*/
+	
+	// Shooting self in the foot.  Freaking damn it!!!  ARGH!
+	this.envelope = new SuperEnvelope(
+		this.audiolet,
+		{
+			attack: 0.01,
+			decay: 0.15,
+			release: 0.01
+		},
+		function() {
+			this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
+			console.log("Removing synth from processing group");
+		}.bind(this)
 	);
+	
+	// Create some parameters for this thing in the UI
+	this.parameters = new ParameterList(this.envelope, {
+		attack: {value: 01, type: 'knob'},
+		decay: {value: 15, type: 'knob'},
+		release: {value: 05, type: 'knob'}
+	});
+	// How verbose!
 	
 	this.modulator.connect(this.modulatorMulAdd);
 	this.modulatorMulAdd.connect(this.saw);
@@ -318,7 +365,19 @@ var Synth = function(params) {
 };
 extend(Synth, AudioletGroup);
 
-
+/**
+ * I can't believe I actually have to create a new envelope component to wrap around this one.  How ridiculous!
+ */
+var SuperEnvelope = function(audiolet, params, onComplete) {
+	// Create the envelope in question
+	this.env = new Envelope(audiolet, 1, [0, 1, 0, 0], [params.attack, params.decay, params.release], 2, onComplete);
+	this.env.attack = new ValueProxy(this.env.times[0]);
+	//this.sustain = new ValueProxy(
+	this.env.decay = new ValueProxy(this.env.times[1]);
+	this.env.release = new ValueProxy(this.env.times[2]);
+	// Watch it all break apart into bits!
+	return this.env;
+}
 
 /**
  * Samplers
@@ -368,7 +427,7 @@ var FXDelay = function(params) {
 	this.feedback = new Gain(this.audiolet, 0.4);
 	
 	this.parameters = new ParameterList(this.delay, {
-		mix: {value: 0.5, type: 'float'}
+		mix: {value: 50, type: 'knob'}
 	});
 	
 	this.inputs[0].connect(this.delay);
@@ -400,9 +459,9 @@ var FXReverb = function(params) {
 	
 	
 	this.parameters = new ParameterList(this.reverb, {
-		mix: {value: 0.3, type: 'float'},
-		roomSize: {value: 0.7, type: 'float'},
-		damping: {value: 0.5, type: 'float'}
+		mix: {value: 30, type: 'knob'},
+		roomSize: {value: 70, type: 'knob'},
+		damping: {value: 50, type: 'knob'}
 	});
 	
 	this.inputs[0].connect(this.reverb);
@@ -417,7 +476,7 @@ extend(FXReverb, AudioletGroup);
 /**
  * MixerNode
  * 
- * Acts as a mixer channel, through which all effects chains are routed together and through which all synth audio data gets passed
+ * Acts as a mixer channel, through which all effects chains are routed together and through which all synth audio data gets passed.
  */
 var MixerNode = function(params) {
 	console.group("MixerNode constructor");

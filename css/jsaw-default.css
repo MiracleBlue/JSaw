@@ -166,6 +166,15 @@ ul.keyList > li.note.accidental {
 .instrumentBox {
 	border: 1px solid #555555;
 	padding: 15px;
+	width: 300px;
+}
+.instrumentBox .params > li {
+	display: inline-block;
+	text-align: center;
+}
+.instrumentBox .params > li > label {
+	margin: auto;
+	display: block;
 }
 .effectsList {
 	padding: 5px;

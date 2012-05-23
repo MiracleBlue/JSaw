@@ -33,6 +33,23 @@ var JSAW = {
 		track: 0
 	}
 };
+
+JSAW.App = function(newConfig) {
+	this.audiolet = null;
+	this.model = {};
+	this.init = function() {
+		// Do stuff here
+	};
+	_(this).extend(newConfig);
+	
+	window.onload = function(){
+		if (!this.audiolet) this.audiolet = new Audiolet();
+		this.model = new this.model();
+		ko.applyBindings(this.model);
+		this.init();
+		
+	}.bind(this);
+}
 	
 /**
  * Note object: represents a note in a pattern.
@@ -255,7 +272,7 @@ JSAW.Instrument = function(options) {
 		id: JSAW.count.instrument++,
 		name: "New Instrument",
 		type: "synth",
-		generator: Synth,
+		generator: Synth2,
 		muted: false,
 		volume: 0.8,
 		pan: 0.5,
@@ -269,7 +286,7 @@ JSAW.Instrument = function(options) {
 	
 	// this.al is the primary AudioLet object
 	this.al = this.options.audiolet;
-	this.generatorClass = this.options.generator;
+	this.generatorClass = new this.options.generator();
 	this.effects = this.options.effects;
 	
 	// Create mixer node
@@ -330,7 +347,8 @@ JSAW.Instrument = function(options) {
 				// Pass info about the note to the console.
 				console.debug(noteData);
 				
-				var voiceObj = construct(this.self.generatorClass, [noteData]);
+				//var voiceObj = construct(this.self.generatorClass, [noteData]);
+				var voiceObj = this.self.generatorClass.createGenerator(noteData);
 				var voiceFX = [];
 				
 				// Set voice gain to note velocity
@@ -428,13 +446,13 @@ JSAW.Model = function() {
 			new JSAW.Instrument({
 				name: "Observed Instrument",
 				audiolet: JSAW.audiolet,
-				generator: Synth,
+				generator: Synth2,
 				effects: [FXDelay, FXReverb]
 			}),
 			new JSAW.Instrument({
 				name: "Second instrument!",
 				audiolet: JSAW.audiolet,
-				generator: Synth,
+				generator: Synth2,
 				effects: [FXDelay, FXReverb]
 			})
 		]).indexed(); // Gives the array items their index position in the array, accessible via $index in bindings
@@ -484,7 +502,24 @@ JSAW.Mixer = function() {
 /**
  * Begin initialising application logic here!
  */
-window.onload = function() {
+JSAW.audiolet = new Audiolet();
+jsawApp = new JSAW.App({
+	audiolet: JSAW.audiolet,
+	model: JSAW.Model,
+	init: function() {
+		console.debug("JSaw App started!");
+		this.model.Instruments.selectedInstrumentIndex(0);
+		$(function() {
+			$(".dial").knob({
+				min: 0,
+				max: 100,
+				width: 50,
+				thickness: .4
+			});
+		});
+	}
+});
+/*window.onload = function() {
 	//jsaw.status = new JSAW.Model.Status();
 	
 	JSAW.audiolet = new Audiolet();
@@ -496,7 +531,7 @@ window.onload = function() {
 		al: JSAW.audiolet,
 		generator: Synth,
 		effects: [FXDelay, FXReverb]	// With delay effects!
-	});*/
+	});
 	
 	JSAW.new_model = new JSAW.Model();
 	
@@ -504,7 +539,16 @@ window.onload = function() {
 	
 	// Set the initial selected instrument
 	JSAW.new_model.Instruments.selectedInstrumentIndex(0);
-};
+	
+	$(function() {
+		$(".dial").knob({
+			min: 0,
+			max: 100,
+			width: 50,
+			thickness: .4
+		});
+	});
+};*/
 
 
 

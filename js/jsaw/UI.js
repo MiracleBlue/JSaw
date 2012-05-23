@@ -37,7 +37,7 @@ var NoteLookup = {
 
 var JUI = {};
 
-jQuery.noConflict();
+//jQuery.noConflict();
 (function($){
 	JUI.Note = function(params) {
 		this.options = {
