@@ -44,6 +44,7 @@ JSAW.App = function(newConfig) {
 	
 	window.onload = function(){
 		if (!this.audiolet) this.audiolet = new Audiolet();
+		this.playback = new JSAW.Playback({bpm: 130});
 		this.model = new this.model();
 		ko.applyBindings(this.model);
 		this.init();
@@ -176,12 +177,22 @@ JSAW.Pattern.prototype.addNote = function(options) {
 	}
 	
 	options.id = options.id || ++this._noteIncrement;
-	this._notes[options.id] = new JSAW.Note(options);
+	var note = this._notes[options.id] = new JSAW.Note(options);
 	
 	this._steps[options.position].push(this._notes[options.id]);
 	
-	return this._notes[options.id];
+	console.dir(note);
+	
+	return this._notes[options.id]; // How interesting
 };
+
+JSAW.Pattern.prototype.removeNote = function(note) {
+	//var nstep = this._steps[note.getPosition()];
+	this._steps[note.getPosition()] = _(this._steps[note.getPosition()]).without(note);
+	this._notes = _(this._notes).without(note);
+	console.debug("note removed");
+	console.dir(this._steps);
+}
 
 JSAW.Pattern.prototype.renderPattern = function(newPattern) {
 	var outPattern = [];
@@ -259,6 +270,43 @@ JSAW.Track.prototype.startPlayback = function() {
 	
 };
 
+/**
+ * JSaw Playback
+ */
+JSAW.Playback = function(options) {
+	this.bpm = options.bpm || 130;
+	this.playing = false;
+	this.audiolet = JSAW.audiolet;
+	this.sequenceEvent = null;
+}
+
+JSAW.Playback.prototype = {
+	play: function(pattern, instrument) {
+		if (!this.playing) {
+			var sequence = new PSequence(pattern._steps, Infinity);
+			this.sequenceEvent = this.audiolet.scheduler.play(
+				[sequence],
+				1/4,
+				function(step) {
+					if (step.length > 0) {
+						_(step).forEach(function(note){
+							instrument.voices.create(note);
+						});
+					}
+				}
+			);
+			this.playing = true;
+		}
+	},
+	stop: function() {
+		this.audiolet.scheduler.stop(this.sequenceEvent);
+		this.playing = false;
+	},
+	toggle: function(pattern, instrument) {
+		if (!this.playing) return this.play(pattern, instrument);
+		return this.stop();
+	}
+};
 
 /**
  * Instrument object
@@ -272,7 +320,10 @@ JSAW.Instrument = function(options) {
 		id: JSAW.count.instrument++,
 		name: "New Instrument",
 		type: "synth",
-		generator: Synth2,
+		generator: {
+			node: Synth2,
+			config: {}
+		},
 		muted: false,
 		volume: 0.8,
 		pan: 0.5,
@@ -285,8 +336,8 @@ JSAW.Instrument = function(options) {
 	console.group("Instrument ("+this.options.type+"): '"+this.options.name()+"'");
 	
 	// this.al is the primary AudioLet object
-	this.al = this.options.audiolet;
-	this.generatorClass = new this.options.generator();
+	this.audiolet = this.al = this.options.audiolet;
+	this.generatorClass = new this.options.generator.node(this.options.generator.config);
 	this.effects = this.options.effects;
 	
 	// Create mixer node
@@ -446,13 +497,23 @@ JSAW.Model = function() {
 			new JSAW.Instrument({
 				name: "Observed Instrument",
 				audiolet: JSAW.audiolet,
-				generator: Synth2,
+				generator: {
+					node: Synth2,
+					config: {
+						osc: Saw
+					}
+				},
 				effects: [FXDelay, FXReverb]
 			}),
 			new JSAW.Instrument({
 				name: "Second instrument!",
 				audiolet: JSAW.audiolet,
-				generator: Synth2,
+				generator: {
+					node: Synth2,
+					config: {
+						osc: Square
+					}
+				},
 				effects: [FXDelay, FXReverb]
 			})
 		]).indexed(); // Gives the array items their index position in the array, accessible via $index in bindings

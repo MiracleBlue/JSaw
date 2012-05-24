@@ -238,7 +238,10 @@ JSAW.Generator = {
 
 // Really basic sawtooth synth
 
-var Synth2 = function() {
+var Synth2 = function(config) {
+	var self = this;
+	var osc = config.osc || Saw;
+	
 	this.parameters = new ParameterListProxy("reverb", {
 		attack: {value: 01, type: 'knob'},
 		decay: {value: 15, type: 'knob'},
@@ -246,6 +249,7 @@ var Synth2 = function() {
 	});
 	this.createGenerator = function(params) {
 		params.parameters = this.parameters.hashify();
+		params.osc = osc;
 		return construct(generatorNode, [params]);
 	};
 	var generatorNode = function(params) {
@@ -255,10 +259,11 @@ var Synth2 = function() {
 		
 		this.audiolet = params.audiolet;
 		var frequency = params.frequency;
+		var osc = params.osc || Saw;
 		
 		AudioletGroup.apply(this, [this.audiolet, 0, 1]);
 		
-		this.saw = new Saw(this.audiolet, frequency);
+		this.saw = new osc(this.audiolet, frequency);
 		this.modulator = new Sine(this.audiolet, 2 * frequency);
 		this.modulatorMulAdd = new MulAdd(this.audiolet, frequency / 2, frequency);
 		
@@ -274,8 +279,9 @@ var Synth2 = function() {
 				release: params.parameters.release || 0.01
 			},
 			function() {
-				this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
 				console.log("Removing synth from processing group");
+				this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
+				
 			}.bind(this)
 		);
 		
@@ -339,8 +345,9 @@ var Synth = function(params) {
 			release: 0.01
 		},
 		function() {
-			this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
 			console.log("Removing synth from processing group");
+			//this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
+			
 		}.bind(this)
 	);
 	
@@ -370,11 +377,11 @@ extend(Synth, AudioletGroup);
  */
 var SuperEnvelope = function(audiolet, params, onComplete) {
 	// Create the envelope in question
-	this.env = new Envelope(audiolet, 1, [0, 1, 0, 0], [params.attack, params.decay, params.release], 2, onComplete);
-	this.env.attack = new ValueProxy(this.env.times[0]);
+	this.env = new Envelope(audiolet, 1, [0, 1, 0, 0], [params.attack, params.decay, params.release], null, onComplete);
+	this.env.attack = this.env.times[0];
 	//this.sustain = new ValueProxy(
-	this.env.decay = new ValueProxy(this.env.times[1]);
-	this.env.release = new ValueProxy(this.env.times[2]);
+	this.env.decay = this.env.times[1];
+	this.env.release = this.env.times[2];
 	// Watch it all break apart into bits!
 	return this.env;
 }

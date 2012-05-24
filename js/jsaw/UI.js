@@ -39,17 +39,22 @@ var JUI = {};
 
 //jQuery.noConflict();
 (function($){
-	JUI.Note = function(params) {
-		this.options = {
+	JUI.Note = function(note) {
+		/*this.options = {
 			step: 0,
 			key: "G#",
 			octave: 3,
 			length: 1,
 			velocity: 1.0
 		}
-		_(this.options).extend(params);
-		
+		_(this.options).extend(params);*/
+		this.note = note;
+		this.rel = function(){
+			var nl = _(NoteLookup.all).values().indexOf(this.note.getKey())+1;
+			return nl;
+		};
 		this.elem = $("<div class='noteBlock'></div>");
+		this.elem.data("note", this.note);
 	}
 	
 	JUI.PianoRoll = function(options) {
@@ -58,6 +63,8 @@ var JUI = {};
 			instrument: null
 		};
 		_(this.options).extend(options);
+		
+		this.pattern = options.pattern;
 		
 		this.wrapperElem = $("#pianoroll");
 		this.buildUI();
@@ -109,6 +116,14 @@ var JUI = {};
 					return $(markup);
 				}())).appendTo(innerStepElem);
 			}
+			
+			$("ul.step > li.note").each(function(){
+				$(this).data("note", {
+					key: NoteLookup.all[$(this).attr("rel")],
+					position: $(this).parent().attr("rel")-1
+				});
+				
+			});
 		
 		// Now we can fine-tune our styling of our generated markup and initialise the GUI functionality!
 			
@@ -128,29 +143,91 @@ var JUI = {};
 		// Initialise hover event listeners on keylist items, for same-note highlighting
 		$("ul.keyList > li.note, ul.step > li.note").mouseover(function(e) {
 			elem = $(e.target);
-			if (elem.hasClass("note-hint")) elem = elem.parent();
+			if (!elem.hasClass("note")) elem = elem.parent();
 			elem.addClass("highlight");
 			$("ul.step > li.note[rel=" + elem.attr("rel") + "]").addClass("highlight");
 		}).mouseout(function(e) {
 			elem = $(e.target);
-			if (elem.hasClass("note-hint")) elem = elem.parent();
+			if (!elem.hasClass("note")) elem = elem.parent();
 			elem.removeClass("highlight");
 			$("ul.step > li.note[rel=" + elem.attr("rel") + "]").removeClass("highlight");
 		});
 		
 		$("ul.keyList > li.note").mousedown(function(e) {
 			var elem = $(e.target);
-			if (elem.hasClass("note-hint")) elem = elem.parent();
+			if (!elem.hasClass("note")) elem = elem.parent();
 			
 			var newkey = elem.find('span.note-hint').attr("rel");
 			self.options.instrument().playNote({key: newkey, octave: 3});
 		});
 		
+		$("ul.step > li.note").on("mouseup", function(e){
+			if (e.which == 3) return;
+			var target = $(e.target);
+			if (target.hasClass("noteBlock")) return;
+			if (!target.hasClass("note")) target = target.parent();
+			var data = {
+				key: NoteLookup.all[target.attr("rel")],
+				position: target.parent().attr("rel")-1
+			}
+			self.addNote(data);
+		});
+		
+		$("ul.step > li.note").droppable({
+			drop: function(event, ui) {
+				console.dir(event);
+				console.dir(ui);
+				console.dir(this);
+				console.dir($(event.target).data("note"));
+				var src = $(event.target);
+				var target = $(this);
+				self.pattern.removeNote(src.data("note"));
+				self.addNote(target.data("note"));
+				src.remove();
+				// Bingo.
+			}
+		});
+		
+		//$("")
+		$("#test-play").on("click", function(){
+			self.play();
+		});
+		
 	}
 	
-	JUI.PianoRoll.prototype.addNote = function() {
-		var nb = new JUI.Note();
-		//nb.elem.appendTo("ul.step[rel="+nb.options.step+"] > li.note[rel="]")
+	JUI.PianoRoll.prototype.addNote = function(note) {
+		var self = this;
+		var nd = this.pattern.addNote(note);
+		var nb = new JUI.Note(nd);
+		nb.elem.prependTo("ul.step[rel="+(nb.note.getPosition()+1)+"] > li.note[rel="+nb.rel()+"]");
+		nb.elem.on("mouseup", function(e){
+			e.preventDefault();
+			//e.stopPropagation();
+		});
+		nb.elem.on("contextmenu", function(e){
+			//if (e.which == 3) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.removeNote(nb);
+			//}
+		});
+		nb.elem.draggable({
+			snap: "ul.step > li.note",
+			snapMode: "inner",
+			snapTolerance: 10
+		});
+	}
+	
+	JUI.PianoRoll.prototype.removeNote = function(note) {
+		this.pattern.removeNote(note.note);
+		note.elem.remove();
+	}
+	
+	JUI.PianoRoll.prototype.play = function() {
+		console.debug("play:");
+		console.dir(this.pattern);
+		console.dir(this.options.instrument());
+		jsawApp.playback.toggle(this.pattern, this.options.instrument());
 	}
 })(jQuery);
 
@@ -166,7 +243,8 @@ jQuery(function($){
 	
 	jQuery("#template_debugbar_status_item").tmpl(statusList).appendTo("#jsaw-debug-bar .controls ul.status");
 	
-	window.pianoroll = new JUI.PianoRoll({instrument: null});
+	
+	window.pianoroll = new JUI.PianoRoll({instrument: null, pattern: new JSAW.Pattern()});
 	/*$("body").layout();*/
 	DockMe(jQuery(".pianogrid"));
 	

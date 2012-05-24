@@ -105,6 +105,17 @@ ul.stepGrid li.note:hover .note-hint {
 	display: block;
 }
 
+ul.stepGrid li.note .noteBlock {
+	background-color: #028D02;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 1px solid #36DB36;
+	position: absolute;
+	z-index: 15;
+	cursor: pointer;
+}
+
 li.note.highlight {
 	background-color: #35402F;
 }
