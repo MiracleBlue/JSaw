@@ -3,13 +3,18 @@ body {
 	background-color: #000;
 	color: #63C1FB;
 	font-size: 62.5%;
+	overflow: hidden;
 }
 
 #wrapper {
 	margin: auto;
 }
-#pianoroll {
-	float: left;
+#pianoroll, #playlist {
+	/*float: left;*/
+	display: block;
+	overflow-y: auto;
+	overflow-x: auto;
+	/*position: absolute;*/
 }
 
 ul {
@@ -49,7 +54,7 @@ ul.flat-list > li {
 	border-left: 1px solid #c8c8c8;
 }
 
-.pianogrid {
+.pianogrid, .supergrid {
 	border-left: 1px solid #eee;
 	border-top: 1px solid #eee;
 }
@@ -85,24 +90,31 @@ li.note {
 	height: 22px;
 	width: 41px;
 	position: relative;
+	cursor: default;
 }
 li.note.accidental {
 	background-color: #2f2f2f;
 }
 
 ul.stepGrid li.note .note-hint {
-	display: none;
 	font-family: helvetica, sans-serif;
 	font-size: 10px;
 	font-weight: lighter;
-	color: #5C5B5B;
 	position: absolute;
 	top: 3px;
 	left: 4px;
-	cursor: default;
+	cursor: inherit;
 }
-ul.stepGrid li.note:hover .note-hint {
+ul.stepGrid li.note > .note-hint {
+	display: none;
+	color: #5C5B5B;
+}
+ul.stepGrid li.note:hover > .note-hint {
 	display: block;
+}
+ul.stepGrid li.note > .noteBlock > .note-hint {
+	color: #EEEEEE;
+	cursor: inherit;
 }
 
 ul.stepGrid li.note .noteBlock {
@@ -114,6 +126,10 @@ ul.stepGrid li.note .noteBlock {
 	position: absolute;
 	z-index: 15;
 	cursor: pointer;
+}
+ul.stepGrid li.note .noteBlock.active {
+	background-color: #8FAA02;
+	border: 1px solid #C1DB36;
 }
 
 li.note.highlight {
@@ -168,11 +184,144 @@ ul.keyList > li.note.accidental {
 	font-weight: lighter;
 }
 
+/* SuperGrid */
+.supergrid > ul, .supergrid > ul > li {
+	/*float: left;*/
+	list-style-type: none;
+}
+.supergrid ul {
+	float: left;
+	display: table;
+}
+
+ul.step {
+	font-weight: normal;
+	list-style-type: none;
+	padding: 0;
+}
+ul.grid {
+	position: relative;
+	/*width: 700px;*/
+}
+ul.grid > li {
+	float: left;
+	
+}
+
+li.item {
+	background-color: #3a3a3a;
+	border-bottom: 1px solid #716F6F;
+	border-right: 1px solid #707070;
+	/*display: block;*/
+	font-weight: normal;
+	height: 65px;
+	width: 41px;
+	position: relative;
+}
+li.item.accidental {
+	background-color: #2f2f2f;
+}
+
+ul.grid li.item .item-hint {
+	display: none;
+	font-family: helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: lighter;
+	color: #5C5B5B;
+	position: absolute;
+	top: 3px;
+	left: 4px;
+	cursor: default;
+}
+ul.grid li.item:hover .item-hint {
+	display: block;
+}
+
+ul.grid li.item .noteBlock {
+	background-color: #028D02;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 1px solid #36DB36;
+	position: absolute;
+	z-index: 15;
+	cursor: pointer;
+}
+
+li.item.highlight {
+	background-color: #35402F;
+}
+li.item.accidental.highlight {
+	background-color: #283323;
+}
+
+li.item.highlight:hover {
+	background-color: #1B4665;
+}
+ul.sidebar > li.item.highlight:hover {
+	background-color: #679ED0;
+}
+
+li.item.accidental.highlight:hover {
+	background-color: #1E3945;
+}
+ul.sidebar > li.item.accidental.highlight:hover {
+	background-color: #143058;
+}
+
+ul.sidebar {
+	border-left: 1px solid #737373;
+	border-top: 1px solid #626161;
+	border-bottom: 1px solid #797979;
+}
+li.stepList {
+	border-top: 1px solid #626161;
+}
+li.stepList.beatMarker {
+	border-left: 1px solid #63C1FB;
+}
+
+ul.sidebar > li.item {
+	background-color: #B8B8B8;
+	color: #333333;
+	border-bottom: 1px solid #8493E7;
+	font-family: helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	width: 100px;
+	cursor: pointer;
+}
+ul.sidebar > li.item.accidental {
+	background-color: #2F2F2F;
+	color: #B1B1B1;
+	font-weight: lighter;
+}
+
+ul.sidebar > li.item > div.instrument {
+	display: block;
+}
+ul.sidebar > li.item > div.instrument h4 {
+	margin: 0px;
+	font-size: 11px;
+}
+/**
+ * 	Panels
+ */
+.panel-center {
+	float:left;
+	position: relative;
+}
+.panel-right {
+	overflow: auto;
+	float: left;
+	width: 400px;
+	position: relative;
+}
 /**
  * 	Effect box
  */
 .instrumentList {
-	float: left;
+	
 }
 .instrumentBox {
 	border: 1px solid #555555;

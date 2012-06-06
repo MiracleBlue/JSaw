@@ -1,7 +1,7 @@
 function DockMe(container) {
     var dockLeft = container.find(".dockme-left, .dockme-top");
     dockLeft.each(function(){
-        var elem = jQuery(this);
+        var elem = $(this);
         var position = (elem.hasClass('dockme-left') ? 'left' : 'top');
         elem.css({
             'position': 'absolute',

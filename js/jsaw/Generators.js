@@ -260,6 +260,11 @@ var Synth2 = function(config) {
 		this.audiolet = params.audiolet;
 		var frequency = params.frequency;
 		var osc = params.osc || Saw;
+		var onStart = params.onStart;
+		var onFinish = function(){
+			// Do nothing
+		};
+		if (params.onFinish) onFinish = params.onFinish;
 		
 		AudioletGroup.apply(this, [this.audiolet, 0, 1]);
 		
@@ -281,17 +286,10 @@ var Synth2 = function(config) {
 			function() {
 				console.log("Removing synth from processing group");
 				this.audiolet.scheduler.addRelative(0, this.remove.bind(this));
-				
+				// Finish callback
+				onFinish();
 			}.bind(this)
 		);
-		
-		// Create some parameters for this thing in the UI
-		/*this.parameters = new ParameterList(this.envelope, {
-			attack: {value: 01, type: 'knob'},
-			decay: {value: 15, type: 'knob'},
-			release: {value: 05, type: 'knob'}
-		});*/
-		// How verbose!
 		
 		this.modulator.connect(this.modulatorMulAdd);
 		this.modulatorMulAdd.connect(this.saw);
@@ -300,6 +298,9 @@ var Synth2 = function(config) {
 		
 		this.gain.connect(this.vel);
 		this.vel.connect(this.outputs[0]);
+		
+		// Start callback
+		onStart();
 		
 		console.log(this.audiolet);
 		console.groupEnd();
@@ -434,7 +435,8 @@ var FXDelay = function(params) {
 	this.feedback = new Gain(this.audiolet, 0.4);
 	
 	this.parameters = new ParameterList(this.delay, {
-		mix: {value: 50, type: 'knob'}
+		mix: {value: 50, type: 'knob'},
+		feedback: {value: 30, type: 'knob'}
 	});
 	
 	this.inputs[0].connect(this.delay);

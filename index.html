@@ -18,6 +18,12 @@
 			<script id="template_debugbar_status_item" type="text/x-jquery-tmpl">
 				<li>${name}: <span class="status-value">${value}</span></li>
 			</script>
+			<script id="template_playlist_instrument" type="text/html">
+				<div class="instrument" data-bind="attr: {class: $parent.Instruments.selected($index())}, click: function(){$parent.Instruments.selectedInstrumentIndex($index())}">
+					<h4>${options.name}</h4>
+					<span>${options.type}</span>
+				</div>
+			</script>
 		<!-- End Templates -->
 		
 		<script>
@@ -61,14 +67,20 @@
 	<body>
 		<!-- WRAPPER -->
 		
-				<div id="jsaw-debug-bar">
+				<div id="jsaw-debug-bar" class="panel-top">
 					<div class="controls">
 						<ul class="playback flat-list">
 							<!--<li><button id="jsaw-playback-play">Play</button></li>
 							<li><button id="jsaw-playback-stop">Stop</button></li>-->
 							<li><button id="test-play">Play Sequence</button></li>
+							<li><button id="test-play-song">Play Song</button></li>
+							<li><span>&nbsp;&gt;&nbsp;</span></li>
+							<li><button id="test-synth" onclick="$('#pianoroll').toggle(); $('#playlist').toggle();">Toggle Playlist/Pianoroll</button></li>
+							
+<!--
 							<li><button id="test-synth" onclick="JSAW.Test.Instrument.synth();">Test Synth</button></li>
-							<li><button id="test-sampler" onclick="JSAW.Test.Instrument.sampler();">Test Sampler</button></li>
+							<li><button id="test-sampler" onclick="JSAW.Test.Instrument.sampler();">Test Sampler</button></li>-->
+
 						</ul>
 						<ul class="status flat-list">
 							<!-- <li><span id="jsaw-status-playing">Stopped</span></li>
@@ -78,11 +90,16 @@
 					</div>
 				</div>
 			<!-- /DEBUG BAR -->
-			
+			<div class="panel-center">
 				<div id="pianoroll">
 					
 				</div>
 				
+				<div id="playlist" style="display: none;">
+					
+				</div>
+			</div>
+			<div class="panel-right">
 				<div class="instrumentList">
 					<ul data-bind="foreach: Instruments.instrumentArray">
 						<li class="instrumentBox">
@@ -108,7 +125,7 @@
 						</li>
 					</ul>
 				</div>
-				
+			</div>
 				<!--<div class="mixerList">
 					<h3>Mixer channels</h3>
 					<ul data-bind="foreach: Mixer.channelArray">

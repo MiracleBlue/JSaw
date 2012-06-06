@@ -44,9 +44,6 @@ JSAW.App = function(newConfig) {
 	
 	window.onload = function(){
 		if (!this.audiolet) this.audiolet = new Audiolet();
-		this.playback = new JSAW.Playback({bpm: 130});
-		this.model = new this.model();
-		ko.applyBindings(this.model);
 		this.init();
 		
 	}.bind(this);
@@ -74,6 +71,13 @@ JSAW.Note = function(options) {
 	_(this.options).extend(options);
 	
 	this.id = this.options.id;
+	
+	this.onStart = function() {
+		// Stuff
+	}
+	this.onFinish = function() {
+		// More stuff
+	}
 };
 /**** METHODS ****/
 
@@ -91,6 +95,8 @@ JSAW.Note.prototype.hashify = function(){
 	outhash.fullName = this.getFullName();
 	outhash.velocity = this.getVelocity();
 	outhash.instance = false;
+	outhash.onStart = this.onStart;
+	outhash.onFinish = this.onFinish;
 	return outhash;
 };
 
@@ -119,6 +125,9 @@ JSAW.Pattern = function(options) {
 		track: false
 	}
 	_(this.options).extend(options);
+	
+	this.options.name = ko.observable(this.options.name);
+	//this.options.id = this.$index() || this.options.id;
 	
 	//this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
 	this.track = this.options.track;
@@ -154,8 +163,7 @@ JSAW.Pattern = function(options) {
  * @return {Number} The generated numeric ID.
  */
 JSAW.Pattern.prototype.generateID = function() {
-	//this.self._increment.pattern += 1;
-	//return ++this.self._increment.pattern;
+	// Herp derp
 };
 
 /**
@@ -192,7 +200,7 @@ JSAW.Pattern.prototype.removeNote = function(note) {
 	this._notes = _(this._notes).without(note);
 	console.debug("note removed");
 	console.dir(this._steps);
-}
+};
 
 JSAW.Pattern.prototype.renderPattern = function(newPattern) {
 	var outPattern = [];
@@ -227,64 +235,36 @@ JSAW.Pattern.prototype.startPlayback = function() {
 			}
 		}
 	);
-}
-
-/**
- * Track objects
- */
-JSAW.Track = function(options) {
-	//this.self = self;
-	// This should hold an array store of all pattern objects associated with this track
-	this.pattern = options.pattern || [];
-	
-	// What instrument am I?
-	this.instrument = options.instrument || {};
-};
-
-JSAW.Track.prototype.generateID = function() {
-	//this.self._increment.track += 1;
-	//return ++this.self._increment.track;
 };
 
 /**
- * Playback of a pattern attached to a track through the tracks instrument
+ * Pattern Proxy
  */
-JSAW.Track.prototype.startPlayback = function() {
-	console.debug("startPlayback has been called");
-	var self = this;
-	var sequence = new PSequence(this.pattern._steps, 1);
-	console.debug(this.instrument);
-	
-	this.instrument.al.scheduler.play(
-		[sequence],
-		1/4,
-		function(step) {
-			console.debug("stepping through sequence");
-			if (step.length > 0) {
-				_(step).forEach(function(note){
-					self.instrument.voices.create(note);
-				});
-			}
-		}
-	);
-	
+JSAW.PatternProxy = function(options) {
+	this.pattern = options.pattern;
+	this.position = options.position;
+	this.instrument = options.instrument;
 };
+
 
 /**
  * JSaw Playback
  */
-JSAW.Playback = function(options) {
+JSAW.Playback = function(jsaw, options) {
+	this.jsaw = jsaw;
 	this.bpm = options.bpm || 130;
 	this.playing = false;
 	this.audiolet = JSAW.audiolet;
-	this.sequenceEvent = null;
+	this.sequenceEvent = [];
 }
 
 JSAW.Playback.prototype = {
-	play: function(pattern, instrument) {
-		if (!this.playing) {
-			var sequence = new PSequence(pattern._steps, Infinity);
-			this.sequenceEvent = this.audiolet.scheduler.play(
+	playPattern: function(pattern, instrument, repeat) {
+		var repeatTimes = Infinity;
+		if (repeat) repeatTimes = repeat;
+		//if (!this.playing) {
+			var sequence = new PSequence(pattern._steps, repeatTimes);
+			this.sequenceEvent.push(this.audiolet.scheduler.play(
 				[sequence],
 				1/4,
 				function(step) {
@@ -294,16 +274,39 @@ JSAW.Playback.prototype = {
 						});
 					}
 				}
-			);
+			));
 			this.playing = true;
-		}
+		//}
+	},
+	playSong: function(loop) {
+		var self = this;
+		var repeatTimes = 1;
+		if (loop) repeatTimes = Infinity;
+		var sequence = new PSequence(this.jsaw.playlist._steps, repeatTimes);
+		this.sequenceEvent.push(this.audiolet.scheduler.play(
+			[sequence],
+			4,
+			function(step) {
+				if (step.length > 0) {
+					_(step).forEach(function(pattern){
+						self.playPattern(pattern.pattern, pattern.instrument, 1);
+					});
+				}
+			}
+		));
+		this.playing = true;
 	},
 	stop: function() {
-		this.audiolet.scheduler.stop(this.sequenceEvent);
+		var self = this;
+		_(this.sequenceEvent).forEach(function(item){
+			self.audiolet.scheduler.stop(item);
+		});
+		this.sequenceEvent = [];
+		//this.audiolet.scheduler.stop(this.sequenceEvent);
 		this.playing = false;
 	},
 	toggle: function(pattern, instrument) {
-		if (!this.playing) return this.play(pattern, instrument);
+		if (!this.playing) return this.playPattern(pattern, instrument);
 		return this.stop();
 	}
 };
@@ -449,40 +452,73 @@ JSAW.Instrument.prototype.playNote = function(notes) {
 /**
  * Playlist thing
  */
-JSAW.Playlist = function() {
-	// code goes here
+JSAW.Playlist = function(jsaw, options) {
+	this.jsaw = jsaw;
 	
-	//this.
-}
-
-
-JSAW.Global = function() {
-	this._sequenceCount = 1;
-	this._instrumentCount = 1;
-};
+	this._patterns = {}; // Associative array of all note objects in this pattern.
+	this._steps = []; // Step array.
+	this._patternIncrement = 1; // Counter.
 	
-JSAW.Global.prototype.getNewSequenceID = function(){
-	this._sequenceCount += 1;
-	return this._sequenceCount;
-};
-JSAW.Global.prototype.getNewTrackID = function(){
-	this._instrumentCount += 1;
-	return this._instrumentCount;
+	this.options = {
+		id: false,
+		name: "New Playlist",
+		beats: 4,
+		stepsPerBeat: 4,
+		pattern: [],
+		track: false
+	}
+	_(this.options).extend(options);
+	
+	//this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
+	this.track = this.options.track;
+	
+	// Track association is not forced, only recommended
+	if (!this.track) {
+		//console.warn("Uh oh, pattern is not assigned to a track object!");
+	}
+	
+	if (this.options.pattern.length > 0) {
+		console.debug("pattern contents");
+		console.dir(this.options.pattern);
+		this.renderPattern(this.options.pattern);
+	}
+	else {
+		for (var x = 0; x < this.options.beats; x++) {
+			for (var i = 0; i < this.options.stepsPerBeat; i++) {
+				this._steps.push([]);
+			}
+		}
+	}
 };
 
-// Static stuff and class definitions
-JSAW.Project = function(config) {
-	this.title = config.title || "Ode To JSaw";
-	this.artist = config.artist || "Someone";
-	this.bpm = config.bpm || 120.0;
+JSAW.Playlist.prototype.addItem = function(options) {
+	console.debug(options.position + " add item called!");
+	if (!this._steps[options.position]) this._steps.push([]);
 	
+	if (options.blank) {
+		return [];
+	}
 	
+	options.id = options.id || ++this._patternIncrement;
+	options.instrument = this.jsaw.model.Instruments.instrumentArray()[options.rowIndex];
+	options.pattern = this.jsaw.model.Patterns.selectedPatternObject();
+	var pattern = this._patterns[options.id] = new JSAW.PatternProxy(options);
+	
+	this._steps[options.position].push(this._patterns[options.id]);
+	
+	console.dir(pattern);
+	
+	return this._patterns[options.id]; // How interesting
 };
 
-JSAW.Sequence = function(config) {
-	//this.id = config.id || JSAW.Global.sequenceCount+1
-	//this.name = config.name || "Sequence #"+this.id;
+JSAW.Playlist.prototype.removeItem = function(pattern) {
+	//var nstep = this._steps[note.getPosition()];
+	this._steps[pattern.position] = _(this._steps[pattern.position]).without(pattern);
+	this._patterns = _(this._patterns).without(pattern);
+	console.debug("pattern removed");
+	console.dir(this._steps);
 };
+
 
 /**
  * Core application model
@@ -526,11 +562,40 @@ JSAW.Model = function() {
 			self.selectedInstrumentObject(self.instrumentArray()[newIndex]);
 			console.log("Selected Instrument changed!  Index: "+self.selectedInstrumentIndex()+", instrument: "+self.selectedInstrumentObject().options.name());
 			// Hard coded dependency, to be totally changed laters
-			pianoroll.options.instrument = self.selectedInstrumentObject;
+			//pianoroll.options.instrument = self.selectedInstrumentObject;
 		});
+		
+		this.selected = function(index) {
+			var cls = (index == this.selectedInstrumentIndex() ? "active" : "inactive");
+			return "instrument "+cls;
+		};
 		
 		this.add = function(configObject) {
 			self.instrumentArray.push(new JSAW.Instrument(configObject));
+		}
+		
+	})();
+	
+	this.Patterns = new (function(){
+		// Currently with two instruments already defined, for testing purposes
+		var self = this;
+		this.patternArray = ko.observableArray([
+			new JSAW.Pattern()
+		]).indexed(); // Gives the array items their index position in the array, accessible via $index in bindings
+		
+		this.selectedPatternIndex = ko.observable();
+		
+		this.selectedPatternObject = ko.observable();
+		
+		this.selectedPatternIndex.subscribe(function(newIndex) {
+			self.selectedPatternObject(self.patternArray()[newIndex]);
+			console.log("Selected Pattern changed!  Index: "+self.selectedPatternIndex()+", pattern: "+self.selectedPatternObject().options.name());
+			// Hard coded dependency, to be totally changed laters
+			//pianoroll.options.instrument = self.selectedInstrumentObject;
+		});
+		
+		this.add = function(configObject) {
+			self.patternArray.push(new JSAW.Pattern(configObject));
 		}
 		
 	})();
@@ -567,9 +632,31 @@ JSAW.audiolet = new Audiolet();
 jsawApp = new JSAW.App({
 	audiolet: JSAW.audiolet,
 	model: JSAW.Model,
+	playlist: JSAW.Playlist,
 	init: function() {
 		console.debug("JSaw App started!");
+		var self = this;
+		this.playback = new JSAW.Playback(this, {bpm: 130});
+		this.model = new this.model();
+		
+		this.playlist = new this.playlist(this);
+		
+		
+		this.pianoroll = new JUI.PianoRoll({instrument: this.model.Instruments.selectedInstrumentObject, pattern: this.model.Patterns.selectedPatternObject});
+		
+		//pianoroll.options.instrument = this.model.Instruments.selectedInstrumentObject;
+		//pianoroll.options.pattern = this.model.Patterns.selectedPatternObject;
+		this.playlistGrid = new JUI.SuperGrid({
+			pattern: this.playlist,
+			rowModel: this.model.Instruments.instrumentArray,
+			rowObject: JUI.Instrument,
+			wrapperElem: $("#playlist"),
+			itemObject: JUI.Pattern
+		});
+		ko.applyBindings(this.model);
 		this.model.Instruments.selectedInstrumentIndex(0);
+		this.model.Patterns.selectedPatternIndex(0);
+		DockMe($("#pianoroll"));
 		$(function() {
 			$(".dial").knob({
 				min: 0,
@@ -578,38 +665,21 @@ jsawApp = new JSAW.App({
 				thickness: .4
 			});
 		});
+		$("#test-play-song").on("click", function(){
+			if (self.playback.playing) self.playback.stop();
+			else self.playback.playSong();
+		});
+		var proll = $("#pianoroll");
+		var pc = $(".panel-center");
+		var pt = $(".panel-top");
+		var pr = $(".panel-right")
+		var winh = $(window).height();
+		var winw = $(window).width();
+		pr.height(winh - pt.height());
+		pc.height(winh - pt.height());
+		pc.width(winw - pr.width());
+		proll.height(pc.height());
+		//pr.height(winh() - (pr.height() - winh()));
 	}
 });
-/*window.onload = function() {
-	//jsaw.status = new JSAW.Model.Status();
-	
-	JSAW.audiolet = new Audiolet();
-	//JSAW.audiolet.scheduler.setTempo(130);
-	JSAW.audiolet.scheduler.stop();
-	
-	/*window.derpSynth = new JSAW.Instrument({
-		name: "Basic Synth Test",
-		al: JSAW.audiolet,
-		generator: Synth,
-		effects: [FXDelay, FXReverb]	// With delay effects!
-	});
-	
-	JSAW.new_model = new JSAW.Model();
-	
-	ko.applyBindings(JSAW.new_model);
-	
-	// Set the initial selected instrument
-	JSAW.new_model.Instruments.selectedInstrumentIndex(0);
-	
-	$(function() {
-		$(".dial").knob({
-			min: 0,
-			max: 100,
-			width: 50,
-			thickness: .4
-		});
-	});
-};*/
-
-
 
