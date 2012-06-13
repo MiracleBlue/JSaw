@@ -306,10 +306,10 @@ $(function() {
 
         this.startDrag = function(e) {
 
-            var p = c.position();
+            var p = c.offset(); // Use offset() instead of position() to fix bug when using position: relative on a parent element
             x = p.left+(opt.width/2);
             y = p.top;
-
+            
             this.capture(e);
 
             $(document).bind(

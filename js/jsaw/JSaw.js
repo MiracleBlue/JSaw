@@ -30,7 +30,8 @@ var JSAW = {
 	count: {
 		instrument: 0,
 		pattern: 0,
-		track: 0
+		track: 0,
+		mixer: 0
 	}
 };
 
@@ -173,6 +174,10 @@ JSAW.Pattern.prototype.getNote = function(id) {
 	return _(_.keys(this._notes)).contains(id) ? this._notes[id] : false;
 };
 
+
+JSAW.Pattern.prototype.getAllNotes = function() {
+	return this._notes;
+}
 /**
  * Create a new note and add it to the collection.
  */
@@ -241,9 +246,11 @@ JSAW.Pattern.prototype.startPlayback = function() {
  * Pattern Proxy
  */
 JSAW.PatternProxy = function(options) {
+	this.instance = true;
 	this.pattern = options.pattern;
 	this.position = options.position;
 	this.instrument = options.instrument;
+	this.rowIndex = options.rowIndex;
 };
 
 
@@ -519,6 +526,10 @@ JSAW.Playlist.prototype.removeItem = function(pattern) {
 	console.dir(this._steps);
 };
 
+JSAW.Playlist.prototype.getAllItems = function() {
+	return this._patterns;
+}
+
 
 /**
  * Core application model
@@ -536,7 +547,7 @@ JSAW.Model = function() {
 				generator: {
 					node: Synth2,
 					config: {
-						osc: Saw
+						//osc: Saw
 					}
 				},
 				effects: [FXDelay, FXReverb]
@@ -609,6 +620,7 @@ JSAW.Model = function() {
 		channelArray: ko.observableArray([
 			new MixerNode({
 				audiolet: JSAW.audiolet,
+				name: "Derp",
 				effects: [FXReverb],
 				output: this.masterChannel
 			}),
@@ -621,10 +633,6 @@ JSAW.Model = function() {
 	};
 };
 
-JSAW.Mixer = function() {
-	
-}
-
 /**
  * Begin initialising application logic here!
  */
@@ -636,11 +644,12 @@ jsawApp = new JSAW.App({
 	init: function() {
 		console.debug("JSaw App started!");
 		var self = this;
+		
 		this.playback = new JSAW.Playback(this, {bpm: 130});
+		
 		this.model = new this.model();
 		
 		this.playlist = new this.playlist(this);
-		
 		
 		this.pianoroll = new JUI.PianoRoll({instrument: this.model.Instruments.selectedInstrumentObject, pattern: this.model.Patterns.selectedPatternObject});
 		
@@ -653,10 +662,14 @@ jsawApp = new JSAW.App({
 			wrapperElem: $("#playlist"),
 			itemObject: JUI.Pattern
 		});
+		
 		ko.applyBindings(this.model);
+		
 		this.model.Instruments.selectedInstrumentIndex(0);
 		this.model.Patterns.selectedPatternIndex(0);
+		
 		DockMe($("#pianoroll"));
+		
 		$(function() {
 			$(".dial").knob({
 				min: 0,
@@ -665,10 +678,12 @@ jsawApp = new JSAW.App({
 				thickness: .4
 			});
 		});
+		
 		$("#test-play-song").on("click", function(){
 			if (self.playback.playing) self.playback.stop();
 			else self.playback.playSong();
 		});
+		
 		var proll = $("#pianoroll");
 		var pc = $(".panel-center");
 		var pt = $(".panel-top");

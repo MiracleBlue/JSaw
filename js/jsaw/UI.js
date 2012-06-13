@@ -72,7 +72,7 @@ var JUI = {};
 			//return nl;
 		};
 		this.elem = $("<div class='noteBlock'></div>");
-		//$("<span class='note-hint'>"+this.note.getKey()+"</span>").appendTo(this.elem);
+		$("<span class='note-hint'>"+this.item.pattern.options.name()+"</span>").appendTo(this.elem);
 		this.elem.data("note", this.item);
 		
 		this.item.onStart = function() {
@@ -212,7 +212,7 @@ var JUI = {};
 	
 	JUI.SuperGrid.prototype.addItem = function(item) {
 		var self = this;
-		var nd = this.pattern.addItem(item);
+		var nd = item.instance ? item : this.pattern.addItem(item);
 		var nb = new this.itemObject(nd);
 		nb.elem.prependTo("ul.step[rel="+(nb.item.position+1)+"] > li.item[rel="+(item.rowIndex+1)+"]");
 		nb.elem.on("mouseup", function(e){
@@ -241,6 +241,22 @@ var JUI = {};
 	JUI.SuperGrid.prototype.removeItem = function(item) {
 		this.pattern.removeItem(item.item);
 		item.elem.remove();
+	}
+	
+	JUI.SuperGrid.prototype.clearGrid = function() {
+		this.wrapperElem.find(".noteBlock").remove();
+	}
+	
+	JUI.SuperGrid.prototype.refreshGrid = function() {
+		var self = this;
+		
+		this.clearGrid();
+		
+		_(this.pattern.getAllItems()).forEach(function(item){
+			self.addItem(item);
+		});
+		
+		return this;
 	}
 	
 	/**
@@ -391,12 +407,17 @@ var JUI = {};
 			self.play();
 		});
 		
+		
+		setTimeout(function(){$pianoRollWrap.scrollTop(1372);}, 100);
 	}
 	
 	JUI.PianoRoll.prototype.addNote = function(note) {
 		var self = this;
-		var nd = this.options.pattern().addNote(note);
+		
+		// Check if note is a JSAW.Note object, otherwise add a new one
+		var nd = note.instance ? note : this.options.pattern().addNote(note);
 		var nb = new JUI.Note(nd);
+		
 		nb.elem.prependTo("ul.step[rel="+(nb.note.getPosition()+1)+"] > li.note[data-name='"+nb.note.getFullName()+"']");
 		nb.elem.on("mouseup", function(e){
 			e.preventDefault();
@@ -419,11 +440,29 @@ var JUI = {};
 			snapMode: "inner",
 			snapTolerance: 10
 		});
+		
+		return nb;
 	}
 	
 	JUI.PianoRoll.prototype.removeNote = function(note) {
 		this.options.pattern().removeNote(note.note);
 		note.elem.remove();
+	}
+	
+	JUI.PianoRoll.prototype.clearGrid = function() {
+		this.wrapperElem.find(".noteBlock").remove();
+	}
+	
+	JUI.PianoRoll.prototype.refreshGrid = function() {
+		var self = this;
+		
+		this.clearGrid();
+		
+		_(this.options.pattern().getAllNotes()).forEach(function(note){
+			self.addNote(note);
+		});
+		
+		return this;
 	}
 	
 	JUI.PianoRoll.prototype.play = function() {

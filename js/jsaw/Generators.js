@@ -495,10 +495,18 @@ var MixerNode = function(params) {
 	
 	var self = this;
 	
+	this.id = ++JSAW.count.mixer;
+	
+	this.name = params.name || "Channel "+this.id;
+	this.name = ko.observable(this.name);
+	
 	var FX = ko.observableArray([]).indexed();
 	var effectsList = params.effects || [];
 	var outputConnected = false;
 	var output = params.output || this.outputs[0];
+	
+	console.debug("Name: "+this.name());
+	console.debug("ID: "+this.id);
 	
 	
 	this.createRoutes = function() {
