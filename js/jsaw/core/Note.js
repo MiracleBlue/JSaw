@@ -4,6 +4,22 @@
  * @constructor
  * @param {Object} options Configuration options for the constructor.
  */
+
+define(['underscore', 'backbone'], function(_, Backbone) {
+	var Note = Backbone.Model.extend({
+		defaults: {
+			key: "C",
+			octave: 3,
+			velocity: 1.0,
+			duration: 1,
+			position: 0
+		},
+		fullName: function() {
+			return this.get("key") + this.get("octave");
+		}
+	});
+});
+
 JSAW.Note = function(options) {
 	this.instance = true; // This is the instance of Note!
 	
@@ -20,6 +36,13 @@ JSAW.Note = function(options) {
 	_(this.options).extend(options);
 	
 	this.id = this.options.id;
+	
+	this.onStart = function() {
+		// Stuff
+	}
+	this.onFinish = function() {
+		// More stuff
+	}
 };
 /**** METHODS ****/
 
@@ -37,6 +60,8 @@ JSAW.Note.prototype.hashify = function(){
 	outhash.fullName = this.getFullName();
 	outhash.velocity = this.getVelocity();
 	outhash.instance = false;
+	outhash.onStart = this.onStart;
+	outhash.onFinish = this.onFinish;
 	return outhash;
 };
 

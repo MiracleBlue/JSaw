@@ -19,6 +19,9 @@ JSAW.Pattern = function(options) {
 	}
 	_(this.options).extend(options);
 	
+	this.options.name = ko.observable(this.options.name);
+	//this.options.id = this.$index() || this.options.id;
+	
 	//this.id = this.options.id = (this.options.id) ? this.options.id : this.generateID();
 	this.track = this.options.track;
 	
@@ -53,8 +56,7 @@ JSAW.Pattern = function(options) {
  * @return {Number} The generated numeric ID.
  */
 JSAW.Pattern.prototype.generateID = function() {
-	//this.self._increment.pattern += 1;
-	//return ++this.self._increment.pattern;
+	// Herp derp
 };
 
 /**
@@ -64,6 +66,10 @@ JSAW.Pattern.prototype.getNote = function(id) {
 	return _(_.keys(this._notes)).contains(id) ? this._notes[id] : false;
 };
 
+
+JSAW.Pattern.prototype.getAllNotes = function() {
+	return this._notes;
+}
 /**
  * Create a new note and add it to the collection.
  */
@@ -76,11 +82,21 @@ JSAW.Pattern.prototype.addNote = function(options) {
 	}
 	
 	options.id = options.id || ++this._noteIncrement;
-	this._notes[options.id] = new JSAW.Note(options);
+	var note = this._notes[options.id] = new JSAW.Note(options);
 	
 	this._steps[options.position].push(this._notes[options.id]);
 	
-	return this._notes[options.id];
+	console.dir(note);
+	
+	return this._notes[options.id]; // How interesting
+};
+
+JSAW.Pattern.prototype.removeNote = function(note) {
+	//var nstep = this._steps[note.getPosition()];
+	this._steps[note.getPosition()] = _(this._steps[note.getPosition()]).without(note);
+	this._notes = _(this._notes).without(note);
+	console.debug("note removed");
+	console.dir(this._steps);
 };
 
 JSAW.Pattern.prototype.renderPattern = function(newPattern) {
@@ -116,4 +132,4 @@ JSAW.Pattern.prototype.startPlayback = function() {
 			}
 		}
 	);
-}
+};

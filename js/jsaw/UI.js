@@ -275,6 +275,7 @@ var JUI = {};
 		this.wrapperElem = $("#pianoroll");
 		this.buildUI();
 		this.elem = {
+			document: $(document),
 			steps: this.wrapperElem.find(".stepGrid ul.step"),
 			keys: this.wrapperElem.find(".keyList")
 		};
