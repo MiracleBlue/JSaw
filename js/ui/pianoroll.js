@@ -3,9 +3,9 @@ define([
   'underscore',
   'backbone',
   'handlebars',
-  'core/lib/note',
+  'core/note',
   'text!ui/templates/pianoroll.handlebars'
-], function($, _, Backbone, Handlebars, LibNote, tmpl) {
+], function($, _, Backbone, Handlebars, Note, tmpl) {
 
   // populate undefined values in an array
   // with their index
@@ -18,19 +18,6 @@ define([
     }
     return array;
   }
-
-  // a Note object contains the definition
-  // for the type of sound an instrument should play
-  var Note = Backbone.Model.extend({
-    defaults: {
-      key: 'C',
-      octave: 3,
-      velocity: 1,
-      duration: 1,
-      bar: 0,
-      step: 0
-    }
-  });
 
   var Notes = Backbone.Collection.extend({
     model: Note
@@ -53,34 +40,6 @@ define([
     model: Step
   });
 
-  var Instrument = Backbone.Model.extend({
-
-    defaults: {
-      audiolet: null
-    },
-
-    playNotes: function(notes) {
-
-      var self = this,
-        audiolet = self.get('audiolet'),
-        voices = [],
-        name, frequency, voice;
-
-      notes.each(function(note) {
-        name = note.get('key') + note.get('octave');
-        frequency = LibNote.fromLatin(name).frequency();
-        console.log(name, frequency);
-        voice = new Sine(audiolet, frequency);
-        voice.connect(audiolet.output);
-        voices.push(voice);
-      });
-
-      return voices;
-
-    }
-
-  });
-
   var PianoRoll = Backbone.Model.extend({
 
     defaults: {
@@ -92,15 +51,17 @@ define([
       octaves: [0, 1, 2, 3,
         4, 5, 6, 7, 8],
 
+      steps: null,
       steps_per_bar: 4,
-      bars: 4
+      bars: 4,
+
+      instrument: null
 
     },
 
     initialize: function() {
       var steps = this.get('steps_per_bar') * this.get('bars');
       this.set('steps', new Steps(new Array(steps)));
-      this.set('instrument', new Instrument({ audiolet: this.get('audiolet') }));
       return Backbone.Model.prototype.initialize.apply(this, arguments);
     }
 
@@ -147,20 +108,7 @@ define([
       scheduler.play(
         [new PSequence(all_notes, Infinity)],
         1/4,
-        function(notes) {
-
-          var voices;
-
-          if (self.old_voices) {
-            _.each(self.old_voices, function(voice) {
-              voice.disconnect(audiolet.output);
-            });
-          };
-
-          voices = instrument.playNotes(notes);
-          self.old_voices = voices;
-
-        }
+        _.bind(instrument.playNotes, instrument)
       );
 
     },

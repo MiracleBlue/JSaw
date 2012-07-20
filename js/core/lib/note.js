@@ -1,12 +1,12 @@
+// extracted from  
+// [MUSIC.js](http://www.gregjopa.com/2011/05/calculate-note-frequencies-in-javascript-with-music-js/)
 define([
   'core/lib/music'
 ], function(LibMusic) {
 
-  /**
-   * function to add the .add and .subtract functions to an array. Those functions now are executed for each element in an array.
-   */
-   
+  // add the .add and .subtract functions to an array. Those functions now are executed for each element in an array.
   function add_addsubtract_func(array) {
+
     array.add = function(that) {
       var out = new Array();
       for (var x in this) {
@@ -17,6 +17,7 @@ define([
       add_addsubtract_func(out);
       return out;
     };
+
     array.subtract = function(that) {
       var out = new Array();
       for (var x in this) {
@@ -27,16 +28,10 @@ define([
       add_addsubtract_func(out);
       return out;
     };
-    return array;
-  }
 
-  /**
-   * Note class
-   *
-   * @param {Number}x2 coord
-   *
-   * @constructor
-   */
+    return array;
+
+  }
 
   function Note(coord) {
     this.coord = coord;
@@ -50,8 +45,8 @@ define([
     return Math.round((this.coord[1] + LibMusic.baseOffset[1])/7);
   }
 
+  // calculate octave of base note without accidentals
   Note.prototype.octave = function() {
-      // calculate octave of base note without accidentals
     var acc = this.accidental();
     return this.coord[0] + LibMusic.baseOffset[0] + 4*acc + Math.floor((this.coord[1] + LibMusic.baseOffset[1] - 7*acc)/2);
   }
@@ -66,9 +61,9 @@ define([
   Note.fromLatin = function(name) {
 
     var n = name.split(/(\d+)/);
-    if (n.length > 3)
-    {
-      // if input is more than one note return an array
+
+    // if input is more than one note return an array
+    if (n.length > 3) {
       var out = new Array();
       var j = 0;
       for (var i = 0; i<(n.length-1)/2; i++) {
@@ -83,9 +78,8 @@ define([
         j += 2;
       }
       return out;
-    }
-    else
-    {
+
+    } else {
       var coord = LibMusic.notes[n[0]];
       coord = [coord[0] + parseInt(n[1]), coord[1]];  
       
@@ -110,44 +104,54 @@ define([
   }
 
   Note.prototype.add = function(interval) {
+
+    // if input is string try to parse it as interval
     if (typeof(interval) == 'string') {
-      // if input is string try to parse it as interval
       interval = Interval.fromName(interval);
     }
+
+    // if input is an array return an array too, loop over indices
     if (interval.length) {
-      // if input is an array return an array too, loop over indices
       var out = new Array();
       for (var n = 0; n<interval.length; n++) {
         out[n] = this.add(interval[n]);
       }
       add_addsubtract_func(out);
       return out;
+
     } else {
       return new Note([this.coord[0] + interval.coord[0], this.coord[1] + interval.coord[1]]);
     }
+
   }
 
   Note.prototype.subtract = function(interval) {
+    
+    // if input is string try to parse it as interval
     if (typeof(interval) == 'string') {
-      // if input is string try to parse it as interval
       interval = Interval.fromName(interval);
     }
+
+    // if input is an array return an array too, loop over indices
     if (interval.length) {
-      // if input is an array return an array too, loop over indices
       var out = new Array();
       for (var n = 0; n<interval.length; n++) {
         out[n] = this.subtract(interval[n]);
       }
       add_addsubtract_func(out);
       return out;
+
     } else {
       var coord = [this.coord[0] - interval.coord[0], this.coord[1] - interval.coord[1]];
+     
+      // if input is another note return the difference as interval
       if (typeof(interval.frequency) == 'function') {
-        // if input is another note return the difference as interval
         return new Interval(coord);
+        
       } else {
         return new Note(coord);
       }
+
     }
   }
 
