@@ -1,0 +1,83 @@
+.pianoroll {
+  background: rgb(49, 51, 66);
+  font-size: 10px;
+  font-family: Menlo;
+  height: 300px;
+  overflow: scroll;
+  position: relative;
+  width: 500px;
+}
+
+  .pianoroll > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* notes container on left */
+  .pianoroll > .notes {
+    background: red;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 40px;
+  }
+
+    .pianoroll > .notes > li.note {
+      background: rgb(184, 192, 196);
+      border-bottom: 1px solid rgb(83, 95, 100);
+      height: 20px;
+      line-height: 20px;
+      text-indent: 4px;
+      width: 40px;
+    }
+
+  /* steps container on right */
+  .pianoroll > .steps {
+    left: 40px;
+    position: absolute;
+    top: 0;
+  }
+
+    /* a step container */
+    .pianoroll > .steps > li.bar {
+      border-right: 1px solid rgb(125, 125, 125);
+      float: left;
+    }
+
+    .pianoroll > .steps > li.bar > ul {
+      margin: 0;
+      padding: 0;
+    }
+
+      .pianoroll > .steps > li.bar > ul > li.step {
+        border-right: 1px solid rgb(80, 80, 80);
+        float: left;
+      }
+
+        .pianoroll > .steps > li.bar > ul > li.step:last-child {
+          border-right: none;
+        }
+
+          /* a step- a list containing a vertical row of notes */
+          .pianoroll > .steps > li.bar > ul > li.step > ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+          }
+
+            /* a note- each individual note grid item */
+            .pianoroll > .steps > li.bar > ul > li.step > ul > li.note {
+              border-bottom: 1px solid rgb(83, 95, 100);
+              height: 20px;
+              text-indent: -9999px;
+              width: 20px;
+            }
+
+            .pianoroll > .steps > li.bar > ul > li.step > ul > li.note.highlight {
+              background: rgb(80, 135, 90);
+            }
+
+            .pianoroll > .steps > li.bar > ul > li.step > ul > li.note.active {
+              background: rgb(160, 215, 170);
+            }
