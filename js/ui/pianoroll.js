@@ -4,7 +4,7 @@ define([
   'backbone',
   'handlebars',
   'core/note',
-  'text!ui/templates/pianoroll.handlebars'
+  'text!../../templates/pianoroll.handlebars'
 ], function($, _, Backbone, Handlebars, Note, tmpl) {
 
   // populate undefined values in an array
