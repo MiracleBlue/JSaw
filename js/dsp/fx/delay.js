@@ -16,6 +16,8 @@ define([
     initialize: function(attrs, opts) {
       Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
       this.build();
+      this.route();
+      this.bind();
     },
 
     build: function() {
@@ -31,14 +33,36 @@ define([
       this.delay = new FeedbackDelay(audiolet, max_frequency, frequency, feedback, mix);
       this.feedback = new Gain(audiolet, gain);
 
-      this.route();
-
     },
 
     route: function() {
       this.inputs[0].connect(this.delay);
       this.delay.connect(this.feedback);
       this.feedback.connect(this.outputs[0]);
+    },
+
+    bind: function() {
+
+      var self = this,
+        delay = self.delay,
+        feedback = self.feedback;
+
+      self.on('change:frequency', function(self, val) {
+        delay.delayTime.setValue(val);
+      });
+
+      self.on('change:feedback', function(self, val) {
+        delay.feedback.setValue(val);
+      });
+
+      self.on('change:mix', function(self, val) {
+        delay.mix.setValue(val);
+      });
+
+      self.on('change:gain', function(self, val) {
+        feedback.gain.setValue(val);
+      });
+
     }
 
   });

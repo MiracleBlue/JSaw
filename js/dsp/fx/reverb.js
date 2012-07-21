@@ -15,6 +15,8 @@ define([
     initialize: function(attrs, opts) {
       Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
       this.build();
+      this.route();
+      this.bind();
     },
 
     build: function() {
@@ -26,13 +28,30 @@ define([
 
       this.reverb = new Reverb(audiolet, mix, room_size, damping);
 
-      this.route();
-
     },
 
     route: function() {
       this.inputs[0].connect(this.reverb);
       this.reverb.connect(this.outputs[0]);
+    },
+
+    bind: function() {
+
+      var self = this,
+        reverb = self.reverb;
+
+      self.on('change:mix', function(self, val) {
+        reverb.mix.setValue(val);
+      });
+
+      self.on('change:room_size', function(self, val) {
+        reverb.roomSize.setValue(mix);
+      });
+
+      self.on('change:damping', function(self, val) {
+        reverb.damping.setValue(val);
+      });
+
     }
 
   });
