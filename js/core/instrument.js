@@ -4,8 +4,9 @@ define([
   'underscore',
   'backbone',
   'core/lib/note',
-  'dsp/generators/synth'
-], function(_, Backbone, LibNote, Synth) {
+  'dsp/generators/synth',
+  'dsp/misc/mixer'
+], function(_, Backbone, LibNote, Synth, Mixer) {
 
   // the `Instrument` class. example use
   // (an `Instrument` using the `Synth` `Generator`, who
@@ -24,7 +25,34 @@ define([
     // and a `Generator` class which is used to create the instrument voices.
     defaults: {
       audiolet: null,
-      generator: Synth
+      generator: Synth,
+      fx: null
+    },
+
+    initialize: function() {
+      Backbone.Model.prototype.initialize.apply(this, arguments);
+      this.build();
+    },
+
+    build: function() {
+
+      // make sure we have a working FX chain
+      // if one is not passed in
+      if (!this.get('fx')) {
+        this.set('fx', new Backbone.Collection());
+      }
+
+      this.mixer = new Mixer({
+        audiolet: this.get('audiolet'),
+        fx: this.get('fx')
+      });
+
+      this.route();
+    
+    },
+
+    route: function() {
+      this.mixer.connect(this.get('audiolet').output);
     },
 
     // an `Instrument` has one primary method of interaction, `playNotes`.
@@ -57,10 +85,14 @@ define([
         }, self.attributes));
 
         generator.on('complete', function() {
-          generator.disconnect(audiolet.output);
+          generator.disconnect(self.mixer.inputs[0]);
         });
 
-        generator.connect(audiolet.output);
+        // AudioletNode.prototype.connect checks if
+        // the node in the argument is instanceof AudioletGroup
+        // but our extended object doesn't match the instanceof check.
+        // as such you must connect to the input directly, for now.
+        generator.connect(self.mixer.inputs[0]);
 
       });
 

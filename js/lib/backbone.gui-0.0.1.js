@@ -60,8 +60,6 @@ define([
           user_opts = this.gui || {},
           row_template = _.template(this.row_template);
 
-        console.log(model);
-
         // create a component for each attribute
         // of the model
         _.each(model.attributes, function(attr, key) {

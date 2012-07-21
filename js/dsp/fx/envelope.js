@@ -27,11 +27,9 @@ define([
         release = this.get('release'),
         params = [attack, decay, release];
 
-      function on_complete() {
+      this.envelope = new Envelope(audiolet, 1, [0, 1, 0, 0], params, null, function() {
         self.trigger('complete');
-      };
-
-      this.envelope = new Envelope(audiolet, 1, [0, 1, 0, 0], params, null, on_complete);
+      });
 
       this.route();
 

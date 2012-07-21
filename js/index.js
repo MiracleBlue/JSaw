@@ -13,11 +13,14 @@ require.config({
 
 require([
   'jquery',
+  'backbone',
   'gui',
   'ui/pianoroll',
   'core/instrument',
-  'dsp/generators/synth'
-], function($, GUI, PianoRoll, Instrument, Synth) {
+  'dsp/generators/synth',
+  'dsp/fx/delay',
+  'dsp/fx/reverb'
+], function($, Backbone, GUI, PianoRoll, Instrument, Synth, Delay, Reverb) {
 
   var $body = $('body'),
     audiolet = new Audiolet(),
@@ -30,10 +33,25 @@ require([
     scale: ['B', 'A', 'F', 'D'],
 
     instrument: new Instrument({
+
       audiolet: audiolet,
       generator: Synth,
+
+      fx: new Backbone.Collection([
+        
+        new Delay({
+          audiolet: audiolet
+        }),
+
+        new Reverb({
+          audiolet: audiolet
+        })
+
+      ]),
+
       attack: 0.01,
       decay: 0.15
+
     })
 
   });
