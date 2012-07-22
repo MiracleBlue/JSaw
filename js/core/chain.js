@@ -3,8 +3,17 @@ define([
   'backbone'
 ], function(_, Backbone) {
 
-  // a chain is a Collection which represents a group of nodes.
-  // the chain will automatically route its internals in their index order
+  // a chain is a `Collection` which has the same routing interface as a `Group`.
+  // the only difference is a `Chain` routes it's nodes automatically, linearly
+  // connecting the first output of each node into the first input of the following node
+  // `
+  // var instrument = new Instrument({ audiolet: audiolet }),
+  //   delay = new Delay({ audiolet: audiolet }),
+  //   reverb = new Reverb({ audiolet: audiolet })
+  //   chain = new Chain([], { audiolet: audiolet });
+  // instrument.connect(chain.inputs[0]);
+  // chain.connect(audiolet.output);
+  // `
   var Chain = Backbone.Collection.extend(_.extend({}, AudioletGroup.prototype, {
 
     initialize: function(models, opts) {

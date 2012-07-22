@@ -64,16 +64,10 @@ define([
         // a new sound for each `Note` in the `Collection`.
         // the `frequency` of the note is derived from the `key` and `octave`
         // properties of the `Note`.
-
-        // any non-requisite attributes explicitly given
-        // to the `Instrument` on instantiation will be passed to the `Generator`.
-        // this means new `Generator`s will reflect changes made to attributes
-        // of the `Instrument` itself. in the example above, this means generators
-        // created by the `keyboard` `Instrument` will always be passed the latest
-        // `attack` value to each new `Generator`.
-        generator = new (self.get('generator'))(_.extend({
+        generator = new (self.get('generator'))({
+          audiolet: audiolet,
           frequency: frequency
-        }, self.attributes));
+        });
 
         generator.on('complete', function() {
           generator.disconnect(self.outputs[0]);
