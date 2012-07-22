@@ -4,8 +4,9 @@ require([
   'core/instrument',
   'core/chain',
   'dsp/fx/delay',
-  'dsp/fx/reverb'
-], function($, Backbone, Instrument, Chain, Delay, Reverb) {
+  'dsp/fx/reverb',
+  'ui/chain'
+], function($, Backbone, Instrument, Chain, Delay, Reverb, ChainView) {
 
   var audiolet = new Audiolet(),
     instrument = new Instrument({ audiolet: audiolet }),
@@ -23,5 +24,15 @@ require([
     { key: 'B', octave: 2 },
     { key: 'E', octave: 3 }
   ]);
+
+  // make fx chain ui
+  delay.set('name', 'delay');
+  reverb.set('name', 'reverb');
+
+  var view = new ChainView({
+    collection: chain
+  });
+
+  $('body').append(view.render().el);
 
 });
