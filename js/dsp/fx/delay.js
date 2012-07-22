@@ -13,6 +13,30 @@ define([
       gain: 0.4
     },
 
+    params: {
+
+      mix: {
+        min: 0,
+        max: 1
+      },
+
+      feedback: {
+        min: 0,
+        max: 1
+      },
+
+      frequency: {
+        min: 0,
+        max: 1
+      },
+
+      gain: {
+        min: 0,
+        max: 1
+      }
+
+    },
+
     initialize: function(attrs, opts) {
       Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
       this.build();

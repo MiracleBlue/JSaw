@@ -26,6 +26,26 @@ require([
     audiolet = new Audiolet(),
     $play_btn = $('<a href="#">PLAY</a>');
 
+  var delay = new Delay({
+    audiolet: audiolet
+  });
+
+  var delay_view = new GUI({
+    model: delay
+  });
+
+  $body.append(delay_view.render().el);
+
+  var reverb = new Reverb({
+    audiolet: audiolet
+  });
+
+  var reverb_view = new GUI({
+    model: reverb
+  });
+
+  $body.append(reverb_view.render().el);
+
   var roll = new PianoRoll({
 
     audiolet: audiolet,
@@ -37,17 +57,7 @@ require([
       audiolet: audiolet,
       generator: Synth,
 
-      fx: new Backbone.Collection([
-        
-        new Delay({
-          audiolet: audiolet
-        }),
-
-        new Reverb({
-          audiolet: audiolet
-        })
-
-      ]),
+      fx: new Backbone.Collection([delay, reverb]),
 
       attack: 0.01,
       decay: 0.15

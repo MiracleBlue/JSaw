@@ -12,6 +12,25 @@ define([
       damping: 0.5
     },
 
+    params: {
+
+      mix: {
+        min: 0,
+        max: 1
+      },
+
+      room_size: {
+        min: 0,
+        max: 1
+      },
+
+      damping: {
+        min: 0,
+        max: 1
+      }
+
+    },
+
     initialize: function(attrs, opts) {
       Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
       this.build();

@@ -13,6 +13,25 @@ define([
       release: 0.01
     },
 
+    params: {
+
+      attack: {
+        min: 0,
+        max: 0.1
+      },
+
+      decay: {
+        min: 0,
+        max: 0.3
+      },
+
+      release: {
+        min: 0,
+        max: 0.1
+      }
+
+    },
+
     initialize: function(attrs, opts) {
       Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
       this.build();
