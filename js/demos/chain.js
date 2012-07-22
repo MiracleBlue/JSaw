@@ -18,12 +18,12 @@ require([
   instrument.connect(chain.inputs[0]);
   chain.connect(audiolet.output);
   
-  // play e major
-  instrument.playNotes([
-    { key: 'E', octave: 2 },
-    { key: 'B', octave: 2 },
-    { key: 'E', octave: 3 }
-  ]);
+  // repeat simple chord
+  setInterval(function() {
+    instrument.playNotes([
+      { key: 'E', octave: 2 }
+    ]);
+  }, 1200);
 
   // make fx chain ui
   delay.set('name', 'delay');

@@ -73,10 +73,6 @@ define([
           generator.disconnect(self.outputs[0]);
         });
 
-        // AudioletNode.prototype.connect checks if
-        // the node in the argument is instanceof AudioletGroup
-        // but our extended object doesn't match the instanceof check.
-        // as such you must connect to the input directly, for now.
         generator.connect(self.outputs[0]);
 
       });

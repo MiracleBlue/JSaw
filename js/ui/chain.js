@@ -2,11 +2,40 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'handlebars',
-  'text!../../templates/chain.handlebars'
-], function($, _, Backbone, Handlebars, tmpl) {
+  'handlebars'
+], function($, _, Backbone, Handlebars) {
+
+  var NodeView = Backbone.View.extend({
+
+    tagName: 'li',
+    template: '<span>{{name}} <a href="#" class="destroy">delete</a></span>',
+
+    events: {
+      'click .destroy': 'destroy'
+    },
+
+    initialize: function() {
+      Backbone.View.prototype.initialize.apply(this, arguments);
+      this.model.on('destroy', _.bind(this.remove, this));
+    },
+
+    destroy: function() {
+      this.model.destroy();
+    },
+
+    render: function() {
+      var template = Handlebars.compile(this.template),
+        $el = $(this.el);
+      $el.append($(template(this.model.toJSON())));
+      return this;
+    }
+
+  });
 
   var ChainView = Backbone.View.extend({
+
+    tagName: 'ul',
+    className: 'chain',
 
     initialize: function(opts) {
       _.extend(this, opts);
@@ -15,12 +44,14 @@ define([
 
     render: function() {
 
-      var template = Handlebars.compile(tmpl),
-        collection = this.collection;
+      var $el = $(this.el),
+        subview;
 
-      this.setElement($(template({
-        models: collection.toJSON()
-      })));
+      // append subviews
+      _.each(this.collection.models, function(model) {
+        subview = new NodeView({ model: model });
+        $el.append(subview.render().el);
+      });
 
       return this;
 

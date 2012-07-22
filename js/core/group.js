@@ -23,7 +23,7 @@ define([
     initialize: function(attrs, opts, num_inputs, num_outputs) {
       Backbone.Model.prototype.initialize.apply(this, arguments);
       AudioletGroup.apply(this, [this.get('audiolet'), num_inputs, num_outputs]);
-    }
+    },
 
   }));
 
