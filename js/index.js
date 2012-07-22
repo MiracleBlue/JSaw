@@ -12,7 +12,7 @@ require.config({
 });
 
 require([
-  'demos/chain'
+  'demos/pianoroll'
 ], function() {
   console.log('demo loaded');
 });

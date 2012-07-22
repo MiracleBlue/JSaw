@@ -73,7 +73,8 @@ define([
       'mouseenter .steps .note': 'highlightNote',
       'mouseleave .steps .note': 'unhighlightNote',
       'click .steps .note': 'addNote',
-      'contextmenu .steps .note': 'removeNote'
+      'contextmenu .steps .note': 'removeNote',
+      'click .play': 'play'
     },
 
     initialize: function(options) {
@@ -105,11 +106,19 @@ define([
         return step.get('notes');
       });
 
-      scheduler.play(
-        [new PSequence(all_notes, Infinity)],
-        1/4,
-        _.bind(instrument.playNotes, instrument)
-      );
+      // todo: should use play/stop
+      // instead of inherent toggle
+      if (this.playing) {
+        scheduler.stop(this.playing);
+        delete this.playing;
+      
+      } else {
+        this.playing = scheduler.play(
+          [new PSequence(all_notes, Infinity)],
+          1/4,
+          _.bind(instrument.playNotes, instrument)
+        );
+      }
 
     },
 
