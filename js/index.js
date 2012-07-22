@@ -17,11 +17,12 @@ require([
   'gui',
   'ui/pianoroll',
   'core/instrument',
+  'core/chain',
   'dsp/generators/synth',
   'dsp/fx/delay',
   'dsp/fx/reverb'
-], function($, Backbone, GUI, PianoRoll, Instrument, Synth, Delay, Reverb) {
-
+], function($, Backbone, GUI, PianoRoll, Instrument, Chain, Synth, Delay, Reverb) {
+  
   var $body = $('body'),
     audiolet = new Audiolet(),
     $play_btn = $('<a href="#">PLAY</a>');
@@ -46,6 +47,10 @@ require([
 
   $body.append(reverb_view.render().el);
 
+  var fx = new Chain([delay], {
+    audiolet: audiolet
+  });
+
   var roll = new PianoRoll({
 
     audiolet: audiolet,
@@ -57,7 +62,9 @@ require([
       audiolet: audiolet,
       generator: Synth,
 
-      fx: new Backbone.Collection([delay, reverb]),
+      fx: new Chain([delay, reverb], {
+        audiolet: audiolet
+      }),
 
       attack: 0.01,
       decay: 0.15

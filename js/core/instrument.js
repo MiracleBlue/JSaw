@@ -4,9 +4,15 @@ define([
   'underscore',
   'backbone',
   'core/lib/note',
+  'core/note',
+  'core/chain',
   'dsp/generators/synth',
   'dsp/misc/mixer'
-], function(_, Backbone, LibNote, Synth, Mixer) {
+], function(_, Backbone, LibNote, Note, Chain, Synth, Mixer) {
+
+  var Notes = Backbone.Collection.extend({
+    model: Note
+  });
 
   // the `Instrument` class. example use
   // (an `Instrument` using the `Synth` `Generator`, who
@@ -18,7 +24,7 @@ define([
   //   attack: 0.01  
   // });
   // `
-  var Instrument = Backbone.Model.extend({
+  var Instrument = Backbone.Model.extend(_.extend({}, AudioletGroup.prototype, {
 
     // an `Instrument` only needs 2 attributes.
     // the `audiolet` context, for audio playback,
@@ -31,28 +37,7 @@ define([
 
     initialize: function() {
       Backbone.Model.prototype.initialize.apply(this, arguments);
-      this.build();
-    },
-
-    build: function() {
-
-      // make sure we have a working FX chain
-      // if one is not passed in
-      if (!this.get('fx')) {
-        this.set('fx', new Backbone.Collection());
-      }
-
-      this.mixer = new Mixer({
-        audiolet: this.get('audiolet'),
-        fx: this.get('fx')
-      });
-
-      this.route();
-    
-    },
-
-    route: function() {
-      this.mixer.connect(this.get('audiolet').output);
+      AudioletGroup.apply(this, [this.get('audiolet'), 0, 1]);
     },
 
     // an `Instrument` has one primary method of interaction, `playNotes`.
@@ -63,6 +48,12 @@ define([
       var self = this,
         audiolet = self.get('audiolet'),
         name, frequency, generator;
+
+      // user can pass in a collection
+      // or an array of notes which will be turned into a collection
+      if (_.isArray(notes)) {
+        notes = new Notes(notes);
+      }
 
       notes.each(function(note) {
 
@@ -85,20 +76,20 @@ define([
         }, self.attributes));
 
         generator.on('complete', function() {
-          generator.disconnect(self.mixer.inputs[0]);
+          generator.disconnect(self.outputs[0]);
         });
 
         // AudioletNode.prototype.connect checks if
         // the node in the argument is instanceof AudioletGroup
         // but our extended object doesn't match the instanceof check.
         // as such you must connect to the input directly, for now.
-        generator.connect(self.mixer.inputs[0]);
+        generator.connect(self.outputs[0]);
 
       });
 
     }
 
-  });
+  }));
 
   return Instrument;
 

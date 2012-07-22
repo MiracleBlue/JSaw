@@ -4,11 +4,10 @@
 define([
   'underscore',
   'backbone',
-  'core/group',
   'dsp/fx/envelope'
-], function(_, Backbone, Group, Envelope) {
+], function(_, Backbone, Envelope) {
 
-  var Synth = Group.extend(_.extend({
+  var Synth = Backbone.Model.extend(_.extend({}, AudioletGroup.prototype, {
 
     defaults: {
       
@@ -21,7 +20,8 @@ define([
     },
 
     initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+      Backbone.Model.prototype.initialize.apply(this, arguments);
+      AudioletGroup.apply(this, [this.get('audiolet'), 0, 1]);
       this.build();
     },
 

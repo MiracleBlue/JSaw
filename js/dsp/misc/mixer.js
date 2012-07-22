@@ -29,25 +29,10 @@ define([
 
       var fx = this.get('fx');
 
-      // if there are fx
-      // chain them together before gain
-      if (fx.length) {
+      console.log(fx);
 
-        // connect input to first fx
-        this.inputs[0].connect(fx.first().inputs[0]);
-
-        // connect each fx into the next
-        _.each(fx.first(fx.length - 1), function(effect, i) {
-          effect.connect(fx.at(i + 1).inputs[0]);
-        });
-
-        // connect last fx to output
-        fx.last().connect(this.gain);
-
-      // no fx, input goes directly into gain
-      } else {
-        this.inputs[0].connect(this.gain);
-      }
+      this.inputs[0].connect(fx.inputs[0]);
+      fx.connect(this.gain);
 
       this.gain.connect(this.amp);
       this.gain.connect(this.output);
