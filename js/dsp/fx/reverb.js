@@ -64,7 +64,7 @@ define([
       });
 
       self.on('change:room_size', function(self, val) {
-        reverb.roomSize.setValue(mix);
+        reverb.roomSize.setValue(val);
       });
 
       self.on('change:damping', function(self, val) {

@@ -70,7 +70,7 @@ require([
 
     model: roll.model.get('instrument'),
 
-    gui: {
+    params: {
 
       decay: {
         min: 0.1,

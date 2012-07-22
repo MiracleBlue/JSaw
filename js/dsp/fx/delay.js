@@ -17,7 +17,7 @@ define([
 
       mix: {
         min: 0,
-        max: 1
+        max: 0.5
       },
 
       feedback: {
