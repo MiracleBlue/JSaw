@@ -1,10 +1,9 @@
-// a basic `Delay`.
 define([
   'backbone',
-  'core/group'
-], function(Backbone, Group) {
+  'dsp/fx/fx'
+], function(Backbone, FX) {
 
-  var JDelay = Group.extend({
+  var JDelay = FX.extend({
 
     defaults: {
       name: 'Delay',
@@ -12,37 +11,6 @@ define([
       feedback: 0.3,
       frequency: 0.8,
       gain: 0.4
-    },
-
-    params: {
-
-      mix: {
-        min: 0,
-        max: 0.5
-      },
-
-      feedback: {
-        min: 0,
-        max: 1
-      },
-
-      frequency: {
-        min: 0,
-        max: 1
-      },
-
-      gain: {
-        min: 0,
-        max: 1
-      }
-
-    },
-
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
-      this.build();
-      this.route();
-      this.bind();
     },
 
     build: function() {
@@ -66,7 +34,7 @@ define([
       this.feedback.connect(this.outputs[0]);
     },
 
-    bind: function() {
+    properties: function() {
 
       var self = this,
         delay = self.delay,

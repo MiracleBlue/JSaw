@@ -43,7 +43,6 @@ define([
     render: function() {
       var template = Handlebars.compile(this.template),
         $el = $(this.el);
-      console.log(this.model);
       $el.append($(template(this.model.toJSON())));
       return this;
     }
@@ -99,7 +98,7 @@ define([
       self.setElement($el);
 
       // append subviews
-      _.each(self.collection.models, this.addNodeView);
+      _.each(self.collection.models, _.bind(this.addNodeView, this));
 
       return self;
 

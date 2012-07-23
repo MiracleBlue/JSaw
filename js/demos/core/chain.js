@@ -1,37 +1,44 @@
+// this demo shows how to use a `Chain` to
+// control the routing of a group of nodes.
+// it also demonstrates the default `Chain` UI.
 require([
   'jquery',
-  'backbone',
-  'core/instrument',
   'core/chain',
+  'core/instrument',
+  'dsp/gen/synth',
   'dsp/fx/delay',
   'dsp/fx/reverb',
-  'dsp/generators/synth',
   'ui/chain'
-], function($, Backbone, Instrument, Chain, Delay, Reverb, Synth, ChainView) {
+], function($, Chain, Instrument, Synth, Delay, Reverb, ChainView) {
 
   var audiolet = new Audiolet(),
     instrument = new Instrument({ audiolet: audiolet, generator: Synth }),
-    chain = new Chain([], { audiolet: audiolet });
+    reverb = new Reverb({ audiolet: audiolet });
 
-  // route nodes
+  // create `Chain`
+  var chain = new Chain([reverb], { audiolet: audiolet });
+
+  // route graph
   instrument.connect(chain.inputs[0]);
   chain.connect(audiolet.output);
   
   // repeat simple chord
+  // using setInterval for clarity-
+  // ideally you should use the Audiolet scheduler
   setInterval(function() {
     instrument.playNotes([
       { key: 'E', octave: 2 }
     ]);
   }, 1200);
 
+  // create UI
   var view = new ChainView({
     collection: chain,
     audiolet: audiolet,
     options: [Delay, Reverb]
   });
 
-  window.chain = chain;
-
+  // render UI
   $('body').append(view.render().el);
 
 });

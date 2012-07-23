@@ -1,43 +1,16 @@
-// a basic `Envelope`.
 define([
   'underscore',
   'backbone',
-  'core/group'
-], function(_, Backbone, Group) {
+  'dsp/fx/fx'
+], function(_, Backbone, FX) {
 
-  var JEnvelope = Group.extend(_.extend({
+  var JEnvelope = FX.extend(_.extend({
 
     defaults: {
       name: 'Envelope',
       attack: 0.01,
       decay: 0.15,
       release: 0.01
-    },
-
-    params: {
-
-      attack: {
-        min: 0,
-        max: 0.1
-      },
-
-      decay: {
-        min: 0,
-        max: 0.3
-      },
-
-      release: {
-        min: 0,
-        max: 0.1
-      }
-
-    },
-
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
-      this.build();
-      this.route();
-      this.bind();
     },
 
     build: function() {
@@ -59,7 +32,7 @@ define([
       this.envelope.connect(this.outputs[0]);
     },
 
-    bind: function() {
+    properties: function() {
 
       var self = this,
         envelope = self.envelope;

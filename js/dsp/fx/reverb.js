@@ -1,42 +1,15 @@
-// a basic `Reverb`.
 define([
   'backbone',
-  'core/group'
-], function(Backbone, Group) {
+  'dsp/fx/fx'
+], function(Backbone, FX) {
 
-  var JReverb = Group.extend({
+  var JReverb = FX.extend({
 
     defaults: {
       name: 'Reverb',
       mix: 0.3,
       room_size: 0.7,
       damping: 0.5
-    },
-
-    params: {
-
-      mix: {
-        min: 0,
-        max: 1
-      },
-
-      room_size: {
-        min: 0,
-        max: 1
-      },
-
-      damping: {
-        min: 0,
-        max: 1
-      }
-
-    },
-
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
-      this.build();
-      this.route();
-      this.bind();
     },
 
     build: function() {
@@ -55,7 +28,7 @@ define([
       this.reverb.connect(this.outputs[0]);
     },
 
-    bind: function() {
+    properties: function() {
 
       var self = this,
         reverb = self.reverb;

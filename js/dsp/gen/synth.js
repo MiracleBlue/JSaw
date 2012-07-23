@@ -1,28 +1,16 @@
-// a basic saw wave `Generator`. can be used directly as a node
-// in an `Audiolet` chain, or can be passed into an `Instrument`
-// as it's source sound.
 define([
   'underscore',
   'backbone',
+  'dsp/gen/gen',
   'dsp/fx/envelope'
-], function(_, Backbone, Envelope) {
+], function(_, Backbone, Generator, Envelope) {
 
-  var Synth = Backbone.Model.extend(_.extend({}, AudioletGroup.prototype, {
+  var Synth = Generator.extend(_.extend({
 
     defaults: {
-      
-      audiolet: null,
-
       frequency: 440,
       attack: 0.01,
       decay: 0.15
-
-    },
-
-    initialize: function(attrs, opts) {
-      Backbone.Model.prototype.initialize.apply(this, arguments);
-      AudioletGroup.apply(this, [this.get('audiolet'), 0, 1]);
-      this.build();
     },
 
     build: function() {
@@ -47,8 +35,6 @@ define([
         self.trigger('complete');
       });
 
-      this.route();
-
     },
 
     route: function() {
@@ -58,6 +44,28 @@ define([
       this.saw.connect(this.gain);
       this.gain.connect(this.velocity);
       this.velocity.connect(this.outputs[0]);
+    },
+
+    properties: function() {
+
+      var self = this,
+        envelope = self.envelope;
+
+      self.on('change:frequency', function(self, val) {
+        self.saw.frequency.setValue(val);
+        self.mod.frequency.setValue(2 * val);
+        self.modMulAdd.mul.setValue(val / 2);
+        self.modMulAdd.add.setValue(val);
+      });
+
+      self.on('change:attack', function(self, val) {
+        envelope.set('attack', val);
+      });
+
+      self.on('change:decay', function(self, val) {
+        envelope.set('decay', val);
+      });
+
     }
 
   }, Backbone.Events));
