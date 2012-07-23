@@ -8,6 +8,7 @@ define([
   var JEnvelope = Group.extend(_.extend({
 
     defaults: {
+      name: 'Envelope',
       attack: 0.01,
       decay: 0.15,
       release: 0.01

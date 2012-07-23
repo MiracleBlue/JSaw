@@ -7,6 +7,7 @@ define([
   var JDelay = Group.extend({
 
     defaults: {
+      name: 'Delay',
       mix: 0.5,
       feedback: 0.3,
       frequency: 0.8,

@@ -7,6 +7,7 @@ define([
   var JReverb = Group.extend({
 
     defaults: {
+      name: 'Reverb',
       mix: 0.3,
       room_size: 0.7,
       damping: 0.5

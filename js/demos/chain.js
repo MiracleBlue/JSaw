@@ -10,9 +10,7 @@ require([
 
   var audiolet = new Audiolet(),
     instrument = new Instrument({ audiolet: audiolet }),
-    delay = new Delay({ audiolet: audiolet }),
-    reverb = new Reverb({ audiolet: audiolet })
-    chain = new Chain([delay, reverb], { audiolet: audiolet });
+    chain = new Chain([], { audiolet: audiolet });
 
   // route nodes
   instrument.connect(chain.inputs[0]);
@@ -25,13 +23,13 @@ require([
     ]);
   }, 1200);
 
-  // make fx chain ui
-  delay.set('name', 'delay');
-  reverb.set('name', 'reverb');
-
   var view = new ChainView({
-    collection: chain
+    collection: chain,
+    audiolet: audiolet,
+    options: [Delay, Reverb]
   });
+
+  window.chain = chain;
 
   $('body').append(view.render().el);
 
