@@ -1,11 +1,12 @@
 require([
   'jquery',
   'ui/pianoroll',
-  'core/instrument'
-], function($, PianoRoll, Instrument) {
+  'core/instrument',
+  'dsp/generators/synth'
+], function($, PianoRoll, Instrument, Synth) {
   
   var audiolet = new Audiolet(),
-    instrument = new Instrument({ audiolet: audiolet });
+    instrument = new Instrument({ audiolet: audiolet, generator: Synth });
 
   var roll = new PianoRoll({
     audiolet: audiolet,

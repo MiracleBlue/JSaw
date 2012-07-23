@@ -1,18 +1,18 @@
-// a Note object contains the definition
-// for the type of sound an instrument should play
+// a `Note` object contains the definition for
+// how an `Instrument` should treat a particular
+// `Generator`. the generator's frequency,
+// duration, etc.
+
+// `
+// var audiolet = new Audiolet(),
+//   instrument = new Instrument({ audiolet: audiolet, generator: Synth }),
+//   note = new Note({ key: 'A', octave: 5 });
+// instrument.playNotes([note]);
+// `
 define([
   'backbone'
 ], function(Backbone) {
 
-  // the `Note` class. example use
-  // (playing a simple chord with an instrument):  
-  // `
-  // var instrument = new Instrument({ audiolet: audiolet }),
-  //   a3 = new Note({ key: 'A', octave: 3 }),
-  //   a5 = new Note({ key: 'A', octave: 5 }),
-  //   notes = new Backbone.Collection([a3, a5]);
-  // instrument.playNotes(notes);
-  // `
   var Note = Backbone.Model.extend({
     defaults: {
 

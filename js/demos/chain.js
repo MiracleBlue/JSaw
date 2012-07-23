@@ -5,11 +5,12 @@ require([
   'core/chain',
   'dsp/fx/delay',
   'dsp/fx/reverb',
+  'dsp/generators/synth',
   'ui/chain'
-], function($, Backbone, Instrument, Chain, Delay, Reverb, ChainView) {
+], function($, Backbone, Instrument, Chain, Delay, Reverb, Synth, ChainView) {
 
   var audiolet = new Audiolet(),
-    instrument = new Instrument({ audiolet: audiolet }),
+    instrument = new Instrument({ audiolet: audiolet, generator: Synth }),
     chain = new Chain([], { audiolet: audiolet });
 
   // route nodes
