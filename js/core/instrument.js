@@ -18,8 +18,9 @@ define([
   'core/lib/note',
   'core/note',
   'core/chain',
-  'core/group'
-], function(_, Backbone, LibNote, Note, Chain, Group) {
+  'core/group',
+  'dsp/gen/synth'
+], function(_, Backbone, LibNote, Note, Chain, Group, Synth) {
 
   // this `Notes` collection enables the `playNotes`
   // to accept simple javascript objects instead
@@ -36,11 +37,12 @@ define([
     // `Instrument` should derive it's sound
     defaults: {
       audiolet: null,
-      generator: null
+      generator: Synth
     },
 
     initialize: function(attrs, opts) {
       Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+      _.bindAll(this, 'playNotes');
     },
 
     // `playNotes` accepts a `Collection` of `Note` objects, or an array

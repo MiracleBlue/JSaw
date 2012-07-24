@@ -12,7 +12,7 @@ require.config({
 });
 
 require([
-  'demos/core/pianoroll'
+  'demos/core/mixer'
 ], function() {
   console.log('demo loaded');
 });
