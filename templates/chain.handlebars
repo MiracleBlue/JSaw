@@ -1,0 +1,15 @@
+<div class="chain">
+
+  <form class="add">
+    <select name="name">
+      {{#options}}
+        <option value="{{.}}">{{.}}</option>
+      {{/options}}
+    </select>
+    <input type="submit" value="Add" />
+  </form>
+
+  <ul class="nodes">
+  </ul>
+
+</div>
