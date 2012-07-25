@@ -2,18 +2,18 @@ define([
   'underscore',
   'backbone',
   'core/group',
-  'core/track'
-], function(_, Backbone, Group, Track) {
+  'core/channel'
+], function(_, Backbone, Group, Channel) {
 
-  var Tracks = Backbone.Collection.extend({
-    model: Track
+  var Channels = Backbone.Collection.extend({
+    model: Channel
   });
 
   var Mixer = Group.extend({
 
     defaults: {
       audiolet: null,
-      tracks: null,
+      channels: null,
       gain: 0.7
     },
 
@@ -28,27 +28,27 @@ define([
     build: function() {
 
       var audiolet = this.get('audiolet'),
-        tracks = this.get('tracks');
+        channels = this.get('channels');
 
-      if (!tracks) {
-        tracks = new Tracks();
-        this.set('tracks', tracks);
+      if (!channels) {
+        channels = new Channels();
+        this.set('channels', channels);
       }
 
       this.gain = new Gain(audiolet, this.get('gain'))
 
-      tracks.on('add reset remove', this.route);
+      channels.on('add reset remove', this.route);
 
     },
 
     route: function() {
 
       var self = this,
-        tracks = self.get('tracks'),
+        channels = self.get('channels'),
         gain = self.gain;
 
-      tracks.each(function(track) {
-        track.connect(gain);
+      channels.each(function(channel) {
+        channel.connect(gain);
       });
       
       gain.connect(self.outputs[0]);

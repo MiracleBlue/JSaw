@@ -8,9 +8,9 @@ define([
   'lib/backbone.gui/js/src/components/vertical-slider'
 ], function($, _, Backbone, ChainView, Delay, Reverb, Slider) {
 
-  var TrackView = Backbone.View.extend({
+  var ChannelView = Backbone.View.extend({
 
-    className: 'track',
+    className: 'channel',
 
     initialize: function() {
       
@@ -44,6 +44,6 @@ define([
 
   });
 
-  return TrackView;
+  return ChannelView;
 
 });

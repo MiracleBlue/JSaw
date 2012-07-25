@@ -12,8 +12,7 @@ require.config({
 });
 
 require([
+  'demos/core/pianoroll'
 ], function() {
-
-  
-  
+  console.log('demo loaded');
 });

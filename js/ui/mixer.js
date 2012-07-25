@@ -2,9 +2,9 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'ui/track',
+  'ui/channel',
   'lib/backbone.gui/js/src/components/vertical-slider'
-], function($, _, Backbone, TrackView, Slider) {
+], function($, _, Backbone, ChannelView, Slider) {
 
   var MixerView = Backbone.View.extend({
 
@@ -32,12 +32,12 @@ define([
       // append mixer controls
       $el.append(this.gain_slider.render().el);
 
-      // append each track view
-      model.get('tracks').each(function(track) {
-        var track_view = new TrackView({
-          model: track
+      // append each channel view
+      model.get('channels').each(function(channel) {
+        var channel_view = new ChannelView({
+          model: channel
         });
-        $el.append(track_view.render().el);
+        $el.append(channel_view.render().el);
       });
 
       return this;

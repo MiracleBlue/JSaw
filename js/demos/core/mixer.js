@@ -2,17 +2,17 @@ require([
   'jquery',
   'underscore',
   'backbone',
-  'core/track',
+  'core/channel',
   'core/mixer',
   'core/scheduler',
   'ui/mixer'
-], function($, _, Backbone, Track, Mixer, Scheduler, MixerView) {
+], function($, _, Backbone, Channel, Mixer, Scheduler, MixerView) {
 
   var audiolet = new Audiolet(),
-    track = new Track({ audiolet: audiolet }),
-    track2 = new Track({ audiolet: audiolet }),
-    tracks = new Backbone.Collection([track, track2]),
-    mixer = new Mixer({ audiolet: audiolet, tracks: tracks }),
+    channel = new Channel({ audiolet: audiolet }),
+    channel2 = new Channel({ audiolet: audiolet }),
+    channels = new Backbone.Collection([channel, channel2]),
+    mixer = new Mixer({ audiolet: audiolet, channels: channels }),
     scheduler = new Scheduler({ audiolet: audiolet });
 
   // route graph
@@ -20,8 +20,8 @@ require([
 
   // repease simple chords
   scheduler.play([{ key: 'C' }, { key: 'E' }], function(notes) {
-    track.get('instrument').playNotes([notes[0]]);
-    track2.get('instrument').playNotes([notes[1]]);
+    channel.get('instrument').playNotes([notes[0]]);
+    channel2.get('instrument').playNotes([notes[1]]);
   }, 2)
 
   // build ui

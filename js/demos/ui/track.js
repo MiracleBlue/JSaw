@@ -2,25 +2,23 @@ require([
   'jquery',
   'underscore',
   'backbone',
-  'core/track',
-  'ui/track'
-], function($, _, Backbone, Track, TrackView) {
+  'core/channel',
+  'ui/channel'
+], function($, _, Backbone, Channel, ChannelView) {
 
   var audiolet = new Audiolet(),
-    track = new Track({ audiolet: audiolet });
+    channel = new Channel({ audiolet: audiolet });
 
-  track.connect(audiolet.output);
+  channel.connect(audiolet.output);
 
-  track.get('instrument').playNotes([
+  channel.get('instrument').playNotes([
     { key: 'C' }
   ]);
 
-  var track_view = new TrackView({
-    model: track
+  var channel_view = new ChannelView({
+    model: channel
   });
 
-  window.track = track;
-
-  $('body').append(track_view.render().el);
+  $('body').append(channel_view.render().el);
 
 });

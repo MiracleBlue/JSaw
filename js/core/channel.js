@@ -6,7 +6,7 @@ define([
   'core/chain'
 ], function(_, Backbone, Group, Instrument, Chain) {
 
-  var Track = Group.extend({
+  var Channel = Group.extend({
 
     defaults: {
       audiolet: null,
@@ -65,6 +65,6 @@ define([
 
   });
 
-  return Track;
+  return Channel;
 
 });

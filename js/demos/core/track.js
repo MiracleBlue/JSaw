@@ -1,19 +1,19 @@
 require([
   'underscore',
   'jquery',
-  'core/track',
+  'core/channel',
   'core/scheduler',
   'ui/scheduler'
-], function(_, $, Track, Scheduler, SchedulerView) {
+], function(_, $, Channel, Scheduler, SchedulerView) {
 
   var audiolet = new Audiolet(),
-    track = new Track({ audiolet: audiolet }),
+    channel = new Channel({ audiolet: audiolet }),
     scheduler = new Scheduler({ audiolet: audiolet }),
-    instrument = track.get('instrument'),
+    instrument = channel.get('instrument'),
     notes = [{ key: 'E', octave: 2 }];
 
   // route graph
-  track.connect(audiolet.output);
+  channel.connect(audiolet.output);
 
   // repeat simple chord
   scheduler.play(notes, instrument.playNotes);
