@@ -74,12 +74,16 @@ define([
     },
 
     addNote: function(e) {
-
+		
       var $note = $(e.target),
         bar = $note.data('bar'),
         step = $note.data('step'),
         model = this.model,
         index = (bar * model.get('steps_per_bar')) + step;
+        
+        if ($note.hasClass("active")) {
+        	return;
+        }
 
       model.get('steps').at(index).get('notes').add({
         key: $note.data('key'),

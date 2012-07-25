@@ -51,8 +51,8 @@ define([
     playNotes: function(notes) {
 
       var self = this,
-        audiolet = self.get('audiolet'),
-        name, frequency, generator;
+        audiolet = self.get('audiolet')
+        
 
       // allow the user to pass in
       // an array of javascript objects
@@ -63,6 +63,7 @@ define([
 
       notes.each(function(note) {
 
+		var name, frequency, generator;
         name = note.get('key') + note.get('octave');
         frequency = LibNote.fromLatin(name).frequency();
 
