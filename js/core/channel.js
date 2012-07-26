@@ -2,21 +2,20 @@ define([
   'underscore',
   'backbone',
   'core/group',
-  'core/instrument',
   'core/chain'
-], function(_, Backbone, Group, Instrument, Chain) {
+], function(_, Backbone, Group, Chain) {
 
   var Channel = Group.extend({
 
     defaults: {
       audiolet: null,
-      instrument: null,
       fx: null,
-      gain: 0.7
+      gain: 0.7,
+      pan: 0.5
     },
 
     initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+      Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
       this.build();
       this.route();
       this.properties();
@@ -25,29 +24,26 @@ define([
     build: function() {
 
       var audiolet = this.get('audiolet'),
-        fx = this.get('fx'),
-        instrument = this.get('instrument');
+        fx = this.get('fx');
 
       if (!fx) {
         this.set('fx', new Chain([], { audiolet: audiolet }));
       }
 
-      if (!instrument) {
-        this.set('instrument', new Instrument({ audiolet: audiolet }));
-      }
-
       this.gain = new Gain(audiolet, this.get('gain'));
+      this.pan = new Pan(audiolet, this.get('pan'));
 
     },
 
     route: function() {
 
       var fx = this.get('fx'),
-        instrument = this.get('instrument'),
+        pan = this.pan,
         gain = this.gain;
 
-      instrument.connect(fx.inputs[0]);
-      fx.connect(gain);
+      this.inputs[0].connect(fx.inputs[0]);
+      fx.connect(pan);
+      pan.connect(gain);
       gain.connect(this.outputs[0]);
 
     },
@@ -55,10 +51,16 @@ define([
     properties: function() {
 
       var self = this,
-        gain = self.gain;
+        gain = self.gain,
+        pan = self.pan;
 
       self.on('change:gain', function(self, val) {
         gain.gain.setValue(val);
+      });
+
+      self.on('change:pan', function(self, val) {
+        console.log('x', val);
+        pan.pan.setValue(val);
       });
 
     }

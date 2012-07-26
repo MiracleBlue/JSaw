@@ -12,8 +12,42 @@ require.config({
 });
 
 require([
-], function() {
+  'jquery',
+  'underscore',
+  'backbone',
+  'core/scheduler',
+  'core/mixer',
+  'core/instrument',
+  'ui/mixer'
+], function($, _, Backbone, Scheduler, Mixer, Instrument, MixerView) {
 
-  
-  
+  var audiolet = new Audiolet(),
+    scheduler = new Scheduler({ audiolet: audiolet });
+
+  var instrument = new Instrument({ audiolet: audiolet }),
+    instrument2 = new Instrument({ audiolet: audiolet });
+
+  var mixer = new Mixer({ audiolet: audiolet }),
+    channels = mixer.get('channels'),
+    channel_1 = channels.at(0),
+    channel_2 = channels.at(1);
+
+  // route graph
+  instrument.connect(channel_1.inputs[0]);
+  instrument2.connect(channel_2.inputs[0]);
+  mixer.connect(audiolet.output);
+
+  // repease simple chords
+  scheduler.play([{ key: 'C' }, { key: 'E' }], function(notes) {
+    instrument.playNotes([notes[0]]);
+    instrument2.playNotes([notes[1]]);
+  }, 2)
+
+  // build ui
+  var mixer_view = new MixerView({
+    model: mixer
+  });
+
+  $('body').append(mixer_view.render().el);
+
 });

@@ -5,8 +5,9 @@ define([
   'ui/chain',
   'dsp/fx/delay',
   'dsp/fx/reverb',
-  'lib/backbone.gui/js/src/components/vertical-slider'
-], function($, _, Backbone, ChainView, Delay, Reverb, Slider) {
+  'lib/backbone.gui/js/src/components/vertical-slider',
+  'lib/backbone.gui/js/src/components/knob'
+], function($, _, Backbone, ChainView, Delay, Reverb, Slider, Knob) {
 
   var ChannelView = Backbone.View.extend({
 
@@ -29,6 +30,13 @@ define([
         options: [Delay, Reverb]
       });
 
+      this.pan_knob = new Knob({
+        model: this.model,
+        property: 'pan',
+        min: 0,
+        max: 1
+      });
+
     },
 
     render: function() {
@@ -37,6 +45,7 @@ define([
 
       $el.append(this.gain_slider.render().el);
       $el.append(this.fx_view.render().el);
+      $el.append(this.pan_knob.render().el);
 
       return this;
 

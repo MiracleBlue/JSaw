@@ -12,33 +12,38 @@ define([
   var Mixer = Group.extend({
 
     defaults: {
+
       audiolet: null,
-      channels: null,
-      gain: 0.7
+      gain: 0.7,
+
+      channels: null
+
     },
 
     initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
-      _.bindAll(this, 'build', 'route');
-      this.build();
-      this.route();
-      this.properties();
-    },
-
-    build: function() {
 
       var audiolet = this.get('audiolet'),
-        channels = this.get('channels');
+        channels = new Channels([
+        { audiolet: audiolet },
+        { audiolet: audiolet }
+      ]);
 
-      if (!channels) {
-        channels = new Channels();
-        this.set('channels', channels);
-      }
+      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+      _.bindAll(this, 'build', 'route');
 
-      this.gain = new Gain(audiolet, this.get('gain'))
+      this.set('channels', channels);
 
       channels.on('add reset remove', this.route);
 
+      this.build();
+      this.route();
+      this.properties();
+
+    },
+
+    build: function() {
+      var audiolet = this.get('audiolet');
+      this.gain = new Gain(audiolet, this.get('gain'))
     },
 
     route: function() {
