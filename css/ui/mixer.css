@@ -1,0 +1,22 @@
+.mixer {
+
+}
+
+  .mixer .controls {
+    float: left;
+  }
+
+  .mixer .channels {
+    float: left;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+    .mixer .channels > li {
+      float: left;
+    }
+
+      .mixer .channels > li .bb-gui-component {
+        display: block;
+      }

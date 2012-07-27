@@ -12,12 +12,8 @@ define([
   var Mixer = Group.extend({
 
     defaults: {
-
       audiolet: null,
-      gain: 0.7,
-
       channels: null
-
     },
 
     initialize: function(attrs, opts) {
@@ -25,49 +21,36 @@ define([
       var audiolet = this.get('audiolet'),
         channels = new Channels([
         { audiolet: audiolet },
+        { audiolet: audiolet },
+        { audiolet: audiolet },
+        { audiolet: audiolet },
         { audiolet: audiolet }
       ]);
 
       Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
-      _.bindAll(this, 'build', 'route');
+      _.bindAll(this, 'route');
 
       this.set('channels', channels);
 
       channels.on('add reset remove', this.route);
 
-      this.build();
       this.route();
-      this.properties();
 
-    },
-
-    build: function() {
-      var audiolet = this.get('audiolet');
-      this.gain = new Gain(audiolet, this.get('gain'))
     },
 
     route: function() {
 
       var self = this,
         channels = self.get('channels'),
-        gain = self.gain;
+        first = channels.at(0);
 
-      channels.each(function(channel) {
-        channel.connect(gain);
+      // connect all channels to first "master" channel
+      _.each(channels.last(channels.length - 1), function(channel) {
+        channel.connect(first.inputs[0]);
       });
-      
-      gain.connect(self.outputs[0]);
 
-    },
-
-    properties: function() {
-
-      var self = this,
-        gain = self.gain;
-
-      self.on('change:gain', function(self, val) {
-        gain.gain.setValue(val);
-      });
+      // connect master channel to output
+      first.connect(self.outputs[0]);
 
     }
 

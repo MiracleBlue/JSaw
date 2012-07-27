@@ -2,10 +2,9 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'handlebars',
   'lib/backbone.gui/js/src/components/horizontal-slider',
-  'lib/backbone.gui/js/src/components/text-input',
-], function($, _, Backbone, Handlebars, Slider, Input) {
+  'lib/backbone.gui/js/src/components/text-input'
+], function($, _, Backbone, Slider, Input) {
 
   var BpmSelector = Backbone.View.extend({
 
@@ -38,22 +37,34 @@ define([
 
   });
 
-  var SchedulerView = Backbone.View.extend({
+  var Nav = Backbone.View.extend({
 
-    className: 'scheduler',
+    scheduler: null,
 
-    initialize: function() {
-      Backbone.View.prototype.initialize.apply(this, arguments);
-      this.bpm_selector = new BpmSelector({ model: this.model });
+    className: 'nav',
+
+    initialize: function(opts) {
+
+      _.extend(this, opts);
+
+      this.bpm_selector = new BpmSelector({
+        model: opts.model
+      });
+
     },
 
     render: function() {
-      $(this.el).append(this.bpm_selector.render().el);
+
+      var $el = $(this.el);
+
+      $el.append(this.bpm_selector.render().el);
+
       return this;
+
     }
 
   });
 
-  return SchedulerView;
+  return Nav;
 
 });
