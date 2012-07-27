@@ -90,12 +90,7 @@ define([
       ]);
 
       Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
-      _.bindAll(this, 'route');
-
       this.set('channels', channels);
-
-      channels.on('add reset remove', this.route);
-
       this.route();
 
     },
