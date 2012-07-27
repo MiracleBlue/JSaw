@@ -1,0 +1,10 @@
+.arrangement {
+  width: 600px;
+  height: 300px;
+  background: grey;
+  overflow: hidden;
+}
+
+  .arrangement .new-tracks {
+    display: none;
+  }

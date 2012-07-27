@@ -5,10 +5,10 @@ define([
   'dsp/fx/envelope'
 ], function(_, Backbone, Generator, Envelope) {
 
-  var Synth = Generator.extend(_.extend({
+  var Synth2 = Generator.extend(_.extend({
 
     defaults: {
-      name: 'Synth',
+      name: 'Synth2',
       frequency: 440,
       attack: 0.01,
       decay: 0.15
@@ -20,11 +20,9 @@ define([
         audiolet = this.get('audiolet'),
         freq = this.get('frequency');
 
-      this.saw = new Saw(audiolet, freq);
-      this.mod = new Sine(audiolet, 2 * freq);
-      this.modMulAdd = new MulAdd(audiolet, freq / 2, freq);
+      this.sine = new Sine(audiolet, freq);
+      this.sine2 = new Sine(audiolet, 1.05 * freq);
       this.gain = new Gain(audiolet);
-      this.velocity = new Gain(audiolet, 0.1);
 
       this.envelope = new Envelope({
         audiolet: audiolet,
@@ -39,12 +37,10 @@ define([
     },
 
     route: function() {
-      this.mod.connect(this.modMulAdd);
-      this.modMulAdd.connect(this.saw);
+      this.sine.connect(this.gain);
+      this.sine2.connect(this.gain);
       this.envelope.connect(this.gain, 0, 1);
-      this.saw.connect(this.gain);
-      this.gain.connect(this.velocity);
-      this.velocity.connect(this.outputs[0]);
+      this.gain.connect(this.outputs[0]);
     },
 
     properties: function() {
@@ -53,10 +49,8 @@ define([
         envelope = self.envelope;
 
       self.on('change:frequency', function(self, val) {
-        self.saw.frequency.setValue(val);
-        self.mod.frequency.setValue(2 * val);
-        self.modMulAdd.mul.setValue(val / 2);
-        self.modMulAdd.add.setValue(val);
+        self.sine.frequency.setValue(val);
+        self.sine2.frequency.setValue(1.05 * freq);
       });
 
       self.on('change:attack', function(self, val) {
@@ -71,6 +65,6 @@ define([
 
   }, Backbone.Events));
 
-  return Synth;
+  return Synth2;
 
 });
