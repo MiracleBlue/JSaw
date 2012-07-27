@@ -18,8 +18,13 @@ require([
   'core/scheduler',
   'core/mixer',
   'core/instrument',
-  'ui/mixer'
-], function($, _, Backbone, Scheduler, Mixer, Instrument, MixerView) {
+  'ui/mixer',
+  'ui/scheduler'
+], function($, _, Backbone, Scheduler, Mixer, Instrument, MixerView, SchedulerView) {
+
+  // set up tracks
+
+  // set up mixer
 
   var audiolet = new Audiolet(),
     scheduler = new Scheduler({ audiolet: audiolet });
@@ -48,6 +53,11 @@ require([
     model: mixer
   });
 
+  var scheduler_view = new SchedulerView({
+    model: scheduler
+  });
+
   $('body').append(mixer_view.render().el);
+  $('body').append(scheduler_view.render().el);
 
 });
