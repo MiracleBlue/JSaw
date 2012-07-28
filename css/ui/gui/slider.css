@@ -1,0 +1,74 @@
+.slider.vertical,
+.slider.round {
+  width: 20px;
+  height: 80px;
+  background: rgb(79, 79, 79);
+  border-radius: 30px;
+  border: 1px solid #27292d;
+  padding: 5px;
+}
+  
+  .slider.vertical .track-outer,
+  .slider.round .track-outer {
+    border-radius: 30px;
+    height: 100%;
+    background: rgb(0, 0, 0);
+    position: relative;
+  }
+
+    .slider.vertical .track-outer .track-inner,
+    .slider.round .track-outer .track-inner {
+      background-color: rgb(7, 141, 187);
+      border-radius: 30px;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      min-height: 6px;
+      max-height: 67px;
+    }
+
+      .slider.vertical .track-outer .track-inner .grip,
+      .slider.round .track-outer .track-inner .grip {
+        background-color: #e4dddd;
+        border-radius: 30px; 
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        font-weight: bold;
+        color: #aaa;
+        text-align: center;
+        cursor: pointer;
+        -webkit-user-select: none; 
+        border: 1px solid rgb(137, 137, 137);
+        left: -6px;
+        top: -8px;
+        line-height: 18px;
+        font-size: 10px;
+      }
+
+        .slider.vertical .track-outer .track-inner .grip:after,
+        .slider.round .track-outer .track-inner .grip:after {
+          content: "=";
+        }
+
+.slider.round {
+  width: 20px;
+  height: 20px;
+  -webkit-transform: rotate(-90deg);
+}
+  
+  .slider.round .track-outer {
+  }
+
+    .slider.round .track-outer .track-inner {
+    }
+
+      .slider.round .track-outer .track-inner .grip {
+        color: #000;
+      }
+
+        .slider.round .track-outer .track-inner .grip:after {
+          content: "=";
+          position: absolute;
+          left: 13px;
+        }

@@ -1,22 +1,67 @@
 .mixer {
-
+  display: inline-block;
 }
 
-  .mixer .controls {
-    float: left;
-  }
-
   .mixer .channels {
-    float: left;
+    background: #000;
     list-style: none;
     padding: 0;
     margin: 0;
+    border-bottom: 1px solid rgb(46, 46, 46);
+    border-right: 1px solid rgb(46, 46, 46);
+    border-left: 1px solid rgb(140, 140, 140);
+    border-top: 1px solid rgb(140, 140, 140);
   }
 
     .mixer .channels > li {
       float: left;
     }
 
-      .mixer .channels > li .bb-gui-component {
-        display: block;
+    .mixer .channels > li:first-child {
+      margin-left: 1px;
+    }
+
+    .mixer .channels > li .meta,
+    .mixer .channels > li .controls {
+      border-bottom: 1px solid rgb(73, 81, 86);
+      border-left: 1px solid rgb(123, 134, 138);
+      border-right: 1px solid rgb(73, 81, 86);
+      border-top: 1px solid rgb(123, 134, 138);
+      margin: 1px 1px 1px 0;
+      padding: 5px;
+      background: rgb(92, 104, 110);
+    }
+
+      .mixer .channels > li .meta {
+        height: 120px;
+        position: relative;
       }
+
+        .mixer .channels > li .meta .name_input {
+          -webkit-transform: rotate(-90deg);
+          position: absolute;
+          bottom: 30px;
+          left: -20px;
+        }
+
+          .mixer .channels > li .meta .name_input input {
+            width: 70px;
+            font-size: 10px;
+            -webkit-user-select: auto;
+          }
+
+      .mixer .channels > li .controls {
+
+      }
+
+        .mixer .channels > li .controls .bb-gui-component {
+          display: block;
+        }
+
+          .mixer .channels > li .controls .bb-gui-component > * {
+            margin: 0 auto;
+          }
+
+        .mixer .channels > li .controls .pan_knob {
+          margin-bottom: 5px;
+        }

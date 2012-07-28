@@ -1,0 +1,14 @@
+.text {
+
+}
+
+  .text input,
+  .text input:focus {
+    border-radius: 3px;
+    padding: 5px;
+    width: 50px;
+    font-family: Menlo;
+    background: #000;
+    border: none;
+    color: #fff;
+  }
