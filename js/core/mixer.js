@@ -8,6 +8,7 @@ define([
   var Channel = Group.extend({
 
     defaults: {
+      name: 'Channel',
       audiolet: null,
       fx: null,
       gain: 0.7,
@@ -59,7 +60,6 @@ define([
       });
 
       self.on('change:pan', function(self, val) {
-        console.log('x', val);
         pan.pan.setValue(val);
       });
 
@@ -82,11 +82,11 @@ define([
 
       var audiolet = this.get('audiolet'),
         channels = new Channels([
-        { audiolet: audiolet },
-        { audiolet: audiolet },
-        { audiolet: audiolet },
-        { audiolet: audiolet },
-        { audiolet: audiolet }
+        { audiolet: audiolet, name: 'Master' },
+        { audiolet: audiolet, name: 'Channel 1'  },
+        { audiolet: audiolet, name: 'Channel 2'  },
+        { audiolet: audiolet, name: 'Channel 3'  },
+        { audiolet: audiolet, name: 'Channel 4'  }
       ]);
 
       Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);

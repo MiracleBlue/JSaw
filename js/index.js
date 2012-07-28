@@ -74,7 +74,8 @@ require([
 
   var arrangement_view = new ArrangementView({
     audiolet: audiolet,
-    tracks: tracks
+    tracks: tracks,
+    mixer: mixer
   });
 
   var mixer_view = new MixerView({

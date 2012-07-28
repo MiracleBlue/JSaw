@@ -68,7 +68,8 @@ define([
 
     trackAdded: function(track) {
       var view = new TrackView({
-        model: track
+        model: track,
+        mixer: this.mixer
       });
       this.$tracks.append(view.render().el);
     },
