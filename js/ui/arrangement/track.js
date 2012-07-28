@@ -4,7 +4,7 @@ define([
   'backbone',
   'handlebars',
   'lib/backbone.gui/js/src/components/dropdown',
-  'text!../../templates/track.handlebars'
+  'text!../../../templates/arrangement/track.handlebars'
 ], function($, _, Backbone, Handlebars, Dropdown, tmpl) {
 
   var TrackView = Backbone.View.extend({

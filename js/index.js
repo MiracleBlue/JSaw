@@ -18,21 +18,17 @@ require([
   'backbone',
 
   'core/scheduler',
-  'core/track',
-  'core/mixer',
+  'core/arrangement/tracks',
+  'core/mixer/mixer',
 
-  'ui/nav',
-  'ui/arrangement',
-  'ui/mixer'
+  'ui/nav/nav',
+  'ui/arrangement/arrangement',
+  'ui/mixer/mixer'
 
 ], function(
   $, _, Backbone,
-  Scheduler, Track, Mixer,
+  Scheduler, Tracks, Mixer,
   NavView, ArrangementView, MixerView) {
-
-  var Tracks = Backbone.Collection.extend({
-    model: Track
-  });
 
   //
   // create nodes

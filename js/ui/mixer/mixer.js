@@ -8,8 +8,8 @@ define([
   'lib/backbone.gui/js/src/components/text-input',
   'lib/backbone.gui/js/src/components/vertical-slider',
   'lib/backbone.gui/js/src/components/knob',
-  'text!../../templates/channel.handlebars',
-  'text!../../templates/mixer.handlebars'
+  'text!../../../templates/mixer/channel.handlebars',
+  'text!../../../templates/mixer/mixer.handlebars'
 ], function($, _, Backbone, Handlebars, Delay, Reverb, Text, Slider, Knob, c_tmpl, m_tmpl) {
 
   var ChannelView = Backbone.View.extend({

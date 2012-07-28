@@ -3,52 +3,14 @@ define([
   'underscore',
   'backbone',
   'handlebars',
-  'core/track',
+  'core/arrangement/track',
   'core/instrument',
   'dsp/gen/synth',
   'dsp/gen/synth2',
-  'ui/track',
-  'text!../../templates/arrangement.handlebars'
-], function($, _, Backbone, Handlebars, Track, Instrument, Synth, Synth2, TrackView, tmpl) {
-
-  var NewTrackView = Backbone.View.extend({
-
-    tagName: 'li',
-    className: 'track',
-
-    model: null,
-    tracks: null,
-    audiolet: null,
-
-    events: {
-      'click': 'addTrack'
-    }, 
-
-    initialize: function(opts) {
-      _.extend(this, opts);
-      Backbone.View.prototype.initialize.apply(this, arguments);
-    },
-
-    addTrack: function() {
-      this.model = new Track({
-        audiolet: this.audiolet,
-        instrument: new Instrument({ audiolet: this.audiolet, generator: this.gen })
-      });
-      this.tracks.add(this.model);
-    },
-
-    render: function() {
-
-      var $el = $(this.el),
-        gen = this.gen;
-
-      $el.append(gen.prototype.defaults.name);
-
-      return this;
-
-    }
-
-  });
+  'ui/arrangement/track',
+  'ui/arrangement/new-track',
+  'text!../../../templates/arrangement/arrangement.handlebars'
+], function($, _, Backbone, Handlebars, Track, Instrument, Synth, Synth2, TrackView, NewTrackView, tmpl) {
 
   var ArrangementView = Backbone.View.extend({
 
