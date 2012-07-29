@@ -30,9 +30,9 @@ require([
   //
 
   var audiolet = new Audiolet(),
-    scheduler = new Scheduler({ audiolet: audiolet }),
+    scheduler = new Scheduler({}, { audiolet: audiolet }),
     tracks = new Tracks(),
-    mixer = new Mixer({ audiolet: audiolet, tracks: tracks });
+    mixer = new Mixer({}, { audiolet: audiolet });
 
   //
   // route graph
@@ -41,7 +41,7 @@ require([
   // by default, newly added tracks get routed
   // to the mixer master channel
   tracks.on('add', function(track) {
-    track.connect(mixer.get('channels').at(0).inputs[0]);
+    track.connect(mixer.channels.at(0).inputs[0]);
   });
 
   // removing a track from the collection
@@ -80,7 +80,7 @@ require([
   // hack to get sound. on track add, repeat a note
   tracks.on('add', function(track) {
     scheduler.play([{ key: 'E', key: 'B' }], function(notes) {
-      track.get('instrument').playNotes([{}]);
+      track.instrument.playNotes([{}]);
     });
   });
 

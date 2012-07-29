@@ -15,11 +15,11 @@ define([
       'click .add': 'toggleAdd'
     },
 
-    initialize: function(opts) {
+    initialize: function(options) {
 
       Backbone.View.prototype.initialize.apply(this, arguments);
 
-      _.extend(this, opts);
+      _.extend(this, options);
 
       this.tracks.on('add', _.bind(this.trackAdded, this));
 

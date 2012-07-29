@@ -13,7 +13,7 @@ define([
 
     build: function() {
 
-      var audiolet = this.get('audiolet'),
+      var audiolet = this.audiolet,
         mix = this.get('mix'),
         room_size = this.get('room_size'),
         damping = this.get('damping');

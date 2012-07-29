@@ -5,19 +5,26 @@ define([
   var Track = Group.extend({
 
     defaults: {
-      name: 'New Track',
-      sequence: null,
-      patterns: null,
-      instrument: null
+      name: 'New Track'
     },
 
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+    initialize: function(attrs, options) {
+
+      var instrument = this.instrument = options.instrument;
+
+      Group.prototype.initialize.apply(this, [attrs, options, 0, 1]);
+
       this.route();
+
     },
 
     route: function() {
-      this.get('instrument').connect(this.outputs[0]);
+
+      var instrument = this.instrument,
+        output = this.outputs[0];
+
+      instrument.connect(output);
+
     }
 
   });

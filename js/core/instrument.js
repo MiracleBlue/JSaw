@@ -29,18 +29,21 @@ define([
 
   var Instrument = Group.extend({
 
-    // an `Instrument` requires 2 attributes:  
-    // `audiolet`: the Audiolet object
+    // an `Instrument` requires 1 attribute:
     // `generator`: a `Generator` from which the
     // `Instrument` should derive it's sound
     defaults: {
-      audiolet: null,
       generator: Synth
     },
 
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+    initialize: function(attrs, options) {
+
+      var audiolet = this.audiolet = options.audiolet;
+
+      Group.prototype.initialize.apply(this, [attrs, options, 0, 1]);
+
       _.bindAll(this, 'playNotes');
+
     },
 
     // `playNotes` accepts a `Collection` of `Note` objects, or an array
@@ -49,7 +52,7 @@ define([
     playNotes: function(notes) {
 
       var self = this,
-        audiolet = self.get('audiolet')
+        audiolet = self.audiolet;
         
 
       // allow the user to pass in
@@ -70,9 +73,8 @@ define([
         // the `frequency` of the note is derived from the `key` and `octave`
         // properties of the `Note`.
         generator = new (self.get('generator'))({
-          audiolet: audiolet,
           frequency: frequency
-        });
+        }, { audiolet: audiolet });
 
         // at the moment, the generators `Envelope`
         // is responsible for diminishing the `Note`

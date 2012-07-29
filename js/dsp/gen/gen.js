@@ -12,15 +12,19 @@ define([
   var Generator = Group.extend({
 
     defaults: {
-      audiolet: null,
       name: 'Generator'
     },
 
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 0, 1]);
+    initialize: function(attrs, options) {
+
+      var audiolet = this.audiolet = options.audiolet;
+
+      Group.prototype.initialize.apply(this, [attrs, options, 0, 1]);
+
       this.build();
       this.route();
       this.properties();
+
     },
 
     build: function() {

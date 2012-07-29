@@ -3,7 +3,9 @@ define([
 ], function(Track) {
 
   var Tracks = Backbone.Collection.extend({
+    
     model: Track
+
   });
 
   return Tracks;

@@ -18,13 +18,13 @@ define([
 
   var Chain = Backbone.Collection.extend(_.extend({}, AudioletGroup.prototype, {
 
-    initialize: function(models, opts) {
+    initialize: function(models, options) {
 
       var self = this;
 
       // inherit Backbone `Collection` and `AudioletGroup` properties
       Backbone.Collection.prototype.initialize.apply(this, arguments);
-      AudioletGroup.apply(this, [opts.audiolet, 1, 1]);
+      AudioletGroup.apply(this, [options.audiolet, 1, 1]);
 
       // whenever a node is added or removed
       // from the `Chain`, the nodes should be rerouted

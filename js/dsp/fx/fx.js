@@ -12,15 +12,19 @@ define([
   var FX = Group.extend({
 
     defaults: {
-      audiolet: null,
       name: 'FX'
     },
 
-    initialize: function(attrs, opts) {
-      Group.prototype.initialize.apply(this, [attrs, opts, 1, 1]);
+    initialize: function(attrs, options) {
+
+      var audiolet = this.audiolet = options.audiolet;
+
+      Group.prototype.initialize.apply(this, [attrs, options, 1, 1]);
+
       this.build();
       this.route();
       this.properties();
+
     },
 
     build: function() {

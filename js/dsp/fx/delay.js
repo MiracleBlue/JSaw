@@ -14,7 +14,7 @@ define([
 
     build: function() {
 
-      var audiolet = this.get('audiolet'),
+      var audiolet = this.audiolet,
         mix = this.get('mix'),
         feedback = this.get('feedback'),
         freq = this.get('frequency'),

@@ -6,12 +6,12 @@ define([
 
   var NavView = Backbone.View.extend({
 
-    initialize: function(opts) {
+    initialize: function(options) {
 
       Backbone.View.prototype.initialize.apply(this, arguments);
 
       this.bpm_selector = new BpmView({
-        model: opts.model
+        model: options.model
       });
 
     },

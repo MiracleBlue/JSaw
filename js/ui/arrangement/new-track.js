@@ -16,15 +16,15 @@ define([
       'click': 'addTrack'
     }, 
 
-    initialize: function(opts) {
-      _.extend(this, opts);
+    initialize: function(options) {
+      _.extend(this, options);
       Backbone.View.prototype.initialize.apply(this, arguments);
     },
 
     addTrack: function() {
-      this.model = new Track({
+      this.model = new Track({}, {
         audiolet: this.audiolet,
-        instrument: new Instrument({ audiolet: this.audiolet, generator: this.gen })
+        instrument: new Instrument({ generator: this.gen }, { audiolet: this.audiolet })
       });
       this.tracks.add(this.model);
     },

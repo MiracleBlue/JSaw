@@ -14,7 +14,7 @@ define([
     build: function() {
 
       var self = this,
-        audiolet = this.get('audiolet'),
+        audiolet = this.audiolet,
         attack = this.get('attack'),
         decay = this.get('decay'),
         release = this.get('release'),

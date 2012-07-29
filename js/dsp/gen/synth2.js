@@ -15,7 +15,7 @@ define([
     build: function() {
 
       var self = this,
-        audiolet = this.get('audiolet'),
+        audiolet = this.audiolet,
         freq = this.get('frequency');
 
       this.sine = new Sine(audiolet, freq);
@@ -23,10 +23,9 @@ define([
       this.gain = new Gain(audiolet);
 
       this.envelope = new Envelope({
-        audiolet: audiolet,
         attack: this.get('attack'),
         decay: this.get('decay')
-      });
+      }, { audiolet: audiolet });
 
       this.envelope.on('complete', function() {
         self.trigger('complete');

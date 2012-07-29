@@ -17,7 +17,7 @@ define([
         view;
 
       // append each channel view
-      model.get('channels').each(function(channel) {
+      model.channels.each(function(channel) {
         view = new ChannelView({ model: channel });
         $channels.append(view.render().el);
       });

@@ -6,19 +6,19 @@ define([
 
   var BpmView = Backbone.View.extend({
 
-    initialize: function(opts) {
+    initialize: function(options) {
 
       Backbone.View.prototype.initialize.apply(this, arguments);
 
       this.bpm_slider = new Backbone.GUI.HorizontalSlider({
-        model: opts.model,
+        model: options.model,
         property: 'bpm',
         min: 0,
         max: 400
       });
 
       this.bpm_text = new Backbone.GUI.TextInput({
-        model: opts.model,
+        model: options.model,
         property: 'bpm'
       });
 

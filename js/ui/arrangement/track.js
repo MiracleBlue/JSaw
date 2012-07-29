@@ -4,8 +4,8 @@ define([
 
   var TrackView = Backbone.View.extend({
 
-    initialize: function(opts) {
-      _.extend(this, opts);
+    initialize: function(options) {
+      _.extend(this, options);
       Backbone.View.prototype.initialize.apply(this, arguments);
       this.build();
     },
@@ -13,7 +13,7 @@ define([
     build: function() {
 
       var track = this.model,
-        channels = this.mixer.get('channels');
+        channels = this.mixer.channels;
 
       this.channel_dropdown = new Backbone.GUI.Dropdown({
 
@@ -46,7 +46,7 @@ define([
         template = Handlebars.compile(tmpl),
         data = model.toJSON(),
         $el = $(template(data)),
-        channels = this.mixer.get('channels');
+        channels = this.mixer.channels;
 
       $el.append(this.channel_dropdown.render().el);
 
