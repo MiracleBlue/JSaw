@@ -1,7 +1,6 @@
 define([
-  'backbone',
   'dsp/fx/fx'
-], function(Backbone, FX) {
+], function(FX) {
 
   var JReverb = FX.extend({
 

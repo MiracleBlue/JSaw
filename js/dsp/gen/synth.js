@@ -1,9 +1,7 @@
 define([
-  'underscore',
-  'backbone',
   'dsp/gen/gen',
   'dsp/fx/envelope'
-], function(_, Backbone, Generator, Envelope) {
+], function(Generator, Envelope) {
 
   var Synth = Generator.extend(_.extend({
 

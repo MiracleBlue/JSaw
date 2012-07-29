@@ -1,16 +1,14 @@
+@import "/less/common.less";
+
 .mixer {
   display: inline-block;
 }
 
   .mixer .channels {
-    background: #000;
+    .inset;
     list-style: none;
     padding: 0;
     margin: 0;
-    border-bottom: 1px solid rgb(46, 46, 46);
-    border-right: 1px solid rgb(46, 46, 46);
-    border-left: 1px solid rgb(140, 140, 140);
-    border-top: 1px solid rgb(140, 140, 140);
   }
 
     .mixer .channels > li {
@@ -23,13 +21,9 @@
 
     .mixer .channels > li .meta,
     .mixer .channels > li .controls {
-      border-bottom: 1px solid rgb(73, 81, 86);
-      border-left: 1px solid rgb(123, 134, 138);
-      border-right: 1px solid rgb(73, 81, 86);
-      border-top: 1px solid rgb(123, 134, 138);
+      .outset;
       margin: 1px 1px 1px 0;
       padding: 5px;
-      background: rgb(92, 104, 110);
     }
 
       .mixer .channels > li .meta {

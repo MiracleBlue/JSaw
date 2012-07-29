@@ -13,14 +13,12 @@
 // keyboard.playNotes([{ key: 'C' }]);
 // `
 define([
-  'underscore',
-  'backbone',
   'core/lib/note',
   'core/note',
   'core/chain',
   'core/group',
   'dsp/gen/synth'
-], function(_, Backbone, LibNote, Note, Chain, Group, Synth) {
+], function(LibNote, Note, Chain, Group, Synth) {
 
   // this `Notes` collection enables the `playNotes`
   // to accept simple javascript objects instead

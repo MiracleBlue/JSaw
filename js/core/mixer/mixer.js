@@ -1,9 +1,7 @@
 define([
-  'underscore',
-  'backbone',
   'core/group',
   'core/mixer/channels'
-], function(_, Backbone, Group, Channels) {
+], function(Group, Channels) {
 
   var Mixer = Group.extend({
 

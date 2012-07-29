@@ -11,9 +11,7 @@
 // });
 // `
 define([
-  'underscore',
-  'backbone'
-], function(_, Backbone) {
+], function() {
 
   var Group = Backbone.Model.extend(_.extend({}, AudioletGroup.prototype, {
 

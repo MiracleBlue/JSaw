@@ -1,10 +1,7 @@
 define([
-  'jquery',
-  'underscore',
-  'backbone',
   'core/arrangement/track',
   'core/instrument'
-], function($, _, Backbone, Track, Instrument) {
+], function(Track, Instrument) {
 
   var NewTrackView = Backbone.View.extend({
 

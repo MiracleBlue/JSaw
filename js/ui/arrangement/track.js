@@ -1,11 +1,6 @@
 define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'handlebars',
-  'lib/backbone.gui/js/src/components/dropdown',
   'text!../../../templates/arrangement/track.handlebars'
-], function($, _, Backbone, Handlebars, Dropdown, tmpl) {
+], function(tmpl) {
 
   var TrackView = Backbone.View.extend({
 
@@ -20,7 +15,7 @@ define([
       var track = this.model,
         channels = this.mixer.get('channels');
 
-      this.channel_dropdown = new Dropdown({
+      this.channel_dropdown = new Backbone.GUI.Dropdown({
 
         // dropdown will infer names from the models for values
         options: channels.models,
