@@ -2,60 +2,60 @@
 
 .mixer {
   display: inline-block;
-}
 
-  .mixer .channels {
+  .channels {
+    .clearfix;
     .inset;
     list-style: none;
     padding: 0;
     margin: 0;
-  }
 
-    .mixer .channels > li {
+    > li {
       float: left;
     }
 
-    .mixer .channels > li:first-child {
+    > li:first-child {
       margin-left: 1px;
     }
 
-    .mixer .channels > li .meta,
-    .mixer .channels > li .controls {
+    > li .meta,
+    > li .controls {
       .outset;
       margin: 1px 1px 1px 0;
       padding: 5px;
-    }
 
-      .mixer .channels > li .meta {
+      &.meta {
         height: 120px;
         position: relative;
-      }
 
-        .mixer .channels > li .meta .name_input {
+        .name_input {
           -webkit-transform: rotate(-90deg);
           position: absolute;
           bottom: 30px;
           left: -20px;
-        }
 
-          .mixer .channels > li .meta .name_input input {
+          input {
             width: 70px;
             font-size: 10px;
             -webkit-user-select: auto;
           }
-
-      .mixer .channels > li .controls {
-
+        }
       }
 
-        .mixer .channels > li .controls .bb-gui-component {
-          display: block;
-        }
+      &.controls {
 
-          .mixer .channels > li .controls .bb-gui-component > * {
+        .bb-gui-component {
+          display: block;
+
+          > * {
             margin: 0 auto;
           }
+        }
 
-        .mixer .channels > li .controls .pan_knob {
+        .pan_knob {
           margin-bottom: 5px;
         }
+      }
+    }
+  }
+}

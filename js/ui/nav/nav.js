@@ -1,16 +1,16 @@
 define([
-  'ui/nav/bpm-selector',
+  'ui/nav/bpm',
   'text!../../../templates/nav/nav.handlebars',
   'less!../../../less/ui/nav.less'
-], function(BpmSelector, tmpl) {
+], function(BpmView, tmpl) {
 
-  var Nav = Backbone.View.extend({
+  var NavView = Backbone.View.extend({
 
     initialize: function(opts) {
 
-      _.extend(this, opts);
+      Backbone.View.prototype.initialize.apply(this, arguments);
 
-      this.bpm_selector = new BpmSelector({
+      this.bpm_selector = new BpmView({
         model: opts.model
       });
 
@@ -19,9 +19,7 @@ define([
     render: function() {
 
       var template = Handlebars.compile(tmpl),
-        $el = $(template());
-
-      this.setElement($el);
+        $el = this.setElement($(template())).$el;
 
       $el.append(this.bpm_selector.render().el);
 
@@ -31,6 +29,6 @@ define([
 
   });
 
-  return Nav;
+  return NavView;
 
 });
