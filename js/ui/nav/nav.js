@@ -1,13 +1,10 @@
 define([
   'ui/nav/bpm-selector',
+  'text!../../../templates/nav/nav.handlebars',
   'less!../../../less/ui/nav.less'
-], function(BpmSelector) {
+], function(BpmSelector, tmpl) {
 
   var Nav = Backbone.View.extend({
-
-    scheduler: null,
-
-    className: 'nav',
 
     initialize: function(opts) {
 
@@ -21,7 +18,10 @@ define([
 
     render: function() {
 
-      var $el = $(this.el);
+      var template = Handlebars.compile(tmpl),
+        $el = $(template());
+
+      this.setElement($el);
 
       $el.append(this.bpm_selector.render().el);
 
