@@ -12,48 +12,48 @@
 
     > li {
       float: left;
-    }
 
-    > li:first-child {
-      margin-left: 1px;
-    }
-
-    > li .meta,
-    > li .controls {
-      .outset;
-      margin: 1px 1px 1px 0;
-      padding: 5px;
-
-      &.meta {
-        height: 120px;
-        position: relative;
-
-        .name_input {
-          -webkit-transform: rotate(-90deg);
-          position: absolute;
-          bottom: 30px;
-          left: -20px;
-
-          input {
-            width: 70px;
-            font-size: 10px;
-            -webkit-user-select: auto;
-          }
-        }
+      &:first-child {
+        margin-left: 1px;
       }
 
-      &.controls {
+      .meta,
+      .controls {
+        .outset;
+        margin: 1px 1px 1px 0;
+        padding: 5px;
 
-        .bb-gui-component {
-          display: block;
+        &.meta {
+          height: 120px;
+          position: relative;
 
-          > * {
-            margin: 0 auto;
+          .name_input {
+            -webkit-transform: rotate(-90deg);
+            position: absolute;
+            bottom: 30px;
+            left: -20px;
           }
+
+            input {
+              width: 70px;
+              font-size: 10px;
+              -webkit-user-select: auto;
+            }
         }
 
-        .pan_knob {
-          margin-bottom: 5px;
+        &.controls {
+
+          .bb-gui-component {
+            display: block;
+
+            > * {
+              margin: 0 auto;
+            }
+          }
+
+          .pan_knob {
+            margin-bottom: 5px;
+          }
         }
       }
     }
