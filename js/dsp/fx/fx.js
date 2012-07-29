@@ -6,9 +6,8 @@
 // `properties`: this is where you should proxy access to `Backbone` changes to
 // nodes internally
 define([
-  'backbone',
   'core/group'
-], function(Backbone, Group) {
+], function(Group) {
 
   var FX = Group.extend({
 

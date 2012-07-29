@@ -1,10 +1,5 @@
 define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'lib/backbone.gui/js/src/components/horizontal-slider',
-  'lib/backbone.gui/js/src/components/text-input'
-], function($, _, Backbone, Slider, Input) {
+], function() {
 
   var BpmSelector = Backbone.View.extend({
 
@@ -16,14 +11,14 @@ define([
         model = self.model,
         $el = $(self.el);
 
-      var bpm_slider = new Slider({
+      var bpm_slider = new Backbone.GUI.HorizontalSlider({
         model: model,
         property: 'bpm',
         min: 0,
         max: 400
       });
 
-      var bpm_text = new Input({
+      var bpm_text = new Backbone.GUI.TextInput({
         model: model,
         property: 'bpm'
       });

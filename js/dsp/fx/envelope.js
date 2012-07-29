@@ -1,8 +1,6 @@
 define([
-  'underscore',
-  'backbone',
   'dsp/fx/fx'
-], function(_, Backbone, FX) {
+], function(FX) {
 
   var JEnvelope = FX.extend(_.extend({
 

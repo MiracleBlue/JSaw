@@ -1,21 +1,13 @@
 require.config({
 
   paths: {
-    jquery: 'lib/jquery-1.7.2',
-    underscore: 'lib/underscore-1.3.3',
-    backbone: 'lib/backbone-0.9.2',
-    handlebars: 'lib/handlebars-1.0.0.beta.6',
-    gui: 'lib/backbone.gui/js/src/view',
-    text: 'lib/require-text-2.0.1'
+    text: 'lib/require-text-2.0.1',
+    less: 'lib/require-less-0.0.1'
   }
 
 });
 
 require([
-
-  'jquery',
-  'underscore',
-  'backbone',
 
   'core/scheduler',
   'core/arrangement/tracks',
@@ -23,10 +15,13 @@ require([
 
   'ui/nav/nav',
   'ui/arrangement/arrangement',
-  'ui/mixer/mixer'
+  'ui/mixer/mixer',
+  
+  'less!../../../less/index.less',
+  'less!../../../less/lib/backbone.gui/slider.less',
+  'less!../../../less/lib/backbone.gui/text-input.less'
 
 ], function(
-  $, _, Backbone,
   Scheduler, Tracks, Mixer,
   NavView, ArrangementView, MixerView) {
 

@@ -1,3 +1,0 @@
-[submodule "js/lib/backbone.gui"]
-	path = js/lib/backbone.gui
-	url = git@github.com:catshirt/backbone.gui.git

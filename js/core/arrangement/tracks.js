@@ -1,7 +1,6 @@
 define([
-  'backbone',
   'core/arrangement/track'
-], function(Backbone, Track) {
+], function(Track) {
 
   var Tracks = Backbone.Collection.extend({
     model: Track

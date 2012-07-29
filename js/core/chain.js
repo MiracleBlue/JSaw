@@ -14,9 +14,7 @@
 // chain.connect(audiolet.output);
 // `
 define([
-  'underscore',
-  'backbone'
-], function(_, Backbone) {
+], function() {
 
   var Chain = Backbone.Collection.extend(_.extend({}, AudioletGroup.prototype, {
 

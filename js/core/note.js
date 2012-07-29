@@ -10,8 +10,7 @@
 // instrument.playNotes([note]);
 // `
 define([
-  'backbone'
-], function(Backbone) {
+], function() {
 
   var Note = Backbone.Model.extend({
     defaults: {

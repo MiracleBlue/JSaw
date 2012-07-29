@@ -1,7 +1,5 @@
 define([
-  'underscore',
-  'backbone',
-], function(_, Backbone) {
+], function() {
 
   var Scheduler = Backbone.Model.extend({
 

@@ -1,16 +1,10 @@
 define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'handlebars',
   'dsp/fx/delay',
   'dsp/fx/reverb',
-  'lib/backbone.gui/js/src/components/text-input',
-  'lib/backbone.gui/js/src/components/vertical-slider',
-  'lib/backbone.gui/js/src/components/knob',
   'text!../../../templates/mixer/channel.handlebars',
-  'text!../../../templates/mixer/mixer.handlebars'
-], function($, _, Backbone, Handlebars, Delay, Reverb, Text, Slider, Knob, c_tmpl, m_tmpl) {
+  'text!../../../templates/mixer/mixer.handlebars',
+  'less!../../../less/ui/mixer.less'
+], function(Delay, Reverb, c_tmpl, m_tmpl) {
 
   var ChannelView = Backbone.View.extend({
 
@@ -18,13 +12,13 @@ define([
       
       Backbone.View.prototype.initialize.apply(this, arguments);
 
-      this.name_input = new Text({
+      this.name_input = new Backbone.GUI.TextInput({
         className: 'name_input',
         model: this.model,
         property: 'name'
       });
 
-      this.pan_knob = new Knob({
+      this.pan_knob = new Backbone.GUI.Knob({
         className: 'pan_knob',
         model: this.model,
         property: 'pan',
@@ -32,7 +26,7 @@ define([
         max: 1
       });
 
-      this.gain_slider = new Slider({
+      this.gain_slider = new Backbone.GUI.VerticalSlider({
         className: 'gain_slider',
         model: this.model,
         property: 'gain',

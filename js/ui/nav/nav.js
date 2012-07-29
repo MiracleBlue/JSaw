@@ -1,11 +1,7 @@
 define([
-  'jquery',
-  'underscore',
-  'backbone',
   'ui/nav/bpm-selector',
-  'lib/backbone.gui/js/src/components/horizontal-slider',
-  'lib/backbone.gui/js/src/components/text-input'
-], function($, _, Backbone, BpmSelector, Slider, Input) {
+  'less!../../../less/ui/nav.less'
+], function(BpmSelector) {
 
   var Nav = Backbone.View.extend({
 
