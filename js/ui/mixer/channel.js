@@ -1,8 +1,9 @@
 define([
   'dsp/fx/delay',
   'dsp/fx/reverb',
+  'ui/mixer/monitor',
   'text!../../../templates/mixer/channel.handlebars'
-], function(Delay, Reverb, tmpl) {
+], function(Delay, Reverb, MonitorView, tmpl) {
 
   var template = Handlebars.compile(tmpl);
 
@@ -11,6 +12,11 @@ define([
     initialize: function() {
 
       Backbone.View.prototype.initialize.apply(this, arguments);
+
+      this.gain_monitor = new MonitorView({
+        className: 'gain_monitor',
+        model: this.model
+      });
 
       this.name_input = new Backbone.GUI.TextInput({
         className: 'name_input',
@@ -39,10 +45,11 @@ define([
     render: function() {
 
       var model = this.model,
-        $el = this.setElement($(template(model.toJSON))).$el,
+        $el = this.setElement($(template())).$el,
         $meta = this.$meta,
         $controls = this.$controls;
 
+      $meta.append(this.gain_monitor.render().el);
       $meta.append(this.name_input.render().el);
       $controls.append(this.pan_knob.render().el);
       $controls.append(this.gain_slider.render().el);
