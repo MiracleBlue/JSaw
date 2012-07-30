@@ -17,6 +17,7 @@ define([
       var model = this.model,
         $el = this.setElement($(template())).$el;
 
+      // todo: lol update equation is so wrong
       // webkitRequestAnimationFrame(_.bind(this.update, this));
 
       return this;
@@ -26,11 +27,10 @@ define([
     update: function() {
 
       var output = this.model.outputs[0].outputs[0],
-        sample_1 = output.samples[0], 
-        sample_2 = output.samples[1];
+        sample = _.reduce(output.samples, function(m, channel) { return m + channel; }, 0),
+        height = (Math.abs(sample) / 1) * 1000;
 
-      // todo: set a % of the height based on the volume
-      // this.$gain.height('%');
+      this.$gain.height(height + '%');
 
       webkitRequestAnimationFrame(_.bind(this.update, this));
 
