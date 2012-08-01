@@ -7,8 +7,8 @@ define([
     defaults: {
       name: 'Reverb',
       mix: 0.3,
-      room_size: 0.7,
-      damping: 0.5
+      room_size: 0.2,
+      damping: 0.2
     },
 
     build: function() {

@@ -70,7 +70,8 @@ require([
   });
 
   var mixer_view = new MixerView({
-    model: mixer
+    model: mixer,
+    audiolet: audiolet
   });
 
   $body.append(nav_view.render().el);

@@ -38,7 +38,7 @@ define([
       // as well as disconnecting the node from the graph
       // entirely
       self.on('remove', function(model) {
-        model.disconnect(model.connectedTo);
+        model.remove();
         self.route(self.models);
       });
 
@@ -78,23 +78,28 @@ define([
       if (first) {
 
         // connect the group input to first node
+        self.inputs[0].connectedTo && self.inputs[0].disconnect(self.inputs[0].connectedTo);
+        self.inputs[0].connectedTo = first;
         self.inputs[0].connect(first);
 
         // connect each node to the following
         _.each(_(models).first(self.length - 1), function(node, i) {
-          input = models[i + 1].inputs[0];
-          node.connect(input);
-          node.connectedTo = input;
+          node.connectedTo && node.disconnect(node.connectedTo);
+          node.connectedTo = models[i + 1];
+          node.connect(models[i + 1]);
         });
 
         // connect the last node to the group output
+        last.connectedTo && last.disconnect(last.connectedTo);
+        last.connectedTo = self.outputs[0];
         last.connect(self.outputs[0]);
-        last.connectedTo = output;
 
       // if the chain is empty, we can route the group's input
       // directly to it's output. effectively rendering it a
       // pass through node.
       } else {
+        self.inputs[0].connectedTo && self.inputs[0].disconnect(self.inputs[0].connectedTo);
+        self.inputs[0].connectedTo = self.outputs[0];
         self.inputs[0].connect(self.outputs[0]);
       }
 

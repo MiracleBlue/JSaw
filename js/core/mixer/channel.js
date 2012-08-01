@@ -22,7 +22,7 @@ define([
         gain = this.gain = new Gain(audiolet, this.get('gain')),
         pan = this.pan = new Pan(audiolet, this.get('pan')),
         fx1 = new FX({ name: 'FX 1' }, { audiolet: options.audiolet }),
-        fx2 = new FX({ name: 'FX 2' }, { audiolet: options.audiolet }),
+        fx2 = new FX({}, { audiolet: options.audiolet }),
         fx3 = new FX({ name: 'FX 3' }, { audiolet: options.audiolet }),
         fx = this.fx = new Chain([fx1, fx2, fx3], { audiolet: audiolet });
 

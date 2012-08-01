@@ -9,7 +9,7 @@ define([
       mix: 0.5,
       feedback: 0.3,
       frequency: 0.2,
-      gain: 0.4
+      gain: 1
     },
 
     build: function() {

@@ -9,11 +9,12 @@ define([
 
   var MixerView = Backbone.View.extend({
 
-    initialize: function() {
+    initialize: function(options) {
 
       var self = this,
         model = self.model,
         channels = model.channels,
+        audiolet = this.audiolet = options.audiolet,
         prev_channel;
 
       Backbone.View.prototype.initialize.apply(self, arguments);
@@ -42,12 +43,12 @@ define([
     selectChannel: function(channel) {
 
       var $fx = this.$fx,
-        fx_view = new FXView({ model: channel });
+        audiolet = this.audiolet;
 
       $fx.empty();
 
       channel.fx.each(function(fx) {
-        var fx_view = new FXView({ model: fx });
+        var fx_view = new FXView({ model: fx, audiolet: audiolet });
         $fx.append(fx_view.render().el);
       });
 
