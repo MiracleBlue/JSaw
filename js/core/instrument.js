@@ -16,9 +16,9 @@ define([
   'core/lib/note',
   'core/note',
   'core/chain',
-  'core/group',
+  'core/model',
   'dsp/gen/synth'
-], function(LibNote, Note, Chain, Group, Synth) {
+], function(LibNote, Note, Chain, Model, Synth) {
 
   // this `Notes` collection enables the `playNotes`
   // to accept simple javascript objects instead
@@ -27,7 +27,7 @@ define([
     model: Note
   });
 
-  var Instrument = Group.extend({
+  var Instrument = Model.extend({
 
     // an `Instrument` requires 1 attribute:
     // `generator`: a `Generator` from which the
@@ -37,7 +37,7 @@ define([
     },
 
     constructor: function(attrs, options) {
-      Group.apply(this, [attrs, options, 0, 1]);
+      Model.apply(this, [attrs, options, 0, 1]);
     },
 
     initialize: function(attrs, options) {

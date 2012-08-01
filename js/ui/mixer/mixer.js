@@ -1,8 +1,9 @@
 define([
   'ui/mixer/channel',
+  'ui/mixer/fx',
   'text!../../../templates/mixer/mixer.handlebars',
   'less!../../../less/ui/mixer.less'
-], function(ChannelView, tmpl) {
+], function(ChannelView, FXView, tmpl) {
 
   var template = Handlebars.compile(tmpl);
 
@@ -29,6 +30,7 @@ define([
         // changing channel selection
         // assume we are opening the panel
         } else {
+          self.$fx.show();
           self.selectChannel(channel);
           prev_channel = channel;
         }
@@ -38,9 +40,17 @@ define([
     },
 
     selectChannel: function(channel) {
-      this.$fx.empty();
-      this.$fx.html('<li>' + channel.get('name') + ' FX</li>');
-      this.$fx.show();
+
+      var $fx = this.$fx,
+        fx_view = new FXView({ model: channel });
+
+      $fx.empty();
+
+      channel.fx.each(function(fx) {
+        var fx_view = new FXView({ model: fx });
+        $fx.append(fx_view.render().el);
+      });
+
     },
 
     render: function() {

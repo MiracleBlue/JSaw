@@ -14,24 +14,13 @@
 // chain.connect(audiolet.output);
 // `
 define([
-], function() {
+  'core/collection'
+], function(Collection) {
 
-  var ChainModel = Backbone.Model.extend({
-
-    constructor: function(attrs, options, num_inputs, num_outputs) {
-      AudioletGroup.apply(this, [options.audiolet, num_inputs, num_outputs]);
-      Backbone.Model.apply(this, arguments);
-    }
-
-  });
-
-  ChainModel.prototype = AudioletGroup.prototype;
-  _.extend(ChainModel.prototype, Backbone.Model.prototype);
-
-  var Chain = ChainModel.extend({
+  var Chain = Collection.extend({
 
     constructor: function(attrs, options) {
-      ChainModel.apply(this, [attrs, options, 1, 1]);
+      Collection.apply(this, [attrs, options, 1, 1]);
     },
 
     initialize: function(models, options) {
@@ -89,7 +78,7 @@ define([
       if (first) {
 
         // connect the group input to first node
-        self.connect(first);
+        self.inputs[0].connect(first);
 
         // connect each node to the following
         _.each(_(models).first(self.length - 1), function(node, i) {
@@ -99,7 +88,7 @@ define([
         });
 
         // connect the last node to the group output
-        last.connect(self);
+        last.connect(self.outputs[0]);
         last.connectedTo = output;
 
       // if the chain is empty, we can route the group's input

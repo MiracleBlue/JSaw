@@ -1,12 +1,12 @@
 define([
-  'core/group',
+  'core/model',
   'core/mixer/channels'
-], function(Group, Channels) {
+], function(Model, Channels) {
 
-  var Mixer = Group.extend({
+  var Mixer = Model.extend({
 
     constructor: function(attrs, options) {
-      Group.apply(this, [attrs, options, 0, 1]);
+      Model.apply(this, [attrs, options, 0, 1]);
     },
 
     initialize: function(attrs, options) {

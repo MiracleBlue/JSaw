@@ -1,19 +1,18 @@
 define([
-  'core/group'
-], function(Group) {
+  'core/model'
+], function(Model) {
 
-  var Track = Group.extend({
+  var Track = Model.extend({
 
     defaults: {
       name: 'New Track'
     },
 
     constructor: function(attrs, options) {
-      Group.apply(this, [attrs, options, 0, 1]);
+      Model.apply(this, [attrs, options, 0, 1]);
     },
 
     initialize: function(attrs, options) {
-      console.log(options.instrument);
       this.instrument = options.instrument;
       this.route();
     },

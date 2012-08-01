@@ -1,9 +1,10 @@
 define([
-  'core/group',
-  'core/chain'
-], function(Group, Chain) {
+  'core/model',
+  'core/chain',
+  'dsp/fx/fx'
+], function(Model, Chain, FX) {
 
-  var Channel = Group.extend({
+  var Channel = Model.extend({
 
     defaults: {
       name: 'New Channel',
@@ -12,7 +13,7 @@ define([
     },
 
     constructor: function(attrs, options) {
-      Group.apply(this, [attrs, options, 1, 1]);
+      Model.apply(this, [attrs, options, 1, 1]);
     },
 
     initialize: function(attrs, options) {
@@ -20,7 +21,10 @@ define([
       var audiolet = this.audiolet = options.audiolet,
         gain = this.gain = new Gain(audiolet, this.get('gain')),
         pan = this.pan = new Pan(audiolet, this.get('pan')),
-        fx = this.fx = new Chain([], { audiolet: audiolet });
+        fx1 = new FX({ name: 'FX 1' }, { audiolet: options.audiolet }),
+        fx2 = new FX({ name: 'FX 2' }, { audiolet: options.audiolet }),
+        fx3 = new FX({ name: 'FX 3' }, { audiolet: options.audiolet }),
+        fx = this.fx = new Chain([fx1, fx2, fx3], { audiolet: audiolet });
 
       this.on('change:gain', function(self, val) {
         gain.gain.setValue(val);

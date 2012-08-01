@@ -1,22 +1,22 @@
-// a simple `FX` base `AudioletGroup`. provides a templates
+// a simple `FX` base `AudioletModel`. provides a templates
 // for simple FX with 1 input and 1 output. on initialization,
 // it triggers 3 methods in the following order:  
-// `build`: this is where you should create the nodes used in your group  
-// `route`: this is where you should connect the internals of your group  
+// `build`: this is where you should create the nodes used in your Model  
+// `route`: this is where you should connect the internals of your Model  
 // `properties`: this is where you should proxy access to `Backbone` changes to
 // nodes internally
 define([
-  'core/group'
-], function(Group) {
+  'core/model'
+], function(Model) {
 
-  var FX = Group.extend({
+  var FX = Model.extend({
 
     defaults: {
       name: 'FX'
     },
 
     constructor: function(attrs, options) {
-      Group.apply(this, [attrs, options, 1, 1]);
+      Model.apply(this, [attrs, options, 1, 1]);
     },
 
     initialize: function(attrs, options) {
@@ -30,7 +30,7 @@ define([
     },
 
     route: function() {
-      this.connect(this);
+      this.inputs[0].connect(this.outputs[0]);
     },
 
     properties: function() {
