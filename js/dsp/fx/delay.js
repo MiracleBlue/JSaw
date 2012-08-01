@@ -8,7 +8,7 @@ define([
       name: 'Delay',
       mix: 0.5,
       feedback: 0.3,
-      frequency: 0.8,
+      frequency: 0.2,
       gain: 0.4
     },
 
@@ -28,9 +28,9 @@ define([
     },
 
     route: function() {
-      this.connect(this.delay);
+      this.inputs[0].connect(this.delay);
       this.delay.connect(this.feedback);
-      this.feedback.connect(this);
+      this.feedback.connect(this.outputs[0]);
     },
 
     properties: function() {

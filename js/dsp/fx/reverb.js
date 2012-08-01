@@ -23,8 +23,8 @@ define([
     },
 
     route: function() {
-      this.connect(this.reverb);
-      this.reverb.connect(this);
+      this.inputs[0].connect(this.reverb);
+      this.reverb.connect(this.outputs[0]);
     },
 
     properties: function() {
