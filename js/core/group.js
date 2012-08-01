@@ -13,19 +13,17 @@
 define([
 ], function() {
 
-  var Group = Backbone.Model.extend(_.extend({}, AudioletGroup.prototype, {
+  var Group = Backbone.Model.extend({
 
-    // the `initialize` function is responsible
-    // for inheriting properties of `AudioletGroup` and `Model`.
-    // it also augments the constructor with two arguments;
-    // num_inputs and num_outputs, which should be
-    // passed in during initialization.
-    initialize: function(attrs, options, num_inputs, num_outputs) {
-      Backbone.Model.prototype.initialize.apply(this, arguments);
+    constructor: function(attrs, options, num_inputs, num_outputs) {
       AudioletGroup.apply(this, [options.audiolet, num_inputs, num_outputs]);
-    },
+      Backbone.Model.apply(this, arguments);
+    }
 
-  }));
+  });
+
+  Group.prototype = AudioletGroup.prototype;
+  _.extend(Group.prototype, Backbone.Model.prototype);
 
   return Group;
 

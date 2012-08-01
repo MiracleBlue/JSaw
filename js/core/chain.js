@@ -10,21 +10,33 @@
 //   instrument = new Instrument({ audiolet: audiolet, generator: Synth }),
 //   reverb = new Reverb({ audiolet: audiolet }),
 //   chain = new Chain([reverb], { audiolet: audiolet });
-// instrument.connect(chain.inputs[0]);
+// instrument.connect(chain);
 // chain.connect(audiolet.output);
 // `
 define([
 ], function() {
 
-  var Chain = Backbone.Collection.extend(_.extend({}, AudioletGroup.prototype, {
+  var ChainModel = Backbone.Model.extend({
+
+    constructor: function(attrs, options, num_inputs, num_outputs) {
+      AudioletGroup.apply(this, [options.audiolet, num_inputs, num_outputs]);
+      Backbone.Model.apply(this, arguments);
+    }
+
+  });
+
+  ChainModel.prototype = AudioletGroup.prototype;
+  _.extend(ChainModel.prototype, Backbone.Model.prototype);
+
+  var Chain = ChainModel.extend({
+
+    constructor: function(attrs, options) {
+      ChainModel.apply(this, [attrs, options, 1, 1]);
+    },
 
     initialize: function(models, options) {
 
       var self = this;
-
-      // inherit Backbone `Collection` and `AudioletGroup` properties
-      Backbone.Collection.prototype.initialize.apply(this, arguments);
-      AudioletGroup.apply(this, [options.audiolet, 1, 1]);
 
       // whenever a node is added or removed
       // from the `Chain`, the nodes should be rerouted
@@ -77,7 +89,7 @@ define([
       if (first) {
 
         // connect the group input to first node
-        self.inputs[0].connect(first.inputs[0]);
+        self.connect(first);
 
         // connect each node to the following
         _.each(_(models).first(self.length - 1), function(node, i) {
@@ -87,8 +99,7 @@ define([
         });
 
         // connect the last node to the group output
-        output = self.outputs[0];
-        last.connect(output);
+        last.connect(self);
         last.connectedTo = output;
 
       // if the chain is empty, we can route the group's input
@@ -100,7 +111,7 @@ define([
 
     }
 
-  }));
+  });
 
   return Chain;
 

@@ -1,6 +1,7 @@
 define([
-  'core/group'
-], function(Group) {
+  'core/group',
+  'core/chain'
+], function(Group, Chain) {
 
   var Channel = Group.extend({
 
@@ -10,13 +11,16 @@ define([
       pan: 0.5
     },
 
+    constructor: function(attrs, options) {
+      Group.apply(this, [attrs, options, 1, 1]);
+    },
+
     initialize: function(attrs, options) {
 
       var audiolet = this.audiolet = options.audiolet,
         gain = this.gain = new Gain(audiolet, this.get('gain')),
-        pan = this.pan = new Pan(audiolet, this.get('pan'));
-
-      Group.prototype.initialize.apply(this, [attrs, options, 1, 1]);
+        pan = this.pan = new Pan(audiolet, this.get('pan')),
+        fx = this.fx = new Chain([], { audiolet: audiolet });
 
       this.on('change:gain', function(self, val) {
         gain.gain.setValue(val);
@@ -35,11 +39,13 @@ define([
       var input = this.inputs[0],
         pan = this.pan,
         gain = this.gain,
+        fx = this.fx,
         output = this.outputs[0];
 
-      input.connect(pan);
-      pan.connect(gain);
-      gain.connect(output);
+      input.connect(fx);
+      fx.connect(gain);
+      gain.connect(pan);
+      pan.connect(output);
 
     }
 

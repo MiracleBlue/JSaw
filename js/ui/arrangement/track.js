@@ -32,7 +32,7 @@ define([
           track.disconnect(track.outputs[0].outputs[0].connectedTo[0].node);
 
           // connect the track to the new channel
-          track.connect(channel.inputs[0]);
+          track.connect(channel);
 
         }
 

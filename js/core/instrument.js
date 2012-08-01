@@ -36,14 +36,12 @@ define([
       generator: Synth
     },
 
+    constructor: function(attrs, options) {
+      Group.apply(this, [attrs, options, 0, 1]);
+    },
+
     initialize: function(attrs, options) {
-
-      var audiolet = this.audiolet = options.audiolet;
-
-      Group.prototype.initialize.apply(this, [attrs, options, 0, 1]);
-
       _.bindAll(this, 'playNotes');
-
     },
 
     // `playNotes` accepts a `Collection` of `Note` objects, or an array

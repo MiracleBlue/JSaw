@@ -28,9 +28,9 @@ define([
     },
 
     route: function() {
-      this.inputs[0].connect(this.delay);
+      this.connect(this.delay);
       this.delay.connect(this.feedback);
-      this.feedback.connect(this.outputs[0]);
+      this.feedback.connect(this);
     },
 
     properties: function() {

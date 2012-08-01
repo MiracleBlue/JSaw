@@ -8,14 +8,14 @@ define([
       name: 'New Track'
     },
 
+    constructor: function(attrs, options) {
+      Group.apply(this, [attrs, options, 0, 1]);
+    },
+
     initialize: function(attrs, options) {
-
-      var instrument = this.instrument = options.instrument;
-
-      Group.prototype.initialize.apply(this, [attrs, options, 0, 1]);
-
+      console.log(options.instrument);
+      this.instrument = options.instrument;
       this.route();
-
     },
 
     route: function() {

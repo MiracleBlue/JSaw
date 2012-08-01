@@ -22,11 +22,10 @@ define([
     },
 
     addTrack: function() {
-      this.model = new Track({}, {
+      this.tracks.add({}, {
         audiolet: this.audiolet,
         instrument: new Instrument({ generator: this.gen }, { audiolet: this.audiolet })
       });
-      this.tracks.add(this.model);
     },
 
     render: function() {

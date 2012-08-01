@@ -20,7 +20,7 @@ require([
   'less!../../../less/index.less',
   'less!../../../less/lib/backbone.gui/slider.less',
   'less!../../../less/lib/backbone.gui/text-input.less'
-
+  
 ], function(
   Scheduler, Tracks, Mixer,
   NavView, ArrangementView, MixerView) {
@@ -41,7 +41,7 @@ require([
   // by default, newly added tracks get routed
   // to the mixer master channel
   tracks.on('add', function(track) {
-    track.connect(mixer.channels.at(0).inputs[0]);
+    track.connect(mixer.channels.at(0));
   });
 
   // removing a track from the collection

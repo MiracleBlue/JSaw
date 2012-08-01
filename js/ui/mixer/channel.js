@@ -9,6 +9,14 @@ define([
 
   var ChannelView = Backbone.View.extend({
 
+    events: {
+      'click': 'selectChannel'
+    }, 
+
+    selectChannel: function() {
+      this.model.trigger('select', this.model);
+    },
+
     initialize: function() {
 
       Backbone.View.prototype.initialize.apply(this, arguments);

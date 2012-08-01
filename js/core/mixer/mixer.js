@@ -5,13 +5,15 @@ define([
 
   var Mixer = Group.extend({
 
+    constructor: function(attrs, options) {
+      Group.apply(this, [attrs, options, 0, 1]);
+    },
+
     initialize: function(attrs, options) {
 
       var audiolet = this.audiolet = options.audiolet,
         channels = this.channels = new Channels(),
         channel_name;
-
-      Group.prototype.initialize.apply(this, [attrs, options, 0, 1]);
 
       // add 5 channels
       _.each(['Master', 1, 2, 3, 4], function(i) {
@@ -31,7 +33,7 @@ define([
 
       // connect all channels to first "master" channel
       _.each(channels.last(channels.length - 1), function(channel) {
-        channel.connect(first.inputs[0]);
+        channel.connect(first);
       });
 
       // connect master channel to output
