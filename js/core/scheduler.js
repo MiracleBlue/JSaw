@@ -12,6 +12,8 @@ define([
       var audiolet = this.audiolet = options.audiolet;
 
       Backbone.Model.prototype.initialize.apply(this, arguments);
+      
+      this.set('state', {}); // Stores the playback event
 
       this.properties();
 
@@ -30,11 +32,16 @@ define([
 
     play: function(args, cb, per_beat, repeat) {
       // repeat simple chord
-      this.audiolet.scheduler.play(
+      this.set("state", this.audiolet.scheduler.play(
         [new PSequence([args], (repeat || Infinity))],
         (per_beat || 1),
         cb
-      );
+      ));
+    },
+    
+    stop: function() {
+    	this.audiolet.scheduler.remove(this.get('state'));
+    	this.set('state', {});
     }
 
   });

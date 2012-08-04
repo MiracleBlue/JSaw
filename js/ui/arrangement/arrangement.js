@@ -43,7 +43,7 @@ define([
         audiolet = self.audiolet,
         template = Handlebars.compile(tmpl),
         $el = $(template()),
-        tracks = this.tracks,
+        tracks = this.tracks;
 
       this.setElement($el);
 
