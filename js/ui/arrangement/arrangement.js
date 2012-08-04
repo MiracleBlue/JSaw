@@ -44,7 +44,6 @@ define([
         template = Handlebars.compile(tmpl),
         $el = $(template()),
         tracks = this.tracks,
-        view;
 
       this.setElement($el);
 
@@ -52,7 +51,7 @@ define([
 
       _.each([Synth, Synth2], function(gen) {
 
-        view = new NewTrackView({
+        var view = new NewTrackView({
           gen: gen,
           tracks: tracks,
           audiolet: audiolet
