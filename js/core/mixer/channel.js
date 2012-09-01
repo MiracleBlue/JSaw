@@ -1,6 +1,6 @@
 define([
-  'core/model',
-  'core/chain',
+  'lib/JSam/core/model',
+  'lib/JSam/core/chain',
   'dsp/fx/fx'
 ], function(Model, Chain, FX) {
 

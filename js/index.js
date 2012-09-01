@@ -1,6 +1,5 @@
 require.config({
 
-  // main app file to load
   deps: ['app'],
 
   paths: {
@@ -14,6 +13,14 @@ require.config({
 
   shim: {
 
+    jquery: {
+      exports: 'jQuery'
+    },
+
+    lodash: {
+      exports: '_'
+    },
+
     backbone: {
       deps: ['lodash', 'jquery'],
       exports: 'Backbone'
@@ -21,10 +28,6 @@ require.config({
 
     handlebars: {
       exports: 'Handlebars'
-    },
-
-    lodash: {
-      exports: '_'
     }
   }
 

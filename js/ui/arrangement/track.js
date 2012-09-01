@@ -2,7 +2,7 @@ define([
   'lodash',
   'backbone',
   'handlebars',
-  'lib/backbone.gui/js/src/components/dropdown',
+  'lib/backbone.gui/src/components/dropdown',
   'text!../../../templates/arrangement/track.handlebars'
 ], function(_, Backbone, Handlebars, Dropdown, tmpl) {
 
@@ -20,26 +20,16 @@ define([
         channels = this.mixer.channels;
 
       this.channel_dropdown = new Dropdown({
+        options: channels.models
+      });
 
-        // dropdown will infer names from the models for values
-        options: channels.models,
-
-        // dropdown passes back the name of the selected model
-        callback: function(channel_name) {
-
-          // find the channel based on the name
-          var channel = channels.find(function(channel) {
-            return channel.get('name') == channel_name;
-          });
-
-          // disconnect the track from it's current channel
-          track.disconnect(track.outputs[0].outputs[0].connectedTo[0].node);
-
-          // connect the track to the new channel
-          track.connect(channel);
-
-        }
-
+      this.channel_dropdown.on('change', function(val) {
+        console.log('beep', val);
+        var channel = channels.find(function(channel) {
+          return channel.get('name') == val;
+        });
+        track.disconnect(track.outputs[0].outputs[0].connectedTo[0].node);
+        track.connect(channel);
       });
 
     },

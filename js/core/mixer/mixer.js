@@ -1,6 +1,6 @@
 define([
   'lodash',
-  'core/model',
+  'lib/JSam/core/model',
   'core/mixer/channels'
 ], function(_, Model, Channels) {
 

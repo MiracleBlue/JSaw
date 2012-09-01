@@ -1,5 +1,5 @@
 define([
-  'core/model'
+  'lib/JSam/core/model'
 ], function(Model) {
 
   var Track = Model.extend({
