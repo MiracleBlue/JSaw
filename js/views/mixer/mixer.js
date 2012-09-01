@@ -1,8 +1,8 @@
 define([
   'backbone',
   'handlebars',
-  'ui/mixer/channel',
-  'ui/mixer/fx',
+  'views/mixer/channel',
+  'views/mixer/fx',
   'text!../../../handlebars/mixer/mixer.handlebars'
 ], function(Backbone, Handlebars, ChannelView, FXView, tmpl) {
 

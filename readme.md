@@ -2,7 +2,7 @@
 
 a browser based daw inspired by fruity loops. synthesized entirely in javascript using the web audio api.
 
-in time, `core/`, `dsp/`, and `ui/` directories could be split out for general purpose use.
+in time, `core/`, `dsp/`, and `views/` directories could be split out for general purpose use.
 
 ## building documentation
 
@@ -10,5 +10,5 @@ in time, `core/`, `dsp/`, and `ui/` directories could be split out for general p
 
 ```
 np install -g groc
-roc js/core**/*.js js/dsp/**/*.js js/ui/**/*.js js/index.js readme.md
+roc js/core**/*.js js/dsp/**/*.js js/views/**/*.js js/index.js readme.md
 ```

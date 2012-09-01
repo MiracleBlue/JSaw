@@ -3,7 +3,7 @@ define([
   'handlebars',
   'dsp/fx/delay',
   'dsp/fx/reverb',
-  'ui/mixer/monitor',
+  'views/mixer/monitor',
   'lib/backbone.gui/src/components/horizontal-slider',
   'lib/backbone.gui/src/components/text-input',
   'text!../../../handlebars/mixer/channel.handlebars'

@@ -1,7 +1,7 @@
 define([
   'backbone',
   'handlebars',
-  'ui/nav/bpm',
+  'views/nav/bpm',
   'text!../../../handlebars/nav/nav.handlebars'
 ], function(Backbone, Handlebars, BpmView, tmpl) {
 

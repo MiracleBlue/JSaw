@@ -6,8 +6,8 @@ define([
   'core/instrument',
   'dsp/gen/synth',
   'dsp/gen/synth2',
-  'ui/arrangement/track',
-  'ui/arrangement/new-track',
+  'views/arrangement/track',
+  'views/arrangement/new-track',
   'text!../../../handlebars/arrangement/arrangement.handlebars'
 ], function(_, Backbone, Handlebars, Track, Instrument, Synth, Synth2, TrackView, NewTrackView, tmpl) {
 

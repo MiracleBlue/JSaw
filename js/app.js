@@ -4,9 +4,9 @@ require([
   'core/arrangement/tracks',
   'core/mixer/mixer',
 
-  'ui/nav/nav',
-  'ui/arrangement/arrangement',
-  'ui/mixer/mixer'
+  'views/nav/nav',
+  'views/arrangement/arrangement',
+  'views/mixer/mixer'
   
 ], function(
   Scheduler, Tracks, Mixer,
