@@ -3,14 +3,15 @@ require([
   'core/scheduler',
   'core/arrangement/tracks',
   'core/mixer/mixer',
+  'core/sequencer/sequencer',
 
   'views/nav/nav',
   'views/arrangement/arrangement',
-  'views/mixer/mixer'
-  
+  'views/mixer/mixer',
+  'views/sequencer/sequencer'
 ], function(
-  Scheduler, Tracks, Mixer,
-  NavView, ArrangementView, MixerView) {
+  Scheduler, Tracks, Mixer, Sequencer,
+  NavView, ArrangementView, MixerView, SequencerView) {
 
   //
   // create nodes
@@ -65,11 +66,53 @@ require([
   $body.append(arrangement_view.render().el);
   $body.append(mixer_view.render().el);
 
-  // hack to get sound. on track add, repeat a note
-  tracks.on('add', function(track) {
-    scheduler.play([{ key: 'E', key: 'B' }], function(notes) {
-      track.instrument.playNotes([{}]);
-    });
+  // sequencer
+
+  var Key = Backbone.Model.extend({
+
+    defaults: {
+      name: null
+    },
+
+    initialize: function() {
+      this.on('noteOn', _.bind(this.noteOn, this));
+      return Backbone.Model.prototype.initialize.apply(this, arguments);
+    },
+
+    // for now just to demo pianoroll,
+    // each key just controls each instrument in the arrangement.
+    // really, it should only control one specific instrument at a time.
+    noteOn: function(self) {
+      var self = this;
+      tracks.each(function(track) {
+        track.instrument.playNotes([{
+          key: self.get('name')
+        }]);
+      });
+    }
+
   });
+
+  var Keys = Backbone.Collection.extend({
+    model: Key
+  });
+
+  var sequencer = new Sequencer({ }, {
+    scheduler: scheduler,
+    rows: new Keys([
+      { name: 'A' },
+      { name: 'B' },
+      { name: 'D' },
+      { name: 'G' }
+    ])
+  });
+  
+  var sequencer_view = new SequencerView({
+    model: sequencer
+  });
+
+  $body.append(sequencer_view.render().$el);
+
+  sequencer.set('playing', true);
 
 });
