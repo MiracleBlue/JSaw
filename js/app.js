@@ -6,9 +6,7 @@ require([
 
   'ui/nav/nav',
   'ui/arrangement/arrangement',
-  'ui/mixer/mixer',
-  
-  'less!../../../less/index.less'
+  'ui/mixer/mixer'
   
 ], function(
   Scheduler, Tracks, Mixer,
