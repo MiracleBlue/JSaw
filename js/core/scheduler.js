@@ -1,5 +1,6 @@
 define([
-], function() {
+  'backbone'
+], function(Backbone) {
 
   var Scheduler = Backbone.Model.extend({
 

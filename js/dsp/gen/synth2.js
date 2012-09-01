@@ -1,7 +1,9 @@
 define([
+  'lodash',
+  'backbone',
   'dsp/gen/gen',
   'dsp/fx/envelope'
-], function(Generator, Envelope) {
+], function(_, Backbone, Generator, Envelope) {
 
   var Synth2 = Generator.extend(_.extend({
 

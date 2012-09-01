@@ -11,7 +11,9 @@
 // });
 // `
 define([
-], function() {
+  'lodash',
+  'backbone'
+], function(_, Backbone) {
 
   var Model = function(attrs, options, num_inputs, num_outputs) {
     AudioletGroup.apply(this, [options.audiolet, num_inputs, num_outputs]);
