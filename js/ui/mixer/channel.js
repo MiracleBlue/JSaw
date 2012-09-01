@@ -6,7 +6,7 @@ define([
   'ui/mixer/monitor',
   'lib/backbone.gui/src/components/horizontal-slider',
   'lib/backbone.gui/src/components/text-input',
-  'text!../../../templates/mixer/channel.handlebars'
+  'text!../../../handlebars/mixer/channel.handlebars'
 ], function(Backbone, Handlebars, Delay, Reverb, MonitorView, HorizontalSlider, TextInput, tmpl) {
 
   var template = Handlebars.compile(tmpl);

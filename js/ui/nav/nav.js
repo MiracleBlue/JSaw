@@ -2,7 +2,7 @@ define([
   'backbone',
   'handlebars',
   'ui/nav/bpm',
-  'text!../../../templates/nav/nav.handlebars'
+  'text!../../../handlebars/nav/nav.handlebars'
 ], function(Backbone, Handlebars, BpmView, tmpl) {
 
   var NavView = Backbone.View.extend({

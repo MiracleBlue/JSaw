@@ -3,7 +3,7 @@ define([
   'handlebars',
   'lib/backbone.gui/src/components/horizontal-slider',
   'lib/backbone.gui/src/components/text-input',
-  'text!../../../templates/nav/bpm.handlebars'
+  'text!../../../handlebars/nav/bpm.handlebars'
 ], function(Backbone, Handlebars, HorizontalSlider, TextInput, tmpl) {
 
   var template = Handlebars.compile(tmpl);

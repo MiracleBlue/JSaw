@@ -3,7 +3,7 @@ define([
   'handlebars',
   'ui/mixer/channel',
   'ui/mixer/fx',
-  'text!../../../templates/mixer/mixer.handlebars'
+  'text!../../../handlebars/mixer/mixer.handlebars'
 ], function(Backbone, Handlebars, ChannelView, FXView, tmpl) {
 
   var template = Handlebars.compile(tmpl);
