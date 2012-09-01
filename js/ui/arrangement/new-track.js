@@ -1,7 +1,9 @@
 define([
+  'lodash',
+  'backbone',
   'core/arrangement/track',
   'core/instrument'
-], function(Track, Instrument) {
+], function(_, Backbone, Track, Instrument) {
 
   var NewTrackView = Backbone.View.extend({
 

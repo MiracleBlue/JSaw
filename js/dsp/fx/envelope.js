@@ -1,6 +1,8 @@
 define([
+  'lodash',
+  'backbone',
   'dsp/fx/fx'
-], function(FX) {
+], function(_, Backbone, FX) {
 
   var JEnvelope = FX.extend(_.extend({
 

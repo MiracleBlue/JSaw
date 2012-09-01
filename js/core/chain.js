@@ -14,8 +14,10 @@
 // chain.connect(audiolet.output);
 // `
 define([
+  'lodash',
+  'backbone',
   'core/collection'
-], function(Collection) {
+], function(_, Backbone, Collection) {
 
   var Chain = Collection.extend({
 
