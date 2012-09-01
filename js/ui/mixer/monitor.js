@@ -1,6 +1,9 @@
 define([
+  'lodash',
+  'backbone',
+  'handlebars',
   'text!../../../templates/mixer/monitor.handlebars'
-], function(tmpl) {
+], function(_, Backbone, Handlebars, tmpl) {
 
   var template = Handlebars.compile(tmpl);
 

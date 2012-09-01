@@ -1,6 +1,10 @@
 define([
-  'text!../../../templates/nav/bpm.handlebars',
-], function(tmpl) {
+  'backbone',
+  'handlebars',
+  'lib/backbone.gui/js/src/components/horizontal-slider',
+  'lib/backbone.gui/js/src/components/text-input',
+  'text!../../../templates/nav/bpm.handlebars'
+], function(Backbone, Handlebars, HorizontalSlider, TextInput, tmpl) {
 
   var template = Handlebars.compile(tmpl);
 
@@ -10,14 +14,14 @@ define([
 
       Backbone.View.prototype.initialize.apply(this, arguments);
 
-      this.bpm_slider = new Backbone.GUI.HorizontalSlider({
+      this.bpm_slider = new HorizontalSlider({
         model: options.model,
         property: 'bpm',
         min: 0,
         max: 400
       });
 
-      this.bpm_text = new Backbone.GUI.TextInput({
+      this.bpm_text = new TextInput({
         model: options.model,
         property: 'bpm'
       });

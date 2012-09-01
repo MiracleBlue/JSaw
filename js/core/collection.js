@@ -2,8 +2,10 @@
 // except it inherits from Backbone.Collection
 // rather than Backbone.Collection
 define([
+  'lodash',
+  'backbone',
   'core/model'
-], function(Model) {
+], function(_, Backbone, Model) {
 
   function Collection(models, options, num_inputs, num_outputs) {
     AudioletGroup.apply(this, [options.audiolet, num_inputs, num_outputs]);

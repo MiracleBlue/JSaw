@@ -1,6 +1,7 @@
 define([
+  'backbone',
   'core/mixer/channel'
-], function(Channel) {
+], function(Backbone, Channel) {
 
   var Channels = Backbone.Collection.extend({
     

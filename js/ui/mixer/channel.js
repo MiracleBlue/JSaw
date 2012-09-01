@@ -1,9 +1,14 @@
 define([
+  'backbone',
+  'handlebars',
   'dsp/fx/delay',
   'dsp/fx/reverb',
   'ui/mixer/monitor',
+  'lib/backbone.gui/js/src/components/horizontal-slider',
+  'lib/backbone.gui/js/src/components/text-input',
+  'lib/backbone.gui/js/src/components/knob',
   'text!../../../templates/mixer/channel.handlebars'
-], function(Delay, Reverb, MonitorView, tmpl) {
+], function(Backbone, Handlebars, Delay, Reverb, MonitorView, HorizontalSlider, TextInput, Knob, tmpl) {
 
   var template = Handlebars.compile(tmpl);
 
@@ -26,22 +31,19 @@ define([
         model: this.model
       });
 
-      this.name_input = new Backbone.GUI.TextInput({
-        className: 'name_input',
+      this.name_input = new TextInput({
         model: this.model,
         property: 'name'
       });
 
-      this.pan_knob = new Backbone.GUI.Knob({
-        className: 'pan_knob',
+      this.pan_knob = new Knob({
         model: this.model,
         property: 'pan',
         min: 0,
         max: 1
       });
 
-      this.gain_slider = new Backbone.GUI.VerticalSlider({
-        className: 'gain_slider',
+      this.gain_slider = new HorizontalSlider({
         model: this.model,
         property: 'gain',
         min: 0,

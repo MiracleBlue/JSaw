@@ -1,7 +1,8 @@
 define([
+  'lodash',
   'core/model',
   'core/mixer/channels'
-], function(Model, Channels) {
+], function(_, Model, Channels) {
 
   var Mixer = Model.extend({
 
