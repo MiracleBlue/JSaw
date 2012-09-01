@@ -15,10 +15,10 @@
 define([
   'lodash',
   'backbone',
-  'core/lib/note',
+  'lib/JSam/lib/note',
   'core/note',
-  'core/chain',
-  'core/model',
+  'lib/JSam/core/chain',
+  'lib/JSam/core/model',
   'dsp/gen/synth'
 ], function(_, Backbone, LibNote, Note, Chain, Model, Synth) {
 

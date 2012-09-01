@@ -32,7 +32,6 @@ define([
     },
 
     play: function(args, cb, per_beat, repeat) {
-      // repeat simple chord
       this.set("state", this.audiolet.scheduler.play(
         [new PSequence([args], (repeat || Infinity))],
         (per_beat || 1),

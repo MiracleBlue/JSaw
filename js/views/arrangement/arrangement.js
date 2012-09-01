@@ -6,10 +6,9 @@ define([
   'core/instrument',
   'dsp/gen/synth',
   'dsp/gen/synth2',
-  'ui/arrangement/track',
-  'ui/arrangement/new-track',
-  'text!../../../templates/arrangement/arrangement.handlebars',
-  'less!../../../less/ui/arrangement.less'
+  'views/arrangement/track',
+  'views/arrangement/new-track',
+  'text!../../../handlebars/arrangement/arrangement.handlebars'
 ], function(_, Backbone, Handlebars, Track, Instrument, Synth, Synth2, TrackView, NewTrackView, tmpl) {
 
   var ArrangementView = Backbone.View.extend({
