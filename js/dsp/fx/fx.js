@@ -6,7 +6,7 @@
 // `properties`: this is where you should proxy access to `Backbone` changes to
 // nodes internally
 define([
-  'core/model'
+  'lib/JSam/core/model'
 ], function(Model) {
 
   var FX = Model.extend({

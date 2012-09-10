@@ -15,19 +15,10 @@ define([
 
   var Note = Backbone.Model.extend({
     defaults: {
-
       key: 'C',
       octave: 3,
       velocity: 1,
-      duration: 1,
-
-      // technically, only the piano roll should
-      // really care about the bar/step of each note. but because of
-      // rendering complexities, the note needs to have these properties.
-      // ideally, these should not be part of the `Note` object.
-      bar: 0,
-      step: 0
-
+      duration: 1
     }
   });
 
