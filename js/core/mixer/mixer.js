@@ -13,8 +13,7 @@ define([
     initialize: function(attrs, options) {
 
       var audiolet = this.audiolet = options.audiolet,
-        channels = this.channels = new Channels(),
-        channel_name;
+        channels = this.channels = new Channels();
 
       // add 5 channels
       _.each(['Master', 1, 2, 3, 4], function(i) {

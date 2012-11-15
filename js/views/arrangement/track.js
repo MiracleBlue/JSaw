@@ -1,62 +1,87 @@
 define([
-  'lodash',
-  'backbone',
-  'handlebars',
-  'lib/backbone.gui/src/components/dropdown',
-  'text!../../../handlebars/arrangement/track.handlebars'
-], function(_, Backbone, Handlebars, Dropdown, tmpl) {
+	'lodash',
+	'backbone',
+	'handlebars',
+	'lib/backbone.gui/src/components/dropdown',
+	'text!../../../handlebars/arrangement/track.handlebars'
+], function (_, Backbone, Handlebars, Dropdown, tmpl) {
 
-  var TrackView = Backbone.View.extend({
+	var TrackView = Backbone.View.extend({
 
-    initialize: function(options) {
-      _.extend(this, options);
-      Backbone.View.prototype.initialize.apply(this, arguments);
-      this.build();
-    },
+		track: this.model,
 
-    build: function() {
+		events: {
+			"click button.remove": "removeTrack"
+		},
 
-      var track = this.model,
-        channels = this.mixer.channels;
+		initialize:function (options) {
+			_.extend(this, options);
+			Backbone.View.prototype.initialize.apply(this, arguments);
+			this.build();
+		},
 
-      this.channel_dropdown = new Dropdown({
-        options: channels.models
-      });
+		build:function () {
 
-      this.channel_dropdown.on('change', function(val) {
-        console.log('beep', val);
-        var channel = channels.find(function(channel) {
-          return channel.get('name') == val;
-        });
-        track.disconnect(track.outputs[0].outputs[0].connectedTo[0].node);
-        track.connect(channel);
-      });
+			var track = this.model,
+				channels = this.mixer.channels;
 
-    },
+			var channel_properties = [];
+			channels.each(function (channel) {
+				channel_properties.push(channel.get("name"));
+			});
 
-    render: function() {;
+			console.log("channels.models", channels.models);
 
-      var model = this.model,
-        template = Handlebars.compile(tmpl),
-        data = model.toJSON(),
-        $el = $(template(data)),
-        channels = this.mixer.channels;
+			this.channel_dropdown = new Dropdown({
+				options:channel_properties
+			});
 
-      $el.append(this.channel_dropdown.render().el);
+			this.channel_dropdown.on('change', function (val) {
+				console.log('beep', val);
+				var channel = channels.find(function (channel) {
+					return channel.get("name") === val;
+				});
+				// Why does the view handle routing instead of the track itself?
+				//track.disconnect(track.outputs[0].outputs[0].connectedTo[0].node);
+				//track.connect(channel);
+				track.route(channel);
+			});
 
-      this.setElement($el);
 
-      return this;
 
-    },
+		},
 
-    setElement: function($el) {
-      this.$sequence = $('.sequence', $el);
-      return Backbone.View.prototype.setElement.apply(this, arguments);
-    }
+		render:function () {
 
-  });
+			var model = this.model,
+				track = model,
+				self = this,
+				template = Handlebars.compile(tmpl),
+				data = model.toJSON(),
+				$el = $(template(data)),
+				channels = this.mixer.channels;
 
-  return TrackView;
+			$el.append(this.channel_dropdown.render().el);
+
+			this.setElement($el);
+
+			return this;
+
+		},
+
+		setElement:function ($el) {
+			this.$sequence = $('.sequence', $el);
+			return Backbone.View.prototype.setElement.apply(this, arguments);
+		},
+
+		removeTrack: function() {
+			console.log("remove called");
+			this.model.trigger("removeTrack", this.model);
+			this.remove();
+		}
+
+	});
+
+	return TrackView;
 
 });

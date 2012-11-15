@@ -1,0 +1,78 @@
+@background: #3b3d44;
+@highlight-color: #484a51;
+@darklight-color: #2a2c33;
+
+.bb-gui-light-text {
+  color: #f3f3f3;
+  text-shadow: 1px 1px 0 #000;
+  font-size: 12px;
+}
+
+.bb-gui-inset {
+  background: #141517;
+  box-shadow: inset 0px 1px 2px 0px black, inset 0px -1px 1px 0px #9b8e8e;
+  border: none;
+  -webkit-appearance: none;
+  outline: none;
+  .bb-gui-light-text;
+}
+
+.bb-gui-outset {
+  -webkit-appearance: none;
+  background: -webkit-linear-gradient(top, #d5d4d4 0%, #8b8b8b 100%);
+  text-shadow: 1px 1px 0 #cfcfcf;
+  box-shadow: 1px 1px 4px -1px #000;
+  border-left: 1px solid #cbc6c6;
+  border-top: 1px solid #cbc6c6;
+  color: #515151;
+}
+
+.bb-gui-round (@width) {
+  border-radius: @width;
+  width: @width;
+  height: @width;
+}
+
+.bb-gui-component {
+  display: inline-block;
+}
+
+.bb-gui {
+  background: @background;
+  border-radius: 3px;
+  border-width: 2px;
+  border-style: solid;
+  border-top-color: @highlight-color;
+  border-left-color: @highlight-color;
+  border-right-color: @darklight-color;
+  border-bottom-color: @darklight-color;
+  box-shadow: inset 0 0 55px -15px #000;
+  display: inline-block;
+  font-family: "Myriad Pro";
+
+  .row {
+    padding: 10px 15px 15px;
+    border-top: 1px solid @highlight-color;
+    border-bottom: 1px solid @darklight-color;
+
+    .label {
+      .bb-gui-light-text;
+    }
+
+    .bb-gui-component {
+      display: block;
+
+      /* buttons, inputs, sliders etc
+         should be 100% wide  */
+      input,
+      .slider {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@import "components/button.less";
+@import "components/selector.less";
+@import "components/slider.less";
+@import "components/text-input.less";

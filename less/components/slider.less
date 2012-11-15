@@ -1,0 +1,228 @@
+.slider.vertical,
+.slider.horizontal {
+  border: 1px solid #27292d;
+  background-color: rgb(79, 79, 79);
+  background-image: 
+    -webkit-gradient(linear, 100% 0%, 0% 100%, 
+    from(transparent), 
+    color-stop(0.15, rgb(54, 54, 54)),  
+    color-stop(0.15, rgb(79, 79, 79)), 
+    color-stop(0.50, rgb(79, 79, 79)), 
+    color-stop(0.50, rgb(54, 54, 54)), 
+    color-stop(0.65, rgb(54, 54, 54)),
+    color-stop(0.65, rgb(79, 79, 79)),  
+    to(rgb(79, 79, 79)));
+  -webkit-background-size: 2px 2px;
+	border-radius: 30px;
+	position: relative;
+
+  .track-outer {
+
+    .track-inner {
+      background-color: rgb(7, 141, 187);
+      background-position: fixed;
+      background-position: bottom;
+      background-image: 
+        -webkit-gradient(linear, 100% 0%, 0% 100%, 
+        from(transparent), 
+        color-stop(0.15, rgb(0, 173, 208)),  
+        color-stop(0.15, rgb(7, 141, 187)), 
+        color-stop(0.50, rgb(7, 141, 187)), 
+        color-stop(0.50, rgb(0, 173, 208)), 
+        color-stop(0.65, rgb(0, 173, 208)),
+        color-stop(0.65, rgb(7, 141, 187)),  
+        to(rgb(7, 141, 187)));
+      -webkit-background-size: 2px 2px;
+      border-radius: 30px;
+      bottom: 0;
+      left: -1px;   
+      bottom: -1px;
+      position: absolute;
+
+      .grip {
+        background-color: #e4dddd;
+        background-image: 
+          -webkit-gradient(linear, 100% 0%, 0% 100%, 
+          from(transparent), 
+          color-stop(0.15, #fcfcfc),  
+          color-stop(0.15, #e4dddd), 
+          color-stop(0.50, #e4dddd), 
+          color-stop(0.50, #fcfcfc), 
+          color-stop(0.65, #fcfcfc),
+          color-stop(0.65, #e4dddd),  
+          to(#e4dddd));
+        -webkit-background-size: 2px 2px;
+        border-radius: 30px;
+        position: absolute;
+        font-weight: bold;
+        color: #999;
+        text-align: center;
+        cursor: pointer;
+        -webkit-user-select: none;
+      }
+    }
+  }
+}
+
+.slider.vertical {
+  border: 1px solid rgb(137, 137, 137);
+  width: 17px;
+	height: 140px;
+	left: 0;
+	top: 1px;
+  position: relative;
+
+  .track-outer {
+    border-radius: 30px;
+    height: 100%;
+    margin: 5px;
+    max-height: 130px;
+    background: rgb(0, 0, 0);
+
+    .track-inner {
+      border-radius: 30px;
+      min-height: 13px;
+      max-height: 128px;
+      width: 7px;
+      margin: 6px;
+
+      .grip {
+        height: 25px;
+        border: 1px solid rgb(137, 137, 137);
+        width: 17px;
+        left: -6px;
+        top: -8px;
+        line-height: 24px;
+        font-size: 10px;
+
+        &:after {
+          content: "=";
+        }
+      }
+    }
+  }
+}
+
+.slider.horizontal {
+	width: 140px;
+	height: 17px;
+	left: 0;
+	top: 1px;
+	bottom: auto;
+	left: 0;
+
+  .track-outer {
+    border-radius: 30px;
+    height: 7px;
+    margin: 5px;
+    background: rgb(0, 0, 0);
+    width: 130px;
+
+    .track-inner {
+      border-radius: 30px;
+      min-width: 13px;
+      max-width: 128px;
+      width: auto;
+      height: 7px;
+      margin: 6px;
+
+      .grip {
+        height: 17px;
+        border: 1px solid rgb(137, 137, 137);
+        width: 25px;
+        top: -6px;
+        right: -8px;
+        line-height: 17px;
+        font-size: 8px;
+
+        &.grip:after {
+          content: "II";
+        }
+      }
+    }
+  }
+}
+
+.slider.round {
+  position: relative;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  .bb-gui-round(65px);
+  background-color: #e4dddd;
+  background-image: 
+    -webkit-gradient(linear, 100% 0%, 0% 100%, 
+    from(transparent), 
+    color-stop(0.15, #fcfcfc),  
+    color-stop(0.15, #e4dddd), 
+    color-stop(0.50, #e4dddd), 
+    color-stop(0.50, #fcfcfc), 
+    color-stop(0.65, #fcfcfc),
+    color-stop(0.65, #e4dddd),  
+    to(#e4dddd));
+  -webkit-background-size: 2px 2px;
+  border: 1px solid #27292d;
+
+  .track-outer {
+    position: relative;
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    .bb-gui-round(88%);
+    margin: 0 auto;
+    background-color: rgb(79, 79, 79);
+    background-image: 
+      -webkit-gradient(linear, 100% 0%, 0% 100%, 
+      from(transparent), 
+      color-stop(0.15, rgb(54, 54, 54)),  
+      color-stop(0.15, rgb(79, 79, 79)), 
+      color-stop(0.50, rgb(79, 79, 79)), 
+      color-stop(0.50, rgb(54, 54, 54)), 
+      color-stop(0.65, rgb(54, 54, 54)),
+      color-stop(0.65, rgb(79, 79, 79)),  
+      to(rgb(79, 79, 79)));
+    -webkit-background-size: 2px 2px;
+
+    .grip {
+      margin: 0 auto;
+      .bb-gui-round(84%);
+      background-color: #e4dddd;
+      background-image: 
+        -webkit-gradient(linear, 100% 0%, 0% 100%, 
+        from(transparent), 
+        color-stop(0.15, #fcfcfc),  
+        color-stop(0.15, #e4dddd), 
+        color-stop(0.50, #e4dddd), 
+        color-stop(0.50, #fcfcfc), 
+        color-stop(0.65, #fcfcfc),
+        color-stop(0.65, #e4dddd),  
+        to(#e4dddd));
+      -webkit-background-size: 2px 2px;
+
+      &:after {
+        position: absolute;
+        top: 5%;
+        left: 47%;
+        background-color: rgb(79, 79, 79);
+        background-image: 
+          -webkit-gradient(linear, 100% 0%, 0% 100%, 
+          from(transparent), 
+          color-stop(0.15, rgb(54, 54, 54)),  
+          color-stop(0.15, rgb(79, 79, 79)), 
+          color-stop(0.50, rgb(79, 79, 79)), 
+          color-stop(0.50, rgb(54, 54, 54)), 
+          color-stop(0.65, rgb(54, 54, 54)),
+          color-stop(0.65, rgb(79, 79, 79)),  
+          to(rgb(79, 79, 79)));
+        -webkit-background-size: 2px 2px;
+        content: "";
+        display: block;
+        width: 13%;
+        height: 13%;
+        -webkit-border-radius: 100px;
+      }
+    }
+  }
+}

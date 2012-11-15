@@ -27,14 +27,14 @@ define([
 
       self.on('change:bpm', function(self, val) {
         scheduler.setTempo(val);
-      });
+      }); // derp
 
     },
 
     play: function(args, cb, per_beat, repeat) {
       this.set("state", this.audiolet.scheduler.play(
         [new PSequence([args], (repeat || Infinity))],
-        (per_beat || 1),
+        (per_beat || 1) / 4,
         cb
       ));
     },
