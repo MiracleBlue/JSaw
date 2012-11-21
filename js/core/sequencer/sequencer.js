@@ -1,12 +1,18 @@
 define([
-	'backbone'
-], function (Backbone) {
+	'backbone',
+	'core/sequencer/midinote'
+], function (Backbone, MidiNote) {
+
+	var MidiNotes = Backbone.Collection.extend({
+		model: MidiNote
+	});
 
 	var Point = Backbone.Model.extend({
 		defaults:{
 			row:   null,
 			step:  null,
-			active:null
+			active:null,
+			note: null
 		}
 	});
 
